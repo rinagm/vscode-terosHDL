@@ -12,7 +12,10 @@
         "sourceMap": true,
         "rootDir": "./src",
         "strict": false,
-        "allowJs": true
+        "allowJs": true,
+		"jsx": "react",
+		"jsxFactory": "vscpp",
+		"jsxFragmentFactory": "vscppf"
     },
     "skipLibCheck": true,
     "include": [

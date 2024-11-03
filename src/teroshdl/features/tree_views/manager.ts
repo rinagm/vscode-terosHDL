@@ -44,6 +44,7 @@ let viewList: any[] = [];
 
 export class Tree_view_manager {
     private statusbar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    public taskManager: Tasks_manager;
 
     constructor(context: vscode.ExtensionContext, manager: Multi_project_manager,
         emitterProject: ProjectEmitter,
@@ -55,12 +56,14 @@ export class Tree_view_manager {
         context.subscriptions.push(this.statusbar);
         multi_manager = manager;
 
+        this.taskManager = new Tasks_manager(context, manager, logView, emitterProject, timingReportView);
+
         viewList = [
             new Project_manager(context, manager, emitterProject, run_output),
             new Source_manager(context, manager),
             new TreeDependencyManager(context, manager, schematic_manager, dependency_manager),
             new Runs_manager(context, manager, run_output, emitterProject),
-            new Tasks_manager(context, manager, logView, emitterProject, timingReportView),
+            this.taskManager,
             new IpCatalogManager(context, manager),
             new Actions_manager(context),
             new Watcher_manager(context, manager),

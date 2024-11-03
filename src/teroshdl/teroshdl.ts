@@ -45,6 +45,8 @@ import { ProjectEmitter } from 'colibri/project_manager/projectEmitter';
 import { get_home_directory } from 'colibri/process/utils';
 import { GlobalConfigManager } from 'colibri/config/config_manager';
 import { configCheckerManager } from './features/configChecker/manager';
+import { registerToolUserChatParticipant } from './features/chat/toolParticipant';
+import * as chatTools from './features/chat/tools';
 
 const CONFIG_FILENAME = '.teroshdl2_config.json';
 const PRJ_FILENAME = '.teroshdl2_prj.json';
@@ -56,6 +58,7 @@ export class Teroshdl {
     private logView: LogView;
     private timingView: TimingReportView;
     private languageProviderManager: LanguageProviderManager;
+    private treeViewManager: Tree_view_manager;
 
     constructor(context: vscode.ExtensionContext) {
         const homedir = get_home_directory();
@@ -115,6 +118,9 @@ export class Teroshdl {
 
         this.init_comander();
         debugLogger.info('activated comander');
+
+        this.initChat(this.context);
+        debugLogger.info('activated chat');
     }
 
     private async init_multi_project_manager() {
@@ -185,7 +191,7 @@ export class Teroshdl {
 
     private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
         new ConfigurationFileWebview(this.context, this.manager);
-        new Tree_view_manager(
+        this.treeViewManager = new Tree_view_manager(
             this.context,
             this.manager,
             this.emitterProject,
@@ -194,6 +200,57 @@ export class Teroshdl {
             this.logView,
             this.timingView
         );
+    }
+
+    private initChat(context: vscode.ExtensionContext) {
+        const taskManager = this.treeViewManager.taskManager;
+        registerToolUserChatParticipant(context);
+
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_clean', new chatTools.RunClean(taskManager)));
+
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_rtlAnalyzer', new chatTools.RunRtlAnalyzer(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_compileDesign', new chatTools.RunCompileDesign(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_analysisAndSynthesis', new chatTools.RunAnalysisAndSynthesis(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_analysisAndElaboration', new chatTools.RunAnalysisAndElaboration(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_synthesis', new chatTools.RunSynthesis(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_earlyTimingAnalysis', new chatTools.RunEarlyTimingAnalysis(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_fitter', new chatTools.RunFitter(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_fitterImplement', new chatTools.RunFitterImplement(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_plan', new chatTools.RunPlan(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_place', new chatTools.RunPlace(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_route', new chatTools.RunRoute(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_fitterFinalize', new chatTools.RunFitterFinalize(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_timingAnalysisSignoff', new chatTools.RunTimingAnalysisSignoff(taskManager)));
+        
+        context.subscriptions.push(vscode.lm.registerTool(
+            'teroshdl-chat-quartus_assembler', new chatTools.RunAssembler(taskManager)));
+        
     }
 
     private init_comander() {

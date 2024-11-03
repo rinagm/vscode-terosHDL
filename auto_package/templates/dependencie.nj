@@ -44,5 +44,6 @@
     "tiny-glob": "^0.2.9",
     "wavedrom": "3.3.0",
     "web-tree-sitter": "^0.20.7",
-    "module-alias": "^2.2.3"
+    "module-alias": "^2.2.3",
+    "@vscode/prompt-tsx": "^0.3.0-alpha.12"
 }

@@ -3,6 +3,173 @@
 {% include 'info.nj' %}
 {% endfilter %}
     "contributes": {
+        "chatParticipants": [
+            {
+                "id": "chat-teroshdl.tools",
+                "fullName": "TerosHDL",
+                "name": "terosHDL",
+                "description": "TerosHDL chat",
+                "isSticky": true,
+                "commands": [
+                    {
+                        "name": "list",
+                        "description": "List all available tools"
+                	}
+                ]
+            }
+        ],
+        "languageModelTools": [
+            {
+                "name": "teroshdl-chat-quartus_clean",
+                "tags": [
+                    "quartus",
+                    "quartus-clean",
+                    "teroshdl"
+                ],
+                "displayName": "Clean the project",
+                "modelDescription": "Clean the project"
+            },
+            {
+                "name": "teroshdl-chat-quartus_rtlAnalyzer",
+                "tags": [
+                    "quartus",
+                    "quartus-rtlAnalyzer",
+                    "teroshdl"
+                ],
+                "displayName": "Open RTL Analyzer",
+                "modelDescription": "Open RTL Analyzer"
+            },
+            {
+                "name": "teroshdl-chat-quartus_compileDesign",
+                "tags": [
+                    "quartus",
+                    "quartus-compileDesign",
+                    "teroshdl"
+                ],
+                "displayName": "Run Compile Design",
+                "modelDescription": "Run Compile Design"
+            },
+            {
+                "name": "teroshdl-chat-quartus_analysisAndSynthesis",
+                "tags": [
+                    "quartus",
+                    "quartus-analysisAndSynthesis",
+                    "teroshdl"
+                ],
+                "displayName": "Run Analysis and Synthesis",
+                "modelDescription": "Run Analysis and Synthesis"
+            },
+            {
+                "name": "teroshdl-chat-quartus_analysisAndElaboration",
+                "tags": [
+                    "quartus",
+                    "quartus-analysisAndElaboration",
+                    "teroshdl"
+                ],
+                "displayName": "Run Analysis and Elaboration",
+                "modelDescription": "Run Analysis and Elaboration"
+            },
+            {
+                "name": "teroshdl-chat-quartus_synthesis",
+                "tags": [
+                    "quartus",
+                    "quartus-synthesis",
+                    "teroshdl"
+                ],
+                "displayName": "Run Synthesis",
+                "modelDescription": "Run Synthesis"
+            },
+            {
+                "name": "teroshdl-chat-quartus_earlyTimingAnalysis",
+                "tags": [
+                    "quartus",
+                    "quartus-earlyTimingAnalysis",
+                    "teroshdl"
+                ],
+                "displayName": "Run Early Timing Analysis",
+                "modelDescription": "Run Early Timing Analysis"
+            },
+            {
+                "name": "teroshdl-chat-quartus_fitter",
+                "tags": [
+                    "quartus",
+                    "quartus-fitter",
+                    "teroshdl"
+                ],
+                "displayName": "Run Fitter",
+                "modelDescription": "Run Fitter"
+            },
+            {
+                "name": "teroshdl-chat-quartus_fitterImplement",
+                "tags": [
+                    "quartus",
+                    "quartus-fitterImplement",
+                    "teroshdl"
+                ],
+                "displayName": "Run Fitter Implement",
+                "modelDescription": "Run Fitter Implement"
+            },
+            {
+                "name": "teroshdl-chat-quartus_plan",
+                "tags": [
+                    "quartus",
+                    "quartus-plan",
+                    "teroshdl"
+                ],
+                "displayName": "Run Plan",
+                "modelDescription": "Run Plan"
+            },
+            {
+                "name": "teroshdl-chat-quartus_place",
+                "tags": [
+                    "quartus",
+                    "quartus-place",
+                    "teroshdl"
+                ],
+                "displayName": "Run Place",
+                "modelDescription": "Run Place"
+            },
+            {
+                "name": "teroshdl-chat-quartus_route",
+                "tags": [
+                    "quartus",
+                    "quartus-route",
+                    "teroshdl"
+                ],
+                "displayName": "Run Route",
+                "modelDescription": "Run Route"
+            },
+            {
+                "name": "teroshdl-chat-quartus_fitterFinalize",
+                "tags": [
+                    "quartus",
+                    "quartus-fitterFinalize",
+                    "teroshdl"
+                ],
+                "displayName": "Run Fitter Finalize",
+                "modelDescription": "Run Fitter Finalize"
+            },
+            {
+                "name": "teroshdl-chat-quartus_timingAnalysisSignoff",
+                "tags": [
+                    "quartus",
+                    "quartus-timingAnalysisSignoff",
+                    "teroshdl"
+                ],
+                "displayName": "Run Timing Analysis Signoff",
+                "modelDescription": "Run Timing Analysis Signoff"
+            },
+            {
+                "name": "teroshdl-chat-quartus_assembler",
+                "tags": [
+                    "quartus",
+                    "quartus-assembler",
+                    "teroshdl"
+                ],
+                "displayName": "Run Assembler",
+                "modelDescription": "Run Assembler"
+            }
+        ],
         "viewsContainers": {
             "activitybar": [
                 {
