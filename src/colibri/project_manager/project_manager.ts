@@ -610,11 +610,11 @@ export class Project_manager extends ConfigManager {
         let initString = `standard = "${hdlVersion}"\n`;
 
         let endString = "\n\n";
-        if (ignoreVunit) {
-            endString += "vunit_lib.is_third_party = true\n";
-        }
         if (vunitPath !== "") {
             endString += `vunit_lib.files = ['${vunitPath}']\n`;
+        }
+        if (ignoreVunit && vunitPath !== "") {
+            endString += "vunit_lib.is_third_party = true\n";
         }
 
         const toml_text = initString + this.get_toml() + endString;
