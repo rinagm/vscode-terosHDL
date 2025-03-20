@@ -99,7 +99,7 @@ export class Tree_view_manager {
 
         for (const view of viewList) {
             if (view.getRefreshEventList().includes(eventType)) {
-                view.refresh_tree();
+                await view.refresh_tree();
             }
         }
         multi_manager.save();
