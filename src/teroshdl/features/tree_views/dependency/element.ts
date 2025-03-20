@@ -192,29 +192,33 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
     }
 
     async refresh() {
-        // Toplevel path
-        const toplevel_path = await this.get_toplevel_path();
-        if (toplevel_path === undefined) {
+        try {
+            // Toplevel path
+            const toplevel_path = await this.get_toplevel_path();
+            if (toplevel_path === undefined) {
+                this.data = [];
+                this._onDidChangeTreeData.fire();
+                return;
+            }
+            else {
+                this._onDidChangeTreeData.fire();
+            }
+
+            // Dependencies
+            const current_dep = await this.get_deps(toplevel_path);
+            if (current_dep === undefined) {
+                this.data = [];
+                this._onDidChangeTreeData.fire();
+                return;
+            }
+
+            // Dependencie view
+            const dependency_view = this.get_dep_view(current_dep);
+
+            this.data = [new Dependency((<any>current_dep).filename, (<any>current_dep).entity, dependency_view)];
+        } catch (error) {
             this.data = [];
-            this._onDidChangeTreeData.fire();
-            return;
         }
-        else {
-            this._onDidChangeTreeData.fire();
-        }
-
-        // Dependencies
-        const current_dep = await this.get_deps(toplevel_path);
-        if (current_dep === undefined) {
-            this.data = [];
-            this._onDidChangeTreeData.fire();
-            return;
-        }
-
-        // Dependencie view
-        const dependency_view = this.get_dep_view(current_dep);
-
-        this.data = [new Dependency((<any>current_dep).filename, (<any>current_dep).entity, dependency_view)];
         this._onDidChangeTreeData.fire();
     }
 }

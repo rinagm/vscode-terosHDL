@@ -461,12 +461,16 @@ export class Tasks_manager extends BaseView {
     }
 
     refresh_tree() {
-        const selected_project = this.project_manager.get_selected_project();
-        const currentTask = selected_project.getTaskStatus().currentTask;
-        if (currentTask !== undefined && this.statusBar !== undefined) {
-            this.setStatusBarText(currentTask);
+        try {
+            const selected_project = this.project_manager.get_selected_project();
+            const currentTask = selected_project.getTaskStatus().currentTask;
+            if (currentTask !== undefined && this.statusBar !== undefined) {
+                this.setStatusBarText(currentTask);
+            }
         }
-        this.tree.refresh();
+        catch {
+            this.tree.refresh();
+        }
     }
 }
 
