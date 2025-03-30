@@ -133,7 +133,13 @@ export class Tree_view_manager {
                 multi_manager
                     .get_selected_project()
                     .save_toml(path_lib.join(os.homedir(), '.vhdl_ls.toml'), hdlVersion, ignoreVunit, vunitPath);
+                
+                    multi_manager
+                    .get_selected_project()
+                    .saveFileList(path_lib.join(os.homedir(), '.verible-teroshdl.filelist'), hdlVersion, ignoreVunit, vunitPath);
+                
                 vscode.commands.executeCommand('teroshdl.vhdlls.restart');
+                vscode.commands.executeCommand('teroshdl.verible.restart');
             }
         } catch (error) {
             return;
