@@ -623,7 +623,17 @@ export class Project_manager extends ConfigManager {
         const toml_text = initString + this.get_toml() + endString;
         file_utils.save_file_sync(output_path, toml_text);
     }
-
+    
+    public saveFileList(output_path: string, hdlVersion: string, ignoreVunit: boolean, vunitPath: string) {
+        const fileList = this.files.get();
+        let fileListString = "";
+        fileList.forEach((file) => {
+            if (file.file_type === LANGUAGE.VERILOG || file.file_type === LANGUAGE.SYSTEMVERILOG) {
+                fileListString += `${file.name}\n`;
+            }
+        });
+        file_utils.save_file_sync(output_path, fileListString);
+    }
     ////////////////////////////////////////////////////////////////////////////
     // Tool
     ////////////////////////////////////////////////////////////////////////////

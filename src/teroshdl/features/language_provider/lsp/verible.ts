@@ -6,12 +6,11 @@
 'use strict';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import semver = require('semver');
 import vscode = require('vscode');
 import { ExtensionContext } from 'vscode';
 import util = require('util');
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
-import * as utils from '../../utils/utils';
+import * as os from 'os';
 
 const exec = util.promisify(require('child_process').exec);
 
@@ -22,14 +21,12 @@ import {
     RevealOutputChannelOn,
     State
 } from 'vscode-languageclient/node';
-import { e_linter_general_linter_vhdl } from 'colibri/config/config_declaration';
 
 const isWindows = process.platform === 'win32';
-const languageServerName = isWindows ? 'vhdl_ls-x86_64-pc-windows-msvc' : 'vhdl_ls-x86_64-unknown-linux-musl';
-const languageServerBinaryName = 'vhdl_ls';
+const languageServerBinaryName = 'verible-verilog-ls';
 let languageServer: string;
 
-export class Rusthdl_lsp {
+export class Verilbe_lsp {
     private client: LanguageClient | undefined = undefined;
     private context: ExtensionContext;
     private languageServerDisposable;
@@ -42,17 +39,19 @@ export class Rusthdl_lsp {
         this.manager = manager;
 
         this.context.subscriptions.push(
-            vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
+            vscode.commands.registerCommand('teroshdl.verible.restart', async () => {
                 if (this.client != undefined && this.client.isRunning() && this.client.state === State.Running) {
                     try {
-                        // await this.client.restart();
+                        this.client.stop().finally(async () => {
+                            await this.run();
+                        });
                     } catch (error) {
                         this.errorCounter++;
                         this.client.dispose();
                         this.client = undefined;
                         console.log(error);
                         if (this.errorCounter < 5) {
-                            await this.run_rusthdl();
+                            await this.run();
                         }
                     }
                 }
@@ -60,16 +59,14 @@ export class Rusthdl_lsp {
         );
     }
 
-    async run_rusthdl(): Promise<boolean> {
-        const languageServerDir = this.context.asAbsolutePath(path.join('server', 'vhdl_ls'));
+    async run(): Promise<boolean> {
+        const languageServerDir = this.context.asAbsolutePath(path.join('server', 'verible'));
         const current_language_server_version = this.embeddedVersion(languageServerDir);
 
         languageServer = path.join(
             'server',
-            'vhdl_ls',
+            'verible',
             current_language_server_version,
-            languageServerName,
-            'bin',
             languageServerBinaryName + (isWindows ? '.exe' : '')
         );
         // Get language server configuration and command to start server
@@ -78,15 +75,15 @@ export class Rusthdl_lsp {
 
         // Options to control the language client
         let clientOptions: LanguageClientOptions = {
-            documentSelector: [{ scheme: 'file', language: 'vhdl' }],
+            documentSelector: [{ scheme: 'file', language: 'verilog' }, { scheme: 'file', language: 'systemverilog' }],
             revealOutputChannelOn: RevealOutputChannelOn.Never
         };
 
         // Create the language client
-        this.client = new LanguageClient('vhdlls', 'VHDL LS', serverOptions, clientOptions);
+        this.client = new LanguageClient('verible-verilog-ls', 'Verible', serverOptions, clientOptions);
 
         let server_path = this.context.asAbsolutePath(languageServer);
-        let is_alive = await this.check_rust_hdl(server_path);
+        let is_alive = await this.check_run(server_path);
         if (is_alive === false) {
             return false;
         }
@@ -98,20 +95,20 @@ export class Rusthdl_lsp {
         return true;
     }
 
-    async check_rust_hdl(rust_hdl_bin_path: string) {
-        let command = rust_hdl_bin_path + ' --version';
+    async check_run(binPath: string) {
+        let command = binPath + ' --version';
         // eslint-disable-next-line no-console
         console.log(`[colibri][info] Linting with command: ${command}`);
         const exec = require('child_process').exec;
         return new Promise((resolve) => {
-            exec(command, (err, stdout, stderr) => {
+            exec(command, (err, stdout: string, stderr) => {
                 if (stderr !== '') {
-                    console.log(`[rusthdl][error] ${stderr}`);
+                    console.log(`[verible][error] ${stderr}`);
                 }
-                if (stderr === '') {
-                    resolve(true);
-                } else {
+                if (err !== null || !stdout.toLowerCase().includes('version')) {
                     resolve(false);
+                } else {
+                    resolve(true);
                 }
             });
         });
@@ -126,26 +123,17 @@ export class Rusthdl_lsp {
 
     embeddedVersion(languageServerDir: string): string {
         try {
-            return fs.readdirSync(languageServerDir).reduce((version: string, dir: string) => {
-                if (semver.gt(dir, version)) {
-                    return dir;
-                } else {
-                    return version;
-                }
-            }, '0.0.0');
+            const dirs = fs.readdirSync(languageServerDir);
+            // Return the first directory found, or default to '0.0.0' if none
+            return dirs.length > 0 ? dirs[0] : '0.0.0';
         } catch {
             return '0.0.0';
         }
     }
 
     getServerOptionsEmbedded(context: ExtensionContext) {
-        const config = utils.getConfig(this.manager);
-        const linter_name = config.linter.general.linter_vhdl;
-        let args: string[] = [];
-        if (linter_name !== e_linter_general_linter_vhdl.none) {
-            args = ['--no-lint'];
-        }
-        args.push('--silent');
+        const fileListPath = path.join(os.homedir(), '.verible-teroshdl.filelist');
+        const args = ["--file_list_path", fileListPath];
 
         let serverCommand = context.asAbsolutePath(languageServer);
         let serverOptions: ServerOptions = {
