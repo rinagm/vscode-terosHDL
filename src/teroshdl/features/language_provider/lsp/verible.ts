@@ -34,27 +34,27 @@ export class Verilbe_lsp {
     public stop_client: boolean = false;
     private errorCounter = 0;
 
-    constructor(context: ExtensionContext, manager: Multi_project_manager) {
+    constructor(context: ExtensionContext, manager: Multi_project_manager, private fileListPath: string) {
         this.context = context;
         this.manager = manager;
 
         this.context.subscriptions.push(
             vscode.commands.registerCommand('teroshdl.verible.restart', async () => {
-                if (this.client != undefined && this.client.isRunning() && this.client.state === State.Running) {
-                    try {
-                        this.client.stop().finally(async () => {
-                            await this.run();
-                        });
-                    } catch (error) {
-                        this.errorCounter++;
-                        this.client.dispose();
-                        this.client = undefined;
-                        console.log(error);
-                        if (this.errorCounter < 5) {
-                            await this.run();
-                        }
-                    }
-                }
+                // if (this.client != undefined && this.client.isRunning() && this.client.state === State.Running) {
+                //     try {
+                //         this.client.stop().finally(async () => {
+                //             await this.run();
+                //         });
+                //     } catch (error) {
+                //         this.errorCounter++;
+                //         this.client.dispose();
+                //         this.client = undefined;
+                //         console.log(error);
+                //         if (this.errorCounter < 5) {
+                //             await this.run();
+                //         }
+                //     }
+                // }
             })
         );
     }
@@ -76,7 +76,12 @@ export class Verilbe_lsp {
         // Options to control the language client
         let clientOptions: LanguageClientOptions = {
             documentSelector: [{ scheme: 'file', language: 'verilog' }, { scheme: 'file', language: 'systemverilog' }],
-            revealOutputChannelOn: RevealOutputChannelOn.Never
+            revealOutputChannelOn: RevealOutputChannelOn.Never,
+            // middleware: {
+            //     provideDiagnostics: () => {
+            //         return undefined;
+            //     }
+            // }
         };
 
         // Create the language client
@@ -132,8 +137,7 @@ export class Verilbe_lsp {
     }
 
     getServerOptionsEmbedded(context: ExtensionContext) {
-        const fileListPath = path.join(os.homedir(), '.verible-teroshdl.filelist');
-        const args = ["--file_list_path", fileListPath];
+        const args = ["--file_list_path", this.fileListPath, '--ruleset=none'];
 
         let serverCommand = context.asAbsolutePath(languageServer);
         let serverOptions: ServerOptions = {

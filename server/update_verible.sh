@@ -1,4 +1,4 @@
-VERSION="v0.0-3946-g851d3ff4"
+VERSION="v0.0-3958-g7aae5c08"
 FILES=("verible-$VERSION-win64.zip" "verible-$VERSION-linux-static-x86_64.tar.gz")
 OUTPUT_FOLDER=verible/$VERSION
 

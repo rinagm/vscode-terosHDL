@@ -38,6 +38,7 @@ import { LogView } from '../views/logs';
 import { TimingReportView } from '../views/timing/timing_report';
 import { e_event, ProjectEmitter } from 'colibri/project_manager/projectEmitter';
 import * as utils from '../utils/utils';
+import * as file_utils from 'colibri/utils/file_utils';
 
 let run_output: Run_output_manager = new Run_output_manager();
 let multi_manager: Multi_project_manager;
@@ -53,7 +54,9 @@ export class Tree_view_manager {
         schematic_manager: Schematic_manager,
         dependency_manager: Dependency_manager,
         logView: LogView,
-        timingReportView: TimingReportView
+        timingReportView: TimingReportView,
+        private rustHDLFilePath: string,
+        private veribleLSFilePath: string
     ) {
         context.subscriptions.push(this.statusbar);
         multi_manager = manager;
@@ -71,7 +74,9 @@ export class Tree_view_manager {
         ];
 
         emitterProject.addProjectListener(this.runRefresh);
-        emitterProject.addProjectListener(this.refreshToml);
+        emitterProject.addProjectListener(
+            (projectName: string, eventType: e_event) => this.refreshToml(projectName, eventType)
+        );
 
         emitterProject.enable();
         emitterProject.emitEvent('', e_event.GLOBAL_REFRESH);
@@ -124,25 +129,46 @@ export class Tree_view_manager {
 
         try {
             const selectedProject = multi_manager.get_selected_project().get_name();
-            if (selectedProject === projectName || allowedRefreshEventList.includes(eventType)) {
-                const hdlVersion = utils.getConfig(multi_manager).linter.vhdlls.standard.replace('v', '');
-
-                const ignoreVunit = utils.getConfig(multi_manager).linter.vhdlls.ignoreVunit;
-                const vunitPath = utils.getConfig(multi_manager).linter.vhdlls.vunitPath;
-
-                multi_manager
-                    .get_selected_project()
-                    .save_toml(path_lib.join(os.homedir(), '.vhdl_ls.toml'), hdlVersion, ignoreVunit, vunitPath);
-                
-                    multi_manager
-                    .get_selected_project()
-                    .saveFileList(path_lib.join(os.homedir(), '.verible-teroshdl.filelist'), hdlVersion, ignoreVunit, vunitPath);
-                
-                vscode.commands.executeCommand('teroshdl.vhdlls.restart');
-                vscode.commands.executeCommand('teroshdl.verible.restart');
+            if (projectName === '' || selectedProject === projectName || allowedRefreshEventList.includes(eventType)) {
+                forceRefresh(this.rustHDLFilePath, this.veribleLSFilePath);
             }
         } catch (error) {
             return;
         }
+    }
+}
+
+export function forceRefresh(rustHDLFilePath: string, veribleLSFilePath: string): void {
+    if (!multi_manager) {
+        return;
+    }
+
+    try {
+        const hdlVersion = utils.getConfig(multi_manager).linter.vhdlls.standard.replace('v', '');
+
+        const ignoreVunit = utils.getConfig(multi_manager).linter.vhdlls.ignoreVunit;
+        const vunitPath = utils.getConfig(multi_manager).linter.vhdlls.vunitPath;
+
+        const oldPathList = [
+            path_lib.join(os.homedir(), '.vhdl_ls.toml'),
+            path_lib.join(os.homedir(), '.verible-teroshdl.filelist')
+        ];
+
+        for (const oldPath of oldPathList) {
+            if (file_utils.check_if_path_exist(oldPath)) {
+                file_utils.remove_file(oldPath);
+            }
+        }
+
+        multi_manager.get_selected_project().save_toml(rustHDLFilePath, hdlVersion, ignoreVunit, vunitPath);
+
+        multi_manager
+            .get_selected_project()
+            .saveFileList(veribleLSFilePath, hdlVersion, ignoreVunit, vunitPath);
+
+        vscode.commands.executeCommand('teroshdl.vhdlls.restart');
+        vscode.commands.executeCommand('teroshdl.verible.restart');
+    } catch (error) {
+        return;
     }
 }

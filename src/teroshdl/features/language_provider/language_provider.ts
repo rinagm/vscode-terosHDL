@@ -49,7 +49,10 @@ export class LanguageProviderManager {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    constructor(context: vscode.ExtensionContext, manager: Multi_project_manager) {
+    constructor(
+        context: vscode.ExtensionContext,
+        manager: Multi_project_manager
+    ) {
         this.context = context;
         this.manager = manager;
 
@@ -73,12 +76,12 @@ export class LanguageProviderManager {
         this.provider_list = provider_list;
     }
 
-    public async configure() {
+    public async configure(rusthdlFilePath: string, veribleLSFilePath: string) {
         // VHDL
-        await this.configure_vhdl();
+        await this.configure_vhdl(rusthdlFilePath);
 
         // Verilog/SV
-        await this.configure_verilog();
+        await this.configure_verilog(veribleLSFilePath);
 
         // TCL
         this.configure_tcl();
@@ -110,7 +113,7 @@ export class LanguageProviderManager {
     /////////////////////////////////////////////////////////////////////////////////////////
     // VHDL
     /////////////////////////////////////////////////////////////////////////////////////////
-    private async configure_vhdl() {
+    private async configure_vhdl(fileListPath: string) {
         const vhdlSelector: vscode.DocumentSelector = { scheme: 'file', language: 'vhdl' };
         this.context.subscriptions.push(
             vscode.languages.registerCompletionItemProvider(vhdlSelector, this.provider_list.completion, '.', '(', '=')
@@ -127,7 +130,7 @@ export class LanguageProviderManager {
 
         const enable_vhdl_provider = config.general.general.go_to_definition_vhdl;
         if (enable_vhdl_provider === true) {
-            this.rusthdl = new rusthdl_lib.Rusthdl_lsp(this.context, this.manager);
+            this.rusthdl = new rusthdl_lib.Rusthdl_lsp(this.context, this.manager, fileListPath);
             is_alive = await this.rusthdl.run_rusthdl();
         } else {
             this.context.subscriptions.push(vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {}));
@@ -146,7 +149,7 @@ export class LanguageProviderManager {
     /////////////////////////////////////////////////////////////////////////////////////////
     // Verilog
     /////////////////////////////////////////////////////////////////////////////////////////
-    private async configure_verilog() {
+    private async configure_verilog(fileListPath: string) {
         let verilogSelector: vscode.DocumentSelector = [
             { scheme: 'file', language: 'verilog' },
             { scheme: 'file', language: 'systemverilog' }
@@ -166,36 +169,22 @@ export class LanguageProviderManager {
             vscode.languages.registerDocumentSymbolProvider(verilogSelector, this.provider_list.doc)
         );
 
-
         // Language server
         let is_alive = false;
 
-        // const config = utils.getConfig(this.manager);
-
-        this.verible = new verible_lib.Verilbe_lsp(this.context, this.manager);
+        this.verible = new verible_lib.Verilbe_lsp(this.context, this.manager, fileListPath);
         is_alive = await this.verible.run();
 
         if (is_alive === false) {
-            // this.context.subscriptions.push(vscode.commands.registerCommand('teroshdl.verible.restart', async () => { }));
-
             this.context.subscriptions.push(
                 vscode.languages.registerHoverProvider(verilogSelector, this.provider_list.hover)
             );
             this.context.subscriptions.push(
                 vscode.languages.registerDefinitionProvider(verilogSelector, this.provider_list.def)
             );
-        }
 
-        // const config = utils.getConfig(this.manager);
-        // const enable_verilog_provider = config.general.general.go_to_definition_verilog;
-        // if (enable_verilog_provider === true) {
-        //     this.context.subscriptions.push(
-        //         vscode.languages.registerHoverProvider(verilogSelector, this.provider_list.hover)
-        //     );
-        //     this.context.subscriptions.push(
-        //         vscode.languages.registerDefinitionProvider(verilogSelector, this.provider_list.def)
-        //     );
-        // }
+            this.context.subscriptions.push(vscode.commands.registerCommand('teroshdl.verible.restart', async () => {}));
+        }
     }
 
     public async deactivate() {

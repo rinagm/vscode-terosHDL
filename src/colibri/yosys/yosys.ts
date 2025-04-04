@@ -167,7 +167,7 @@ export async function runYosysGhdl(config: e_config, topTevel: string, sources: 
 
         if (!result.successful) {
             schematicResult.sucessful = false;
-            schematicResult.error_msg = result.stderr;
+            schematicResult.error_msg = result.stdout + "\n" + result.stderr;
         }
         else {
             schematicResult.schematic = read_file_sync(outputPathFilename);

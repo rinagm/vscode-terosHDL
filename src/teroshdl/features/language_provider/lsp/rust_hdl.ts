@@ -37,7 +37,7 @@ export class Rusthdl_lsp {
     public stop_client: boolean = false;
     private errorCounter = 0;
 
-    constructor(context: ExtensionContext, manager: Multi_project_manager) {
+    constructor(context: ExtensionContext, manager: Multi_project_manager, private fileListPath: string) {
         this.context = context;
         this.manager = manager;
 
@@ -45,7 +45,7 @@ export class Rusthdl_lsp {
             vscode.commands.registerCommand('teroshdl.vhdlls.restart', async () => {
                 if (this.client != undefined && this.client.isRunning() && this.client.state === State.Running) {
                     try {
-                        // await this.client.restart();
+                        await this.client.restart();
                     } catch (error) {
                         this.errorCounter++;
                         this.client.dispose();
@@ -151,11 +151,21 @@ export class Rusthdl_lsp {
         let serverOptions: ServerOptions = {
             run: {
                 command: serverCommand,
-                args: args
+                args: args,
+                options: {
+                    env: {
+                        VHDL_LS_CONFIG: this.fileListPath
+                    }
+                }
             },
             debug: {
                 command: serverCommand,
-                args: args
+                args: args,
+                options: {
+                    env: {
+                        VHDL_LS_CONFIG: this.fileListPath
+                    }
+                }
             }
         };
         return serverOptions;
