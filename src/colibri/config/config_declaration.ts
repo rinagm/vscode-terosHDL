@@ -241,7 +241,7 @@ export type e_tools_quartus = {
     
 export type e_tools_vsg = {
     installation_path : string,
-    configuration : string,
+    style_config : string,
     core_number : number,
     aditional_arguments : string,
 };
@@ -952,7 +952,7 @@ export function get_default_config(): e_config {
             },
             vsg: {
                 installation_path : "",
-                configuration : "",
+                style_config : "",
                 core_number : 2,
                 aditional_arguments : "",
             },
@@ -2272,14 +2272,14 @@ export function get_config_from_json(json_config: any): e_config {
         default_config['tools']['vsg']['installation_path'] = current_value_83;
     }
             
-    // tools -> vsg -> configuration
+    // tools -> vsg -> style_config
     let current_value_84 = undefined;
     try {
-        current_value_84 = json_config['tools']['vsg']['configuration'];
+        current_value_84 = json_config['tools']['vsg']['style_config'];
     }
     catch(e){}
     if (typeof current_value_84 === 'string'){
-        default_config['tools']['vsg']['configuration'] = current_value_84;
+        default_config['tools']['vsg']['style_config'] = current_value_84;
     }
             
     // tools -> vsg -> core_number

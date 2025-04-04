@@ -3,7 +3,7 @@ installation_path:
   type: string
   value: ""
   
-configuration:
+style_config:
   description: "Path JSON or YAML configuration file."
   type: string
   value: ""
