@@ -1871,11 +1871,11 @@ export const WEB_CONFIG = `
           
           
             <div class="mb-3">
-              <label for="tools-vsg-configuration" class="form-label">
+              <label for="tools-vsg-style_config" class="form-label">
                 Path JSON or YAML configuration file.
-                <span class="markConfig badge bg-secondary" id="mark_tools-vsg-configuration"></span>
+                <span class="markConfig badge bg-secondary" id="mark_tools-vsg-style_config"></span>
               </label>
-                <input class="form-control" id="tools-vsg-configuration" rows="3"  value=""></input>
+                <input class="form-control" id="tools-vsg-style_config" rows="3"  value=""></input>
             </div>
           
           
@@ -4957,8 +4957,8 @@ export const WEB_CONFIG = `
     config["tools"]["vsg"] = {}
     element_value = document.getElementById("tools-vsg-installation_path").value;
     config["tools"]["vsg"]["installation_path"] = element_value
-    element_value = document.getElementById("tools-vsg-configuration").value;
-    config["tools"]["vsg"]["configuration"] = element_value
+    element_value = document.getElementById("tools-vsg-style_config").value;
+    config["tools"]["vsg"]["style_config"] = element_value
     element_value = parseInt(document.getElementById("tools-vsg-core_number").value, 10);
     config["tools"]["vsg"]["core_number"] = element_value
     element_value = document.getElementById("tools-vsg-aditional_arguments").value;
@@ -5476,7 +5476,7 @@ export const WEB_CONFIG = `
     document.getElementById("tools-quartus-allow_register_retiming").checked = config["tools"]["quartus"]["allow_register_retiming"];
     document.getElementById("tools-quartus-wave_file_questa").value = config["tools"]["quartus"]["wave_file_questa"];
     document.getElementById("tools-vsg-installation_path").value = config["tools"]["vsg"]["installation_path"];
-    document.getElementById("tools-vsg-configuration").value = config["tools"]["vsg"]["configuration"];
+    document.getElementById("tools-vsg-style_config").value = config["tools"]["vsg"]["style_config"];
     document.getElementById("tools-vsg-core_number").value = config["tools"]["vsg"]["core_number"];
     document.getElementById("tools-vsg-aditional_arguments").value = config["tools"]["vsg"]["aditional_arguments"];
     document.getElementById("tools-osvvm-installation_path").value = config["tools"]["osvvm"]["installation_path"];
@@ -6048,10 +6048,10 @@ export const WEB_CONFIG = `
     }
     document.getElementById("mark_tools-vsg-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vsg"]["configuration"] != undefined) {
+    if (projectName !== undefined && config["tools"]["vsg"]["style_config"] != undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-vsg-configuration").innerHTML = mark;
+    document.getElementById("mark_tools-vsg-style_config").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"]["vsg"]["core_number"] != undefined) {
       mark = MODIFIEDMSG;

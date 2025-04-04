@@ -48,9 +48,9 @@ export class Vsg extends Base_formatter {
 
     public async format(file: string, opt: cfg.e_tools_vsg, _python_path: string) {
         let command = `${this.binary} ${opt.aditional_arguments} -p ${opt.core_number} --fix -f ${file}`;
-        if (opt.configuration !== ""){
+        if (opt.style_config !== ""){
             // eslint-disable-next-line max-len
-            command = `${this.binary} ${opt.aditional_arguments} -p ${opt.core_number} --fix -c ${opt.configuration} -f ${file}`;
+            command = `${this.binary} ${opt.aditional_arguments} -p ${opt.core_number} --fix -c ${opt.style_config} -f ${file}`;
         }
 
         const P = new Process();
