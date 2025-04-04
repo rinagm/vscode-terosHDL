@@ -19,6 +19,7 @@
 
 import * as vscode from 'vscode';
 import * as path_lib from 'path';
+import * as process_utils from 'colibri/process/utils';
 
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 
@@ -33,7 +34,7 @@ import { Completions_manager } from './features/completions/completions';
 import { Number_hover_manager } from './features/number_hover';
 import { Stutter_mode_manager } from './features/stutter_mode';
 import { Config_manager } from './features/config';
-import { Tree_view_manager } from './features/tree_views/manager';
+import { Tree_view_manager, forceRefresh } from './features/tree_views/manager';
 import { Comander } from './features/comander/run';
 import { Dependency_manager } from './features/dependency';
 import { ConfigurationFileWebview } from './features/views/configurationFile';
@@ -56,8 +57,15 @@ export class Teroshdl {
     private logView: LogView;
     private timingView: TimingReportView;
     private languageProviderManager: LanguageProviderManager;
+    private rustHDLFilePath: string;
+    private veribleLSFilePath: string;
 
-    constructor(context: vscode.ExtensionContext) {
+    constructor(
+        context: vscode.ExtensionContext
+    ) {
+        this.rustHDLFilePath = process_utils.create_temp_file('');
+        this.veribleLSFilePath = process_utils.create_temp_file('');
+        
         const homedir = get_home_directory();
         const file_config_path = path_lib.join(homedir, CONFIG_FILENAME);
         const file_prj_path = path_lib.join(homedir, PRJ_FILENAME);
@@ -74,7 +82,7 @@ export class Teroshdl {
     public async init_teroshdl() {
         await this.init_multi_project_manager();
 
-        this.init_language_provider();
+        await this.init_language_provider();
         debugLogger.info('activated language provider');
 
         this.init_template_manager();
@@ -110,7 +118,7 @@ export class Teroshdl {
         debugLogger.info('activated config viewer');
 
         const dependency = this.init_dependency();
-        this.init_tree_views(schematicManager, dependency);
+        await this.init_tree_views(schematicManager, dependency);
         debugLogger.info('activated views');
 
         this.init_comander();
@@ -134,9 +142,11 @@ export class Teroshdl {
         return new configCheckerManager(this.manager, linterManager, formatterManager, schematicManager);
     }
 
-    private init_language_provider() {
-        this.languageProviderManager = new LanguageProviderManager(this.context, this.manager);
-        this.languageProviderManager.configure();
+    private async init_language_provider() {
+        this.languageProviderManager = new LanguageProviderManager(
+            this.context, this.manager
+        );
+        await this.languageProviderManager.configure(this.rustHDLFilePath, this.veribleLSFilePath);
     }
 
     private init_template_manager() {
@@ -183,17 +193,20 @@ export class Teroshdl {
         new Config_manager(this.context, this.manager, this.emitterProject, configCheckerManager);
     }
 
-    private init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
+    private async init_tree_views(schematic_manager: Schematic_manager, dependency_manager: Dependency_manager) {
         new ConfigurationFileWebview(this.context, this.manager);
-        new Tree_view_manager(
+        const manager = new Tree_view_manager(
             this.context,
             this.manager,
             this.emitterProject,
             schematic_manager,
             dependency_manager,
             this.logView,
-            this.timingView
+            this.timingView,
+            this.rustHDLFilePath,
+            this.veribleLSFilePath
         );
+        await forceRefresh(this.rustHDLFilePath, this.veribleLSFilePath);
     }
 
     private init_comander() {
