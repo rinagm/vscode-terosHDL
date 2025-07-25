@@ -1,6 +1,13 @@
 {
     "preset": "ts-jest",
     "testEnvironment": "node",
+    "transform": {
+        "^.+\\.ts$": ["ts-jest", {
+            "tsconfig": {
+                "types": ["node", "jest"]
+            }
+        }]
+    },
     "collectCoverage": true,
     "coverageDirectory": "coverage",
     "coveragePathIgnorePatterns": [

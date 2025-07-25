@@ -29,7 +29,7 @@ describe('ProjectManager Configuration', () => {
 
     beforeEach(() => {
         GlobalConfigManager.getInstance().set_config(get_default_config()); // Restore default config before each test
-        projectManager = new Project_manager("Project1", new ProjectEmitter());
+        projectManager = new Project_manager("Project1", "", new ProjectEmitter());
     });
 
     it('should initialize configuration with default config', () => {
@@ -204,7 +204,7 @@ describe('ProjectManager Configuration', () => {
         originalConfig.general.general.pypath = "my/path";
         projectManager.set_config(originalConfig);
 
-        const newProjectManager = await Project_manager.fromJson(projectManager.get_edam_json(), "", new ProjectEmitter());
+        const newProjectManager = await Project_manager.fromJson(projectManager.get_edam_json(), "", new ProjectEmitter(), "");
 
         expect(newProjectManager.get_config()).toEqual(originalConfig);
     });

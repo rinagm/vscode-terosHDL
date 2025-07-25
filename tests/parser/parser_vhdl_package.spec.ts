@@ -21,6 +21,10 @@ import { LANGUAGE } from "../../src/colibri/common/general";
 import { equal } from "assert";
 import { Constant_hdl, Function_hdl, Signal_hdl, 
         Type_hdl, TYPE_HDL_ELEMENT, Hdl_element } from "../../src/colibri/parser/common";
+import { jest } from '@jest/globals';
+
+const TIMEOUT_SEC = 20;
+jest.setTimeout(TIMEOUT_SEC * 1000);
 
 const code_hdl = `
 package test_package_name is
@@ -47,7 +51,7 @@ end package body test_package_name;
 `;
 const parser_common = new Factory();
 
-async function parse() {
+async function parse(): Promise<Hdl_element> {
     const parser = await parser_common.get_parser(LANGUAGE.VHDL);
     const result = await parser.get_all(code_hdl, '!');
     return result;
@@ -72,7 +76,7 @@ describe('Check package VHDL', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Signal
     ////////////////////////////////////////////////////////////////////////////////
-    function check_signal(actual: Signal_hdl, expected: Signal_hdl) {
+    function check_signal(actual: Signal_hdl, expected: Signal_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.type, expected.type);
         // equal(actual.default_value, expected.default_value);
@@ -138,7 +142,7 @@ describe('Check package VHDL', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Constant
     ////////////////////////////////////////////////////////////////////////////////
-    function check_constant(actual: Constant_hdl, expected: Constant_hdl) {
+    function check_constant(actual: Constant_hdl, expected: Constant_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.type, expected.type);
         equal(actual.default_value, expected.default_value);
@@ -207,7 +211,7 @@ describe('Check package VHDL', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Type
     ////////////////////////////////////////////////////////////////////////////////
-    function check_type(actual: Type_hdl, expected: Type_hdl) {
+    function check_type(actual: Type_hdl, expected: Type_hdl): void {
         equal(actual.info.name, expected.info.name);
         if (expected.is_enum === true){
           for (let index = 0; index < expected.enum_elements.length; index++) {

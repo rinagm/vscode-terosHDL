@@ -39,7 +39,7 @@ lang_list.forEach(lang_inst => {
     });
 });
 
-function init() {
+function init(): void {
     const C_OUTPUT_BASE_PATH = paht_lib.join(__dirname, 'fsm', 'out');
     try {
         fs.unlinkSync(C_OUTPUT_BASE_PATH);
@@ -49,7 +49,7 @@ function init() {
     fs.mkdirSync(C_OUTPUT_BASE_PATH, { recursive: true });
 }
 
-async function parse_fsm(lang: LANGUAGE, test_index: number) {
+async function parse_fsm(lang: LANGUAGE, test_index: number): Promise<void> {
     const parser_common = new Factory();
     const parser = await parser_common.get_parser(lang);
 
@@ -64,7 +64,7 @@ async function parse_fsm(lang: LANGUAGE, test_index: number) {
     });
 }
 
-function check_test(test_index: number, lang: LANGUAGE) {
+function check_test(test_index: number, lang: LANGUAGE): void {
     const expected_path = paht_lib.join(__dirname, 'fsm', 'expected', `output_${test_index}_${lang}.svg`);
     const actual_path = paht_lib.join(__dirname, 'fsm', 'out', `output_${test_index}_${lang}.svg`);
 

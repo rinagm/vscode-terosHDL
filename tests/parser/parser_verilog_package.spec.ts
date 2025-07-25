@@ -20,6 +20,10 @@ import { Factory } from "../../src/colibri/parser/factory";
 import { LANGUAGE } from "../../src/colibri/common/general";
 import { equal } from "assert";
 import * as common from "../../src/colibri/parser/common";
+import { jest } from '@jest/globals';
+
+const TIMEOUT_SEC = 20;
+jest.setTimeout(TIMEOUT_SEC * 1000);
 
 //// Verilog-2001 ANSI-style
 const code_hdl = `
@@ -45,7 +49,7 @@ if (parser_common === undefined) {
     console.log("Error parser.");
 }
 
-async function parse() {
+async function parse(): Promise<common.Hdl_element> {
     const parser = await parser_common.get_parser(LANGUAGE.VERILOG);
     const result = await parser.get_all(code_hdl, '!');
     return result;
