@@ -32,12 +32,6 @@ import { e_sentence } from "../../../process/common";
 import * as fxp from "fast-xml-parser";
 
 export class Cocotb extends Generic_tool_handler {
-    
-    public clean(_prj: t_project_definition, _working_directory: string, _clean_mode: e_clean_step, 
-        _callback_stream: (_stream_c: any) => void): void {
-        throw new Error("Method not implemented.");
-    }
-
     constructor() {
         const supported_tools = [e_tools_general_select_tool.cocotb];
         super(supported_tools);
@@ -132,6 +126,8 @@ export class Cocotb extends Generic_tool_handler {
     public run(prj: t_project_definition, test_list: t_test_declaration[],
         working_directory: string, callback: (result: t_test_result[]) => void,
         callback_stream: (stream_c: any) => void) {
+        
+        this.createWorkingDirectoryIfNotExists(working_directory);
 
         const execution_config = {
             execution_mode: prj.config.tools.general.execution_mode,

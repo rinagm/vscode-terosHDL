@@ -65,26 +65,33 @@ export class Output_manager extends BaseView{
     }
 
     async clean() {
+        let step = e_clean_step.Bitstream;
         const tool_name = GlobalConfigManager.getInstance().get_config().tools.general.select_tool;
-        if (tool_name !== e_tools_general_select_tool.raptor) {
-            return;
-        }
 
-        const step_list = Object.values(e_clean_step);
-        const picker_value = await vscode.window.showQuickPick(step_list, {
-            placeHolder: "Select stage.",
-        });
+            if (tool_name === e_tools_general_select_tool.raptor) {
+                const step_list = Object.values(e_clean_step);
 
-        if (picker_value === undefined) {
-            return;
+                const picker_value = await vscode.window.showQuickPick(step_list, {
+                    placeHolder: "Select stage.",
+                });
+
+            if (picker_value === undefined) {
+                return;
+            }
+                
+            step = this.get_step_enum(picker_value);
         }
 
         try {
             const prj = this.project_manager.get_selected_project();
-            const step = this.get_step_enum(picker_value);
             prj.clean(
                 step,
                 (function (stream_c: any) {
+                    if (typeof stream_c === "string") {
+                        toolLogger.log(stream_c);
+                        return;
+                    }
+
                     stream_c.stdout.on('data', function (data: any) {
                         toolLogger.log(data);
                     });

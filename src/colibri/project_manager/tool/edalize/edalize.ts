@@ -19,7 +19,7 @@
 
 import { t_project_definition } from "../../project_definition";
 import { Generic_tool_handler } from "../generic_handler";
-import { e_artifact_type, e_clean_step, e_element_type, t_test_artifact, 
+import { e_artifact_type, e_element_type, t_test_artifact, 
     t_test_declaration, t_test_result } from "../common";
 import { e_config, e_tools_general_execution_mode, 
     e_tools_general_select_tool, e_tools_ghdl_waveform
@@ -33,11 +33,6 @@ import * as file_utils from "../../../utils/file_utils";
 import { p_result } from "../../../process/common";
 
 export class Edalize extends Generic_tool_handler {
-
-    public clean(_prj: t_project_definition, _working_directory: string, _clean_mode: e_clean_step, 
-        _callback_stream: (_stream_c: any) => void): void {
-        throw new Error("Method not implemented.");
-    }
 
     constructor() {
         const supported_tools = [e_tools_general_select_tool.ghdl];
@@ -68,6 +63,8 @@ export class Edalize extends Generic_tool_handler {
     public run(prj: t_project_definition, test_list: t_test_declaration[],
         working_directory: string, callback: (result: t_test_result[]) => void,
         callback_stream: (stream_c: any) => void) {
+        
+        this.createWorkingDirectoryIfNotExists(working_directory);
 
         // Get toplevel entity from toplevel path
         const top_level_list: string[] = [];

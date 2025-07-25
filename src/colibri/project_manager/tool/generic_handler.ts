@@ -58,6 +58,17 @@ export abstract class Generic_tool_handler {
         } catch (error) { }
     }
 
-    public abstract clean(prj: t_project_definition, working_directory: string, clean_mode: e_clean_step,
-        callback_stream: (stream_c: any) => void): void;
+    public clean(_prj: t_project_definition, working_directory: string, _clean_mode: e_clean_step, 
+        callback_stream: (_stream_c: any) => void): void {
+        if (file_utils.check_if_path_exist(working_directory)) {
+            file_utils.remove_directory(working_directory);
+        }
+        callback_stream(`Removed working directory: ${working_directory}`);
+    }
+    
+    protected createWorkingDirectoryIfNotExists(workingDirectory): void {
+        if (!file_utils.check_if_path_exist(workingDirectory)) {
+            file_utils.create_directory(workingDirectory);
+        }
+    }
 }

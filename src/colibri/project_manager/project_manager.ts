@@ -204,8 +204,8 @@ export class Project_manager extends ConfigManager {
     static async fromJson(jsonContent: any, reference_path: string, emitterProject: ProjectEmitter,
         buildBasePath: string): Promise<Project_manager> {
 
-        const buildPath = jsonContent.projectDiskPath ?
-            jsonContent.projectDiskPath : utils.createRandomFolderFromBasePath(jsonContent.name, buildBasePath);
+        const buildPath = jsonContent.project_disk_path ?
+            jsonContent.project_disk_path : utils.createRandomFolderFromBasePath(jsonContent.name, buildBasePath);
 
         const prj = new Project_manager(jsonContent.name, buildPath, emitterProject);
         // Files
