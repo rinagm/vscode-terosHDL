@@ -40,12 +40,21 @@ export enum e_taskType {
     QUARTUS_TIMING = "Timing Analysis (Signoff)",
     QUARTUS_RTL_ANALYZER = "RTL Analyzer",
     QUARTUS_ASSEMBLER = "Assembler (Generate programming files)",
+    // GHDL tasks
+    GHDL_RUN_ALL = "GHDL Run All",
+    GHDL_ANALYZE = "GHDL Analyze",
+    GHDL_ELABORATE = "GHDL Elaborate",
+    GHDL_SIMULATE = "GHDL Simulate",
+    GHDL_SYNTHESIZE = "GHDL Synthesize",
+    GHDL_CHECK_SYNTAX = "GHDL Check Syntax",
+    GHDL_MAKEFILE = "GHDL Generate Makefile",
     // SandPiper tasks
     SANDPIPER_TLVERILOGTOVERILOG = "TL-Verilog to Verilog",
     SANDPIPER_DIAGRAM_TAB = "Open Diagram Tab",
     SANDPIPER_NAV_TLV_TAB = "Open Nav TLV Tab",
     // Common
     OPENFOLDER = "Open Project Folder",
+    OPEN_WAVEFORM = "Open Waveform",
     SETTINGS = "Settings",
     CHANGEDEVICE = "Device",
     TCLCONSOLE = "Tcl Console",

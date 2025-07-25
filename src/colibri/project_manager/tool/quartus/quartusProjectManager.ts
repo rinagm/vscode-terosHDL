@@ -392,6 +392,7 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.CHANGEDEVICE]: "",
             [e_taskType.SETTINGS]: "",
             [e_taskType.OPENFOLDER]: "",
+            [e_taskType.OPEN_WAVEFORM]: "",
             [e_taskType.QUARTUS_ANALYSISSYNTHESIS]: "syn",
             [e_taskType.QUARTUS_ANALYSISELABORATION]: "syn",
             [e_taskType.QUARTUS_SYNTHESIS]: "syn",
@@ -409,7 +410,15 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.QUARTUS_RTL_ANALYZER]: "",
             [e_taskType.SANDPIPER_TLVERILOGTOVERILOG]: "",
             [e_taskType.SANDPIPER_DIAGRAM_TAB]:"",
-            [e_taskType.SANDPIPER_NAV_TLV_TAB]:""
+            [e_taskType.SANDPIPER_NAV_TLV_TAB]: "",
+            [e_taskType.GHDL_RUN_ALL]: "",
+            [e_taskType.GHDL_ANALYZE]: "",
+            [e_taskType.GHDL_ELABORATE]: "",
+            [e_taskType.GHDL_SIMULATE]: "",
+            [e_taskType.GHDL_SYNTHESIZE]: "",
+            [e_taskType.GHDL_CHECK_SYNTAX]: "",
+            [e_taskType.GHDL_MAKEFILE]: "",
+
         };
         let reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORT && reportKeys.includes(taskType)) {

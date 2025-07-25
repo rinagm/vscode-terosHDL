@@ -24,3 +24,5 @@ resources/project_manager/examples
 resources/project_manager/help
 *.log.save
 *quartus.rec
+*.cf
+*.o

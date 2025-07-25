@@ -60,6 +60,9 @@ import { TaskStateManager } from "./tool/taskState";
 import { ProjectEmitter, e_event } from "./projectEmitter";
 import { LANGUAGE } from "../common/general";
 import { basename } from "path";
+import { get } from "lodash";
+import { getTaskList } from "./tool/utils";
+import { runTaskGHDL } from "./tool/ghdl/taskRunners";
 
 export const DEFAULT_LIBRARY = "teroshdlDefault";
 
@@ -498,8 +501,10 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     public async set_config(config: e_config, emitEvent = true): Promise<void> {
         super.set_config(diff_config(config, GlobalConfigManager.getInstance().get_config()));
+        this.updateTaskManager();
         if (emitEvent) {
             this.emitterProject.emitEvent(this.name, e_event.SAVE_SETTINGS);
+            this.emitterProject.emitEvent(this.name, e_event.UPDATE_TASK);
         }
     }
 
@@ -668,7 +673,10 @@ export class Project_manager extends ConfigManager {
     }
 
     public getTaskStatus(): { "taskList": t_taskRep[], "currentTask": e_taskType | undefined } {
-        return { "taskList": [], "currentTask": undefined };
+        return {
+            "taskList": this.taskStateManager.getTaskList(),
+            "currentTask": this.taskStateManager.getCurrentTask()
+        };
     }
 
     public async getIpCatalog(): Promise<t_ipCatalogRep[]> {
@@ -676,7 +684,19 @@ export class Project_manager extends ConfigManager {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-    public runTask(_taskType: e_taskType, _callback: (result: p_result) => void): ChildProcess {
+    public runTask(taskType: e_taskType, callback: (result: p_result) => void): ChildProcess {
+        const toolName = this.get_config().tools.general.select_tool;
+        if (toolName === e_tools_general_select_tool.ghdl) {
+            const startTime = Date.now();
+            return runTaskGHDL(taskType, this.get_project_definition(), (result: p_result) => {
+                const taskStatus = result.successful ? e_taskState.FINISHED : e_taskState.FAILED;
+                const endTime = Date.now();
+                const elapsedTime = endTime - startTime; // ms
+                this.taskStateManager.updateTask(taskType, taskStatus, undefined, result.successful, elapsedTime);
+                this.emitUpdateStatus();
+                callback(result);
+            });
+        }
         return {} as ChildProcess;
     }
 
@@ -688,6 +708,12 @@ export class Project_manager extends ConfigManager {
         this.taskStateManager = taskManager;
     }
 
+    public updateTaskManager() {
+        const newTaskManager = new TaskStateManager(getTaskList(this.get_config().tools.general.select_tool));
+        this.taskStateManager = newTaskManager;
+        this.emitterProject.emitEvent(this.name, e_event.UPDATE_TASK);
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async getArtifact(_taskType: e_taskType, _reportType: e_reportType): Promise<t_test_artifact> {
         return {} as t_test_artifact;
@@ -696,6 +722,11 @@ export class Project_manager extends ConfigManager {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public cleallAllProject(_callback:
         (result: p_result) => void): ChildProcess {
+        
+        this.clean(e_clean_step.Bitstream, (_stream_c: any) => {
+            this.emitterProject.emitEventLog("Clean all project finished", e_event.STDOUT_INFO);
+        });
+        
         return {} as ChildProcess;
     }
 

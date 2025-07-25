@@ -15,6 +15,7 @@ const taskDependencies: Record<e_taskType, e_taskType[]> = {
     [e_taskType.QUARTUS_RTL_ANALYZER]: [],
     [e_taskType.SETTINGS]: [],
     [e_taskType.OPENFOLDER]: [],
+    [e_taskType.OPEN_WAVEFORM]: [],
     [e_taskType.QUARTUS_COMPILEDESIGN]: [
         e_taskType.QUARTUS_IPGENERATION,
         e_taskType.QUARTUS_ANALYSISELABORATION,
@@ -120,7 +121,14 @@ const taskDependencies: Record<e_taskType, e_taskType[]> = {
         ],
     [e_taskType.SANDPIPER_TLVERILOGTOVERILOG]: [],
     [e_taskType.SANDPIPER_DIAGRAM_TAB]:[],
-    [e_taskType.SANDPIPER_NAV_TLV_TAB]:[]
+    [e_taskType.SANDPIPER_NAV_TLV_TAB]: [],
+    [e_taskType.GHDL_RUN_ALL]: [],
+    [e_taskType.GHDL_ANALYZE]: [],
+    [e_taskType.GHDL_ELABORATE]: [],
+    [e_taskType.GHDL_SIMULATE]: [],
+    [e_taskType.GHDL_SYNTHESIZE]: [],
+    [e_taskType.GHDL_CHECK_SYNTAX]: [],
+    [e_taskType.GHDL_MAKEFILE]: []
 };
 
 function executeCommandList(projectName: string, commands: string[], cwd: string, emitter: ProjectEmitter,
@@ -153,6 +161,7 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
     const commandDeclaration: Record<e_taskType, string> = {
         [e_taskType.TCLCONSOLE]: "",
         [e_taskType.CHANGEDEVICE]: "",
+        [e_taskType.OPEN_WAVEFORM]: "",
         [e_taskType.QUARTUS_RTL_ANALYZER]:
             "",
 
@@ -205,7 +214,14 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
             `${binASM} --read_settings_files=on --write_settings_files=off ${projectName} -c ${revisionName}`,
         [e_taskType.SANDPIPER_TLVERILOGTOVERILOG]: "",
         [e_taskType.SANDPIPER_DIAGRAM_TAB]:"",
-        [e_taskType.SANDPIPER_NAV_TLV_TAB]:"",
+        [e_taskType.SANDPIPER_NAV_TLV_TAB]: "",
+        [e_taskType.GHDL_RUN_ALL]: "",
+        [e_taskType.GHDL_ANALYZE]: "",
+        [e_taskType.GHDL_ELABORATE]: "",
+        [e_taskType.GHDL_SIMULATE]: "",
+        [e_taskType.GHDL_SYNTHESIZE]: "",
+        [e_taskType.GHDL_CHECK_SYNTAX]: "",
+        [e_taskType.GHDL_MAKEFILE]: "",
     };
 
     const cmdList: string[] = [];

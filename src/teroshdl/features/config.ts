@@ -234,6 +234,11 @@ export class Config_manager {
      * Sends a command alerting change the configuration.
      */
     private sendChangeConfigCommand(): void {
+        try {
+            const currentProject = this.multiProjectManager.get_selected_project();
+            currentProject.updateTaskManager();
+        }
+        catch (error) {}
         vscode.commands.executeCommand("teroshdl.config.change_config");
     }
 

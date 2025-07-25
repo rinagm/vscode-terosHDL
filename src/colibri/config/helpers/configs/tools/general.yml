@@ -45,7 +45,7 @@ waveform_viewer:
   type: select
   options:
     tool: "Tool GUI"
-    # vcdrom: "VCDrom"
+    vaporView: "VaporView"
     gtkwave: "GTKWave"
   value: "tool"
 

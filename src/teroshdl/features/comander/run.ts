@@ -26,6 +26,8 @@ import { globalLogger } from '../../logger';
 import * as utils from '../utils/utils';
 import { get_os } from 'colibri/process/utils';
 import { OS } from 'colibri/process/common';
+import * as file_utils from 'colibri/utils/file_utils';
+import { e_tools_general_waveform_viewer } from 'colibri/config/config_declaration';
 
 export class Comander {
 
@@ -50,10 +52,26 @@ export class Comander {
         });
     }
 
-    private open_waveform(args: vscode.Uri) {
+    private async open_waveform(args: vscode.Uri) {
+        if (!args || !file_utils.check_if_path_exist(args.fsPath) || !file_utils.check_if_file(args.fsPath)) {
+            vscode.window.showInformationMessage(`Waveform file not found`);
+            return;
+        }
+
         const config = utils.getConfig(this.manager);
         const file_path = args.fsPath;
         globalLogger.info(`Opening the waveform: ${file_path}`);
+
+        const extension = await vscode.extensions.getExtension('lramseyer.vaporview');
+        if (config.tools.general.waveform_viewer !== e_tools_general_waveform_viewer.gtkwave) {
+            if (extension && extension.isActive) {
+                await vscode.commands.executeCommand('vaporview.openFile', args);
+                return;
+            }
+            else if (config.tools.general.waveform_viewer !== e_tools_general_waveform_viewer.vaporView) {
+                vscode.window.showInformationMessage(`Waveform viewer not available or not active.`);
+            }
+        }
 
         let gtkwave_binary = "gtkwave";
         const os_i = get_os();

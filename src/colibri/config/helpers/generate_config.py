@@ -5,6 +5,7 @@ import jinja2
 import yaml
 
 AUXILIAR_FIELDS = ["description", "title", "docLink", "divider"]
+SECTION_FIELDS = ["section_"]  # Fields that start with this prefix are section dividers
 
 
 def get_type_declaration(field):
@@ -12,7 +13,8 @@ def get_type_declaration(field):
     if field is None:
         return new_field
     for key in field:
-        if key not in AUXILIAR_FIELDS:
+        # Skip auxiliary fields and section dividers
+        if key not in AUXILIAR_FIELDS and not any(key.startswith(prefix) for prefix in SECTION_FIELDS):
             type_declaration = {
                 "value": field[key]["value"],
                 "type": field[key]["type"],
@@ -35,7 +37,8 @@ def remove_auxiliar_fields_deep(field):
     if field is None:
         return new_field
     for key in field:
-        if key not in AUXILIAR_FIELDS:
+        # Skip auxiliary fields and section dividers
+        if key not in AUXILIAR_FIELDS and not any(key.startswith(prefix) for prefix in SECTION_FIELDS):
             new_field[key] = field[key]["value"]
     return new_field
 
