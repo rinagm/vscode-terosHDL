@@ -39,16 +39,15 @@ for page_name in skeleton:
 ########################################################################################################################
 # Web config HTML
 ########################################################################################################################
-css_0 = "./helpers/sidebar/bootstrap.min.css"
-css_1 = "./helpers/sidebar/sidebars.css"
-js_0 =  "./helpers/sidebar/bootstrap.bundle.min.js"
+css_codicons = "{{css_codicons}}"
+csp_source = "{{cspSource}}"
 template_path = os.path.join(os.path.dirname(__file__), "web_config.nj")
 with open(template_path) as file:
     template_str = file.read()
     template_html = (
-        jinja2.Environment(loader=jinja2.FileSystemLoader("./"))
+        jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
         .from_string(template_str)
-        .render(type_declaration=skeleton, css_0=css_0, css_1=css_1, js_0=js_0)
+        .render(type_declaration=skeleton, css_codicons=css_codicons, cspSource=csp_source)
     )
 output_path = os.path.join(os.path.dirname(__file__), "..", "web_config.html")
 with open(output_path, mode="w", encoding="UTF-8") as file:
@@ -57,15 +56,13 @@ with open(output_path, mode="w", encoding="UTF-8") as file:
 ########################################################################################################################
 # Web config constant
 ########################################################################################################################
-template_html = template_html.replace(css_0, "{{css_0}}")
-template_html = template_html.replace(css_1, "{{css_1}}")
-template_html = template_html.replace(js_0, "{{js_0}}")
+# No need to replace anything since we're using template variables directly
 
 template_path = os.path.join(os.path.dirname(__file__), "web_ts.nj")
 with open(template_path) as file:
     template_str = file.read()
     template = (
-        jinja2.Environment(loader=jinja2.FileSystemLoader("./")).from_string(template_str).render(web=template_html)
+        jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__))).from_string(template_str).render(web=template_html)
     )
 
 output_path = os.path.join(os.path.dirname(__file__), "..", "config_web.ts")

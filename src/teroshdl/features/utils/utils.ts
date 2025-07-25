@@ -18,6 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path_lib from 'path';
 import * as vscode from 'vscode';
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
@@ -206,7 +207,12 @@ export function getConfig(multiProjectManager: Multi_project_manager)
 }
 
 export function getVSCodeWorkspaceStorage(context: vscode.ExtensionContext): string {
-    const folderPath = context.storageUri.fsPath;
+    let folderPath = os.homedir();
+    if (context.storageUri) {
+        folderPath = context.storageUri.fsPath;
+    } else if (context.globalStorageUri) {
+        folderPath = context.globalStorageUri.fsPath;
+    }
     const terosHdlPath = path_lib.join(folderPath, 'teroshdl');
 
     if (!fs.existsSync(terosHdlPath)) {

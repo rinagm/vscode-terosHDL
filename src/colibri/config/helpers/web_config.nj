@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{{css_0}}" rel="stylesheet">
-    <link href="{{css_1}}" rel="stylesheet">
-    <script src="{{js_0}}"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src {{cspSource}}; style-src 'unsafe-inline' {{cspSource}}; script-src 'unsafe-inline' {{cspSource}};">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{css_codicons}}" rel="stylesheet">
+    <title>Settings</title>
 
 <style>
 
@@ -13,16 +14,23 @@
 </style>
 </head>
 <body>
-    <div class="container-fluid h-100">
-        <div class="row h-100">
-
+    <div class="settings-editor">
+        <div class="settings-header">
+            <div class="settings-header-controls">
+                <div class="settings-title" id="configTitle">Global Configuration</div>
+            </div>
+        </div>
+        
+        <div class="settings-body">
+            <div class="settings-tree-container">
 {% include 'sidebar.html.nj' %}
-
+            </div>
+            
+            <div class="settings-editor-tree">
 {% include 'field_config.html.nj' %}
-
+            </div>
         </div>
     </div>
-
 
 <script>
 {% include 'web_config_js.nj' %}
