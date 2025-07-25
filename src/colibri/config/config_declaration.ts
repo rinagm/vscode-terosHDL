@@ -69,6 +69,7 @@ export type e_config = {
         "morty" : e_tools_morty,
         "radiant" : e_tools_radiant,
         "rivierapro" : e_tools_rivierapro,
+        "siliconcompiler" : e_tools_siliconcompiler,
         "spyglass" : e_tools_spyglass,
         "symbiyosys" : e_tools_symbiyosys,
         "symbiflow" : e_tools_symbiflow,
@@ -331,6 +332,15 @@ export type e_tools_rivierapro = {
     compilation_mode : string,
     vlog_options : any[],
     vsim_options : any[],
+};
+    
+export type e_tools_siliconcompiler = {
+    installation_path : string,
+    target : string,
+    server_enable : boolean,
+    server_address : string,
+    server_username : string,
+    server_password : string,
 };
     
 export type e_tools_spyglass = {
@@ -1029,6 +1039,14 @@ export function get_default_config(): e_config {
                 compilation_mode : "",
                 vlog_options : [],
                 vsim_options : [],
+            },
+            siliconcompiler: {
+                installation_path : "",
+                target : "",
+                server_enable : false,
+                server_address : "",
+                server_username : "",
+                server_password : "",
             },
             spyglass: {
                 installation_path : "",
@@ -2857,1081 +2875,1141 @@ export function get_config_from_json(json_config: any): e_config {
         default_config['tools']['rivierapro']['vsim_options'] = current_value_134;
     }
             
-    // tools -> spyglass -> installation_path
+    // tools -> siliconcompiler -> installation_path
     let current_value_135 = undefined;
     try {
-        current_value_135 = json_config['tools']['spyglass']['installation_path'];
+        current_value_135 = json_config['tools']['siliconcompiler']['installation_path'];
     }
     catch(e){}
     if (typeof current_value_135 === 'string'){
-        default_config['tools']['spyglass']['installation_path'] = current_value_135;
+        default_config['tools']['siliconcompiler']['installation_path'] = current_value_135;
     }
             
-    // tools -> spyglass -> methodology
+    // tools -> siliconcompiler -> target
     let current_value_136 = undefined;
     try {
-        current_value_136 = json_config['tools']['spyglass']['methodology'];
+        current_value_136 = json_config['tools']['siliconcompiler']['target'];
     }
     catch(e){}
     if (typeof current_value_136 === 'string'){
-        default_config['tools']['spyglass']['methodology'] = current_value_136;
+        default_config['tools']['siliconcompiler']['target'] = current_value_136;
     }
             
-    // tools -> spyglass -> goals
+    // tools -> siliconcompiler -> server_enable
     let current_value_137 = undefined;
     try {
-        current_value_137 = json_config['tools']['spyglass']['goals'];
+        current_value_137 = json_config['tools']['siliconcompiler']['server_enable'];
     }
     catch(e){}
-    if (Array.isArray(current_value_137)){
-        default_config['tools']['spyglass']['goals'] = current_value_137;
+    if (current_value_137 === true || current_value_137 === false){
+        default_config['tools']['siliconcompiler']['server_enable'] = current_value_137;
     }
             
-    // tools -> spyglass -> spyglass_options
+    // tools -> siliconcompiler -> server_address
     let current_value_138 = undefined;
     try {
-        current_value_138 = json_config['tools']['spyglass']['spyglass_options'];
+        current_value_138 = json_config['tools']['siliconcompiler']['server_address'];
     }
     catch(e){}
-    if (Array.isArray(current_value_138)){
-        default_config['tools']['spyglass']['spyglass_options'] = current_value_138;
+    if (typeof current_value_138 === 'string'){
+        default_config['tools']['siliconcompiler']['server_address'] = current_value_138;
     }
             
-    // tools -> spyglass -> rule_parameters
+    // tools -> siliconcompiler -> server_username
     let current_value_139 = undefined;
     try {
-        current_value_139 = json_config['tools']['spyglass']['rule_parameters'];
+        current_value_139 = json_config['tools']['siliconcompiler']['server_username'];
     }
     catch(e){}
-    if (Array.isArray(current_value_139)){
-        default_config['tools']['spyglass']['rule_parameters'] = current_value_139;
+    if (typeof current_value_139 === 'string'){
+        default_config['tools']['siliconcompiler']['server_username'] = current_value_139;
     }
             
-    // tools -> symbiyosys -> installation_path
+    // tools -> siliconcompiler -> server_password
     let current_value_140 = undefined;
     try {
-        current_value_140 = json_config['tools']['symbiyosys']['installation_path'];
+        current_value_140 = json_config['tools']['siliconcompiler']['server_password'];
     }
     catch(e){}
     if (typeof current_value_140 === 'string'){
-        default_config['tools']['symbiyosys']['installation_path'] = current_value_140;
+        default_config['tools']['siliconcompiler']['server_password'] = current_value_140;
     }
             
-    // tools -> symbiyosys -> tasknames
+    // tools -> spyglass -> installation_path
     let current_value_141 = undefined;
     try {
-        current_value_141 = json_config['tools']['symbiyosys']['tasknames'];
+        current_value_141 = json_config['tools']['spyglass']['installation_path'];
     }
     catch(e){}
-    if (Array.isArray(current_value_141)){
-        default_config['tools']['symbiyosys']['tasknames'] = current_value_141;
+    if (typeof current_value_141 === 'string'){
+        default_config['tools']['spyglass']['installation_path'] = current_value_141;
     }
             
-    // tools -> symbiflow -> installation_path
+    // tools -> spyglass -> methodology
     let current_value_142 = undefined;
     try {
-        current_value_142 = json_config['tools']['symbiflow']['installation_path'];
+        current_value_142 = json_config['tools']['spyglass']['methodology'];
     }
     catch(e){}
     if (typeof current_value_142 === 'string'){
-        default_config['tools']['symbiflow']['installation_path'] = current_value_142;
+        default_config['tools']['spyglass']['methodology'] = current_value_142;
+    }
+            
+    // tools -> spyglass -> goals
+    let current_value_143 = undefined;
+    try {
+        current_value_143 = json_config['tools']['spyglass']['goals'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_143)){
+        default_config['tools']['spyglass']['goals'] = current_value_143;
+    }
+            
+    // tools -> spyglass -> spyglass_options
+    let current_value_144 = undefined;
+    try {
+        current_value_144 = json_config['tools']['spyglass']['spyglass_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_144)){
+        default_config['tools']['spyglass']['spyglass_options'] = current_value_144;
+    }
+            
+    // tools -> spyglass -> rule_parameters
+    let current_value_145 = undefined;
+    try {
+        current_value_145 = json_config['tools']['spyglass']['rule_parameters'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_145)){
+        default_config['tools']['spyglass']['rule_parameters'] = current_value_145;
+    }
+            
+    // tools -> symbiyosys -> installation_path
+    let current_value_146 = undefined;
+    try {
+        current_value_146 = json_config['tools']['symbiyosys']['installation_path'];
+    }
+    catch(e){}
+    if (typeof current_value_146 === 'string'){
+        default_config['tools']['symbiyosys']['installation_path'] = current_value_146;
+    }
+            
+    // tools -> symbiyosys -> tasknames
+    let current_value_147 = undefined;
+    try {
+        current_value_147 = json_config['tools']['symbiyosys']['tasknames'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_147)){
+        default_config['tools']['symbiyosys']['tasknames'] = current_value_147;
+    }
+            
+    // tools -> symbiflow -> installation_path
+    let current_value_148 = undefined;
+    try {
+        current_value_148 = json_config['tools']['symbiflow']['installation_path'];
+    }
+    catch(e){}
+    if (typeof current_value_148 === 'string'){
+        default_config['tools']['symbiflow']['installation_path'] = current_value_148;
     }
             
     // tools -> symbiflow -> package
-    let current_value_143 = undefined;
+    let current_value_149 = undefined;
     try {
-        current_value_143 = json_config['tools']['symbiflow']['package'];
+        current_value_149 = json_config['tools']['symbiflow']['package'];
     }
     catch(e){}
-    if (typeof current_value_143 === 'string'){
-        default_config['tools']['symbiflow']['package'] = current_value_143;
+    if (typeof current_value_149 === 'string'){
+        default_config['tools']['symbiflow']['package'] = current_value_149;
     }
             
     // tools -> symbiflow -> part
-    let current_value_144 = undefined;
+    let current_value_150 = undefined;
     try {
-        current_value_144 = json_config['tools']['symbiflow']['part'];
+        current_value_150 = json_config['tools']['symbiflow']['part'];
     }
     catch(e){}
-    if (typeof current_value_144 === 'string'){
-        default_config['tools']['symbiflow']['part'] = current_value_144;
+    if (typeof current_value_150 === 'string'){
+        default_config['tools']['symbiflow']['part'] = current_value_150;
     }
             
     // tools -> symbiflow -> vendor
-    let current_value_145 = undefined;
+    let current_value_151 = undefined;
     try {
-        current_value_145 = json_config['tools']['symbiflow']['vendor'];
+        current_value_151 = json_config['tools']['symbiflow']['vendor'];
     }
     catch(e){}
-    if (typeof current_value_145 === 'string'){
-        default_config['tools']['symbiflow']['vendor'] = current_value_145;
+    if (typeof current_value_151 === 'string'){
+        default_config['tools']['symbiflow']['vendor'] = current_value_151;
     }
             
     // tools -> symbiflow -> pnr
-    let current_value_146 = undefined;
+    let current_value_152 = undefined;
     try {
-        current_value_146 = json_config['tools']['symbiflow']['pnr'];
+        current_value_152 = json_config['tools']['symbiflow']['pnr'];
     }
     catch(e){}
-    if ( current_value_146 === "vpr"){
+    if ( current_value_152 === "vpr"){
         default_config['tools']['symbiflow']['pnr'] = e_tools_symbiflow_pnr.vpr;
     }
             
     // tools -> symbiflow -> vpr_options
-    let current_value_147 = undefined;
+    let current_value_153 = undefined;
     try {
-        current_value_147 = json_config['tools']['symbiflow']['vpr_options'];
+        current_value_153 = json_config['tools']['symbiflow']['vpr_options'];
     }
     catch(e){}
-    if (typeof current_value_147 === 'string'){
-        default_config['tools']['symbiflow']['vpr_options'] = current_value_147;
+    if (typeof current_value_153 === 'string'){
+        default_config['tools']['symbiflow']['vpr_options'] = current_value_153;
     }
             
     // tools -> symbiflow -> environment_script
-    let current_value_148 = undefined;
+    let current_value_154 = undefined;
     try {
-        current_value_148 = json_config['tools']['symbiflow']['environment_script'];
+        current_value_154 = json_config['tools']['symbiflow']['environment_script'];
     }
     catch(e){}
-    if (typeof current_value_148 === 'string'){
-        default_config['tools']['symbiflow']['environment_script'] = current_value_148;
+    if (typeof current_value_154 === 'string'){
+        default_config['tools']['symbiflow']['environment_script'] = current_value_154;
     }
             
     // tools -> trellis -> installation_path
-    let current_value_149 = undefined;
+    let current_value_155 = undefined;
     try {
-        current_value_149 = json_config['tools']['trellis']['installation_path'];
+        current_value_155 = json_config['tools']['trellis']['installation_path'];
     }
     catch(e){}
-    if (typeof current_value_149 === 'string'){
-        default_config['tools']['trellis']['installation_path'] = current_value_149;
+    if (typeof current_value_155 === 'string'){
+        default_config['tools']['trellis']['installation_path'] = current_value_155;
     }
             
     // tools -> trellis -> arch
-    let current_value_150 = undefined;
+    let current_value_156 = undefined;
     try {
-        current_value_150 = json_config['tools']['trellis']['arch'];
+        current_value_156 = json_config['tools']['trellis']['arch'];
     }
     catch(e){}
-    if ( current_value_150 === "xilinx"){
+    if ( current_value_156 === "xilinx"){
         default_config['tools']['trellis']['arch'] = e_tools_trellis_arch.xilinx;
     }
-    if ( current_value_150 === "ice40"){
+    if ( current_value_156 === "ice40"){
         default_config['tools']['trellis']['arch'] = e_tools_trellis_arch.ice40;
     }
-    if ( current_value_150 === "ecp5"){
+    if ( current_value_156 === "ecp5"){
         default_config['tools']['trellis']['arch'] = e_tools_trellis_arch.ecp5;
     }
             
     // tools -> trellis -> output_format
-    let current_value_151 = undefined;
+    let current_value_157 = undefined;
     try {
-        current_value_151 = json_config['tools']['trellis']['output_format'];
+        current_value_157 = json_config['tools']['trellis']['output_format'];
     }
     catch(e){}
-    if ( current_value_151 === "json"){
+    if ( current_value_157 === "json"){
         default_config['tools']['trellis']['output_format'] = e_tools_trellis_output_format.json;
     }
-    if ( current_value_151 === "edif"){
+    if ( current_value_157 === "edif"){
         default_config['tools']['trellis']['output_format'] = e_tools_trellis_output_format.edif;
     }
-    if ( current_value_151 === "blif"){
+    if ( current_value_157 === "blif"){
         default_config['tools']['trellis']['output_format'] = e_tools_trellis_output_format.blif;
     }
             
     // tools -> trellis -> yosys_as_subtool
-    let current_value_152 = undefined;
+    let current_value_158 = undefined;
     try {
-        current_value_152 = json_config['tools']['trellis']['yosys_as_subtool'];
+        current_value_158 = json_config['tools']['trellis']['yosys_as_subtool'];
     }
     catch(e){}
-    if (current_value_152 === true || current_value_152 === false){
-        default_config['tools']['trellis']['yosys_as_subtool'] = current_value_152;
+    if (current_value_158 === true || current_value_158 === false){
+        default_config['tools']['trellis']['yosys_as_subtool'] = current_value_158;
     }
             
     // tools -> trellis -> makefile_name
-    let current_value_153 = undefined;
+    let current_value_159 = undefined;
     try {
-        current_value_153 = json_config['tools']['trellis']['makefile_name'];
+        current_value_159 = json_config['tools']['trellis']['makefile_name'];
     }
     catch(e){}
-    if (typeof current_value_153 === 'string'){
-        default_config['tools']['trellis']['makefile_name'] = current_value_153;
+    if (typeof current_value_159 === 'string'){
+        default_config['tools']['trellis']['makefile_name'] = current_value_159;
     }
             
     // tools -> trellis -> script_name
-    let current_value_154 = undefined;
-    try {
-        current_value_154 = json_config['tools']['trellis']['script_name'];
-    }
-    catch(e){}
-    if (typeof current_value_154 === 'string'){
-        default_config['tools']['trellis']['script_name'] = current_value_154;
-    }
-            
-    // tools -> trellis -> nextpnr_options
-    let current_value_155 = undefined;
-    try {
-        current_value_155 = json_config['tools']['trellis']['nextpnr_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_155)){
-        default_config['tools']['trellis']['nextpnr_options'] = current_value_155;
-    }
-            
-    // tools -> trellis -> yosys_synth_options
-    let current_value_156 = undefined;
-    try {
-        current_value_156 = json_config['tools']['trellis']['yosys_synth_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_156)){
-        default_config['tools']['trellis']['yosys_synth_options'] = current_value_156;
-    }
-            
-    // tools -> vcs -> installation_path
-    let current_value_157 = undefined;
-    try {
-        current_value_157 = json_config['tools']['vcs']['installation_path'];
-    }
-    catch(e){}
-    if (typeof current_value_157 === 'string'){
-        default_config['tools']['vcs']['installation_path'] = current_value_157;
-    }
-            
-    // tools -> vcs -> vcs_options
-    let current_value_158 = undefined;
-    try {
-        current_value_158 = json_config['tools']['vcs']['vcs_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_158)){
-        default_config['tools']['vcs']['vcs_options'] = current_value_158;
-    }
-            
-    // tools -> vcs -> run_options
-    let current_value_159 = undefined;
-    try {
-        current_value_159 = json_config['tools']['vcs']['run_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_159)){
-        default_config['tools']['vcs']['run_options'] = current_value_159;
-    }
-            
-    // tools -> verible -> installation_path
     let current_value_160 = undefined;
     try {
-        current_value_160 = json_config['tools']['verible']['installation_path'];
+        current_value_160 = json_config['tools']['trellis']['script_name'];
     }
     catch(e){}
     if (typeof current_value_160 === 'string'){
-        default_config['tools']['verible']['installation_path'] = current_value_160;
+        default_config['tools']['trellis']['script_name'] = current_value_160;
+    }
+            
+    // tools -> trellis -> nextpnr_options
+    let current_value_161 = undefined;
+    try {
+        current_value_161 = json_config['tools']['trellis']['nextpnr_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_161)){
+        default_config['tools']['trellis']['nextpnr_options'] = current_value_161;
+    }
+            
+    // tools -> trellis -> yosys_synth_options
+    let current_value_162 = undefined;
+    try {
+        current_value_162 = json_config['tools']['trellis']['yosys_synth_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_162)){
+        default_config['tools']['trellis']['yosys_synth_options'] = current_value_162;
+    }
+            
+    // tools -> vcs -> installation_path
+    let current_value_163 = undefined;
+    try {
+        current_value_163 = json_config['tools']['vcs']['installation_path'];
+    }
+    catch(e){}
+    if (typeof current_value_163 === 'string'){
+        default_config['tools']['vcs']['installation_path'] = current_value_163;
+    }
+            
+    // tools -> vcs -> vcs_options
+    let current_value_164 = undefined;
+    try {
+        current_value_164 = json_config['tools']['vcs']['vcs_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_164)){
+        default_config['tools']['vcs']['vcs_options'] = current_value_164;
+    }
+            
+    // tools -> vcs -> run_options
+    let current_value_165 = undefined;
+    try {
+        current_value_165 = json_config['tools']['vcs']['run_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_165)){
+        default_config['tools']['vcs']['run_options'] = current_value_165;
+    }
+            
+    // tools -> verible -> installation_path
+    let current_value_166 = undefined;
+    try {
+        current_value_166 = json_config['tools']['verible']['installation_path'];
+    }
+    catch(e){}
+    if (typeof current_value_166 === 'string'){
+        default_config['tools']['verible']['installation_path'] = current_value_166;
     }
             
     // tools -> verilator -> installation_path
-    let current_value_161 = undefined;
+    let current_value_167 = undefined;
     try {
-        current_value_161 = json_config['tools']['verilator']['installation_path'];
+        current_value_167 = json_config['tools']['verilator']['installation_path'];
     }
     catch(e){}
-    if (typeof current_value_161 === 'string'){
-        default_config['tools']['verilator']['installation_path'] = current_value_161;
+    if (typeof current_value_167 === 'string'){
+        default_config['tools']['verilator']['installation_path'] = current_value_167;
     }
             
     // tools -> verilator -> mode
-    let current_value_162 = undefined;
+    let current_value_168 = undefined;
     try {
-        current_value_162 = json_config['tools']['verilator']['mode'];
+        current_value_168 = json_config['tools']['verilator']['mode'];
     }
     catch(e){}
-    if ( current_value_162 === "cc"){
+    if ( current_value_168 === "cc"){
         default_config['tools']['verilator']['mode'] = e_tools_verilator_mode.cc;
     }
-    if ( current_value_162 === "sc"){
+    if ( current_value_168 === "sc"){
         default_config['tools']['verilator']['mode'] = e_tools_verilator_mode.sc;
     }
-    if ( current_value_162 === "lint-only"){
+    if ( current_value_168 === "lint-only"){
         default_config['tools']['verilator']['mode'] = e_tools_verilator_mode.lint_only;
     }
             
     // tools -> verilator -> libs
-    let current_value_163 = undefined;
+    let current_value_169 = undefined;
     try {
-        current_value_163 = json_config['tools']['verilator']['libs'];
+        current_value_169 = json_config['tools']['verilator']['libs'];
     }
     catch(e){}
-    if (Array.isArray(current_value_163)){
-        default_config['tools']['verilator']['libs'] = current_value_163;
+    if (Array.isArray(current_value_169)){
+        default_config['tools']['verilator']['libs'] = current_value_169;
     }
             
     // tools -> verilator -> verilator_options
-    let current_value_164 = undefined;
+    let current_value_170 = undefined;
     try {
-        current_value_164 = json_config['tools']['verilator']['verilator_options'];
+        current_value_170 = json_config['tools']['verilator']['verilator_options'];
     }
     catch(e){}
-    if (Array.isArray(current_value_164)){
-        default_config['tools']['verilator']['verilator_options'] = current_value_164;
+    if (Array.isArray(current_value_170)){
+        default_config['tools']['verilator']['verilator_options'] = current_value_170;
     }
             
     // tools -> verilator -> make_options
-    let current_value_165 = undefined;
+    let current_value_171 = undefined;
     try {
-        current_value_165 = json_config['tools']['verilator']['make_options'];
+        current_value_171 = json_config['tools']['verilator']['make_options'];
     }
     catch(e){}
-    if (Array.isArray(current_value_165)){
-        default_config['tools']['verilator']['make_options'] = current_value_165;
+    if (Array.isArray(current_value_171)){
+        default_config['tools']['verilator']['make_options'] = current_value_171;
     }
             
     // tools -> verilator -> run_options
-    let current_value_166 = undefined;
+    let current_value_172 = undefined;
     try {
-        current_value_166 = json_config['tools']['verilator']['run_options'];
+        current_value_172 = json_config['tools']['verilator']['run_options'];
     }
     catch(e){}
-    if (Array.isArray(current_value_166)){
-        default_config['tools']['verilator']['run_options'] = current_value_166;
+    if (Array.isArray(current_value_172)){
+        default_config['tools']['verilator']['run_options'] = current_value_172;
     }
             
     // tools -> vivado -> installation_path
-    let current_value_167 = undefined;
+    let current_value_173 = undefined;
     try {
-        current_value_167 = json_config['tools']['vivado']['installation_path'];
+        current_value_173 = json_config['tools']['vivado']['installation_path'];
     }
     catch(e){}
-    if (typeof current_value_167 === 'string'){
-        default_config['tools']['vivado']['installation_path'] = current_value_167;
+    if (typeof current_value_173 === 'string'){
+        default_config['tools']['vivado']['installation_path'] = current_value_173;
     }
             
     // tools -> vivado -> part
-    let current_value_168 = undefined;
+    let current_value_174 = undefined;
     try {
-        current_value_168 = json_config['tools']['vivado']['part'];
+        current_value_174 = json_config['tools']['vivado']['part'];
     }
     catch(e){}
-    if (typeof current_value_168 === 'string'){
-        default_config['tools']['vivado']['part'] = current_value_168;
+    if (typeof current_value_174 === 'string'){
+        default_config['tools']['vivado']['part'] = current_value_174;
     }
             
     // tools -> vivado -> synth
-    let current_value_169 = undefined;
+    let current_value_175 = undefined;
     try {
-        current_value_169 = json_config['tools']['vivado']['synth'];
+        current_value_175 = json_config['tools']['vivado']['synth'];
     }
     catch(e){}
-    if (typeof current_value_169 === 'string'){
-        default_config['tools']['vivado']['synth'] = current_value_169;
+    if (typeof current_value_175 === 'string'){
+        default_config['tools']['vivado']['synth'] = current_value_175;
     }
             
     // tools -> vivado -> pnr
-    let current_value_170 = undefined;
+    let current_value_176 = undefined;
     try {
-        current_value_170 = json_config['tools']['vivado']['pnr'];
+        current_value_176 = json_config['tools']['vivado']['pnr'];
     }
     catch(e){}
-    if ( current_value_170 === "vivado"){
+    if ( current_value_176 === "vivado"){
         default_config['tools']['vivado']['pnr'] = e_tools_vivado_pnr.vivado;
     }
-    if ( current_value_170 === "none"){
+    if ( current_value_176 === "none"){
         default_config['tools']['vivado']['pnr'] = e_tools_vivado_pnr.none;
     }
             
     // tools -> vivado -> jtag_freq
-    let current_value_171 = undefined;
+    let current_value_177 = undefined;
     try {
-        current_value_171 = json_config['tools']['vivado']['jtag_freq'];
+        current_value_177 = json_config['tools']['vivado']['jtag_freq'];
     }
     catch(e){}
-    if (typeof current_value_171 === 'number'){
-        default_config['tools']['vivado']['jtag_freq'] = current_value_171;
+    if (typeof current_value_177 === 'number'){
+        default_config['tools']['vivado']['jtag_freq'] = current_value_177;
     }
             
     // tools -> vivado -> hw_target
-    let current_value_172 = undefined;
+    let current_value_178 = undefined;
     try {
-        current_value_172 = json_config['tools']['vivado']['hw_target'];
+        current_value_178 = json_config['tools']['vivado']['hw_target'];
     }
     catch(e){}
-    if (typeof current_value_172 === 'string'){
-        default_config['tools']['vivado']['hw_target'] = current_value_172;
+    if (typeof current_value_178 === 'string'){
+        default_config['tools']['vivado']['hw_target'] = current_value_178;
     }
             
     // tools -> vunit -> installation_path
-    let current_value_173 = undefined;
+    let current_value_179 = undefined;
     try {
-        current_value_173 = json_config['tools']['vunit']['installation_path'];
+        current_value_179 = json_config['tools']['vunit']['installation_path'];
     }
     catch(e){}
-    if (typeof current_value_173 === 'string'){
-        default_config['tools']['vunit']['installation_path'] = current_value_173;
+    if (typeof current_value_179 === 'string'){
+        default_config['tools']['vunit']['installation_path'] = current_value_179;
     }
             
     // tools -> vunit -> simulator_name
-    let current_value_174 = undefined;
+    let current_value_180 = undefined;
     try {
-        current_value_174 = json_config['tools']['vunit']['simulator_name'];
+        current_value_180 = json_config['tools']['vunit']['simulator_name'];
     }
     catch(e){}
-    if ( current_value_174 === "rivierapro"){
+    if ( current_value_180 === "rivierapro"){
         default_config['tools']['vunit']['simulator_name'] = e_tools_vunit_simulator_name.rivierapro;
     }
-    if ( current_value_174 === "activehdl"){
+    if ( current_value_180 === "activehdl"){
         default_config['tools']['vunit']['simulator_name'] = e_tools_vunit_simulator_name.activehdl;
     }
-    if ( current_value_174 === "ghdl"){
+    if ( current_value_180 === "ghdl"){
         default_config['tools']['vunit']['simulator_name'] = e_tools_vunit_simulator_name.ghdl;
     }
-    if ( current_value_174 === "modelsim"){
+    if ( current_value_180 === "modelsim"){
         default_config['tools']['vunit']['simulator_name'] = e_tools_vunit_simulator_name.modelsim;
     }
-    if ( current_value_174 === "xsim"){
+    if ( current_value_180 === "xsim"){
         default_config['tools']['vunit']['simulator_name'] = e_tools_vunit_simulator_name.xsim;
     }
             
     // tools -> vunit -> runpy_mode
-    let current_value_175 = undefined;
+    let current_value_181 = undefined;
     try {
-        current_value_175 = json_config['tools']['vunit']['runpy_mode'];
+        current_value_181 = json_config['tools']['vunit']['runpy_mode'];
     }
     catch(e){}
-    if ( current_value_175 === "standalone"){
+    if ( current_value_181 === "standalone"){
         default_config['tools']['vunit']['runpy_mode'] = e_tools_vunit_runpy_mode.standalone;
     }
-    if ( current_value_175 === "creation"){
+    if ( current_value_181 === "creation"){
         default_config['tools']['vunit']['runpy_mode'] = e_tools_vunit_runpy_mode.creation;
     }
             
     // tools -> vunit -> extra_options
-    let current_value_176 = undefined;
+    let current_value_182 = undefined;
     try {
-        current_value_176 = json_config['tools']['vunit']['extra_options'];
+        current_value_182 = json_config['tools']['vunit']['extra_options'];
     }
     catch(e){}
-    if (typeof current_value_176 === 'string'){
-        default_config['tools']['vunit']['extra_options'] = current_value_176;
+    if (typeof current_value_182 === 'string'){
+        default_config['tools']['vunit']['extra_options'] = current_value_182;
     }
             
     // tools -> vunit -> enable_array_util_lib
-    let current_value_177 = undefined;
+    let current_value_183 = undefined;
     try {
-        current_value_177 = json_config['tools']['vunit']['enable_array_util_lib'];
+        current_value_183 = json_config['tools']['vunit']['enable_array_util_lib'];
     }
     catch(e){}
-    if (current_value_177 === true || current_value_177 === false){
-        default_config['tools']['vunit']['enable_array_util_lib'] = current_value_177;
+    if (current_value_183 === true || current_value_183 === false){
+        default_config['tools']['vunit']['enable_array_util_lib'] = current_value_183;
     }
             
     // tools -> vunit -> enable_com_lib
-    let current_value_178 = undefined;
+    let current_value_184 = undefined;
     try {
-        current_value_178 = json_config['tools']['vunit']['enable_com_lib'];
+        current_value_184 = json_config['tools']['vunit']['enable_com_lib'];
     }
     catch(e){}
-    if (current_value_178 === true || current_value_178 === false){
-        default_config['tools']['vunit']['enable_com_lib'] = current_value_178;
+    if (current_value_184 === true || current_value_184 === false){
+        default_config['tools']['vunit']['enable_com_lib'] = current_value_184;
     }
             
     // tools -> vunit -> enable_json4vhdl_lib
-    let current_value_179 = undefined;
+    let current_value_185 = undefined;
     try {
-        current_value_179 = json_config['tools']['vunit']['enable_json4vhdl_lib'];
+        current_value_185 = json_config['tools']['vunit']['enable_json4vhdl_lib'];
     }
     catch(e){}
-    if (current_value_179 === true || current_value_179 === false){
-        default_config['tools']['vunit']['enable_json4vhdl_lib'] = current_value_179;
+    if (current_value_185 === true || current_value_185 === false){
+        default_config['tools']['vunit']['enable_json4vhdl_lib'] = current_value_185;
     }
             
     // tools -> vunit -> enable_osvvm_lib
-    let current_value_180 = undefined;
+    let current_value_186 = undefined;
     try {
-        current_value_180 = json_config['tools']['vunit']['enable_osvvm_lib'];
+        current_value_186 = json_config['tools']['vunit']['enable_osvvm_lib'];
     }
     catch(e){}
-    if (current_value_180 === true || current_value_180 === false){
-        default_config['tools']['vunit']['enable_osvvm_lib'] = current_value_180;
+    if (current_value_186 === true || current_value_186 === false){
+        default_config['tools']['vunit']['enable_osvvm_lib'] = current_value_186;
     }
             
     // tools -> vunit -> enable_random_lib
-    let current_value_181 = undefined;
+    let current_value_187 = undefined;
     try {
-        current_value_181 = json_config['tools']['vunit']['enable_random_lib'];
+        current_value_187 = json_config['tools']['vunit']['enable_random_lib'];
     }
     catch(e){}
-    if (current_value_181 === true || current_value_181 === false){
-        default_config['tools']['vunit']['enable_random_lib'] = current_value_181;
+    if (current_value_187 === true || current_value_187 === false){
+        default_config['tools']['vunit']['enable_random_lib'] = current_value_187;
     }
             
     // tools -> vunit -> enable_verification_components_lib
-    let current_value_182 = undefined;
+    let current_value_188 = undefined;
     try {
-        current_value_182 = json_config['tools']['vunit']['enable_verification_components_lib'];
+        current_value_188 = json_config['tools']['vunit']['enable_verification_components_lib'];
     }
     catch(e){}
-    if (current_value_182 === true || current_value_182 === false){
-        default_config['tools']['vunit']['enable_verification_components_lib'] = current_value_182;
+    if (current_value_188 === true || current_value_188 === false){
+        default_config['tools']['vunit']['enable_verification_components_lib'] = current_value_188;
     }
             
     // tools -> xcelium -> installation_path
-    let current_value_183 = undefined;
+    let current_value_189 = undefined;
     try {
-        current_value_183 = json_config['tools']['xcelium']['installation_path'];
+        current_value_189 = json_config['tools']['xcelium']['installation_path'];
     }
     catch(e){}
-    if (typeof current_value_183 === 'string'){
-        default_config['tools']['xcelium']['installation_path'] = current_value_183;
+    if (typeof current_value_189 === 'string'){
+        default_config['tools']['xcelium']['installation_path'] = current_value_189;
     }
             
     // tools -> xcelium -> xmvhdl_options
-    let current_value_184 = undefined;
-    try {
-        current_value_184 = json_config['tools']['xcelium']['xmvhdl_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_184)){
-        default_config['tools']['xcelium']['xmvhdl_options'] = current_value_184;
-    }
-            
-    // tools -> xcelium -> xmvlog_options
-    let current_value_185 = undefined;
-    try {
-        current_value_185 = json_config['tools']['xcelium']['xmvlog_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_185)){
-        default_config['tools']['xcelium']['xmvlog_options'] = current_value_185;
-    }
-            
-    // tools -> xcelium -> xmsim_options
-    let current_value_186 = undefined;
-    try {
-        current_value_186 = json_config['tools']['xcelium']['xmsim_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_186)){
-        default_config['tools']['xcelium']['xmsim_options'] = current_value_186;
-    }
-            
-    // tools -> xcelium -> xrun_options
-    let current_value_187 = undefined;
-    try {
-        current_value_187 = json_config['tools']['xcelium']['xrun_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_187)){
-        default_config['tools']['xcelium']['xrun_options'] = current_value_187;
-    }
-            
-    // tools -> xsim -> installation_path
-    let current_value_188 = undefined;
-    try {
-        current_value_188 = json_config['tools']['xsim']['installation_path'];
-    }
-    catch(e){}
-    if (typeof current_value_188 === 'string'){
-        default_config['tools']['xsim']['installation_path'] = current_value_188;
-    }
-            
-    // tools -> xsim -> xelab_options
-    let current_value_189 = undefined;
-    try {
-        current_value_189 = json_config['tools']['xsim']['xelab_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_189)){
-        default_config['tools']['xsim']['xelab_options'] = current_value_189;
-    }
-            
-    // tools -> xsim -> xsim_options
     let current_value_190 = undefined;
     try {
-        current_value_190 = json_config['tools']['xsim']['xsim_options'];
+        current_value_190 = json_config['tools']['xcelium']['xmvhdl_options'];
     }
     catch(e){}
     if (Array.isArray(current_value_190)){
-        default_config['tools']['xsim']['xsim_options'] = current_value_190;
+        default_config['tools']['xcelium']['xmvhdl_options'] = current_value_190;
+    }
+            
+    // tools -> xcelium -> xmvlog_options
+    let current_value_191 = undefined;
+    try {
+        current_value_191 = json_config['tools']['xcelium']['xmvlog_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_191)){
+        default_config['tools']['xcelium']['xmvlog_options'] = current_value_191;
+    }
+            
+    // tools -> xcelium -> xmsim_options
+    let current_value_192 = undefined;
+    try {
+        current_value_192 = json_config['tools']['xcelium']['xmsim_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_192)){
+        default_config['tools']['xcelium']['xmsim_options'] = current_value_192;
+    }
+            
+    // tools -> xcelium -> xrun_options
+    let current_value_193 = undefined;
+    try {
+        current_value_193 = json_config['tools']['xcelium']['xrun_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_193)){
+        default_config['tools']['xcelium']['xrun_options'] = current_value_193;
+    }
+            
+    // tools -> xsim -> installation_path
+    let current_value_194 = undefined;
+    try {
+        current_value_194 = json_config['tools']['xsim']['installation_path'];
+    }
+    catch(e){}
+    if (typeof current_value_194 === 'string'){
+        default_config['tools']['xsim']['installation_path'] = current_value_194;
+    }
+            
+    // tools -> xsim -> xelab_options
+    let current_value_195 = undefined;
+    try {
+        current_value_195 = json_config['tools']['xsim']['xelab_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_195)){
+        default_config['tools']['xsim']['xelab_options'] = current_value_195;
+    }
+            
+    // tools -> xsim -> xsim_options
+    let current_value_196 = undefined;
+    try {
+        current_value_196 = json_config['tools']['xsim']['xsim_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_196)){
+        default_config['tools']['xsim']['xsim_options'] = current_value_196;
     }
             
     // tools -> yosys -> installation_path
-    let current_value_191 = undefined;
+    let current_value_197 = undefined;
     try {
-        current_value_191 = json_config['tools']['yosys']['installation_path'];
+        current_value_197 = json_config['tools']['yosys']['installation_path'];
     }
     catch(e){}
-    if (typeof current_value_191 === 'string'){
-        default_config['tools']['yosys']['installation_path'] = current_value_191;
+    if (typeof current_value_197 === 'string'){
+        default_config['tools']['yosys']['installation_path'] = current_value_197;
     }
             
     // tools -> yosys -> arch
-    let current_value_192 = undefined;
+    let current_value_198 = undefined;
     try {
-        current_value_192 = json_config['tools']['yosys']['arch'];
+        current_value_198 = json_config['tools']['yosys']['arch'];
     }
     catch(e){}
-    if ( current_value_192 === "xilinx"){
+    if ( current_value_198 === "xilinx"){
         default_config['tools']['yosys']['arch'] = e_tools_yosys_arch.xilinx;
     }
-    if ( current_value_192 === "ice40"){
+    if ( current_value_198 === "ice40"){
         default_config['tools']['yosys']['arch'] = e_tools_yosys_arch.ice40;
     }
-    if ( current_value_192 === "ecp5"){
+    if ( current_value_198 === "ecp5"){
         default_config['tools']['yosys']['arch'] = e_tools_yosys_arch.ecp5;
     }
             
     // tools -> yosys -> output_format
-    let current_value_193 = undefined;
+    let current_value_199 = undefined;
     try {
-        current_value_193 = json_config['tools']['yosys']['output_format'];
+        current_value_199 = json_config['tools']['yosys']['output_format'];
     }
     catch(e){}
-    if ( current_value_193 === "json"){
+    if ( current_value_199 === "json"){
         default_config['tools']['yosys']['output_format'] = e_tools_yosys_output_format.json;
     }
-    if ( current_value_193 === "edif"){
+    if ( current_value_199 === "edif"){
         default_config['tools']['yosys']['output_format'] = e_tools_yosys_output_format.edif;
     }
-    if ( current_value_193 === "blif"){
+    if ( current_value_199 === "blif"){
         default_config['tools']['yosys']['output_format'] = e_tools_yosys_output_format.blif;
     }
             
     // tools -> yosys -> yosys_as_subtool
-    let current_value_194 = undefined;
+    let current_value_200 = undefined;
     try {
-        current_value_194 = json_config['tools']['yosys']['yosys_as_subtool'];
+        current_value_200 = json_config['tools']['yosys']['yosys_as_subtool'];
     }
     catch(e){}
-    if (current_value_194 === true || current_value_194 === false){
-        default_config['tools']['yosys']['yosys_as_subtool'] = current_value_194;
+    if (current_value_200 === true || current_value_200 === false){
+        default_config['tools']['yosys']['yosys_as_subtool'] = current_value_200;
     }
             
     // tools -> yosys -> makefile_name
-    let current_value_195 = undefined;
-    try {
-        current_value_195 = json_config['tools']['yosys']['makefile_name'];
-    }
-    catch(e){}
-    if (typeof current_value_195 === 'string'){
-        default_config['tools']['yosys']['makefile_name'] = current_value_195;
-    }
-            
-    // tools -> yosys -> script_name
-    let current_value_196 = undefined;
-    try {
-        current_value_196 = json_config['tools']['yosys']['script_name'];
-    }
-    catch(e){}
-    if (typeof current_value_196 === 'string'){
-        default_config['tools']['yosys']['script_name'] = current_value_196;
-    }
-            
-    // tools -> yosys -> yosys_synth_options
-    let current_value_197 = undefined;
-    try {
-        current_value_197 = json_config['tools']['yosys']['yosys_synth_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_197)){
-        default_config['tools']['yosys']['yosys_synth_options'] = current_value_197;
-    }
-            
-    // tools -> openfpga -> installation_path
-    let current_value_198 = undefined;
-    try {
-        current_value_198 = json_config['tools']['openfpga']['installation_path'];
-    }
-    catch(e){}
-    if (typeof current_value_198 === 'string'){
-        default_config['tools']['openfpga']['installation_path'] = current_value_198;
-    }
-            
-    // tools -> openfpga -> arch
-    let current_value_199 = undefined;
-    try {
-        current_value_199 = json_config['tools']['openfpga']['arch'];
-    }
-    catch(e){}
-    if (typeof current_value_199 === 'string'){
-        default_config['tools']['openfpga']['arch'] = current_value_199;
-    }
-            
-    // tools -> openfpga -> task_options
-    let current_value_200 = undefined;
-    try {
-        current_value_200 = json_config['tools']['openfpga']['task_options'];
-    }
-    catch(e){}
-    if (Array.isArray(current_value_200)){
-        default_config['tools']['openfpga']['task_options'] = current_value_200;
-    }
-            
-    // tools -> activehdl -> installation_path
     let current_value_201 = undefined;
     try {
-        current_value_201 = json_config['tools']['activehdl']['installation_path'];
+        current_value_201 = json_config['tools']['yosys']['makefile_name'];
     }
     catch(e){}
     if (typeof current_value_201 === 'string'){
-        default_config['tools']['activehdl']['installation_path'] = current_value_201;
+        default_config['tools']['yosys']['makefile_name'] = current_value_201;
     }
             
-    // tools -> questa -> installation_path
+    // tools -> yosys -> script_name
     let current_value_202 = undefined;
     try {
-        current_value_202 = json_config['tools']['questa']['installation_path'];
+        current_value_202 = json_config['tools']['yosys']['script_name'];
     }
     catch(e){}
     if (typeof current_value_202 === 'string'){
-        default_config['tools']['questa']['installation_path'] = current_value_202;
+        default_config['tools']['yosys']['script_name'] = current_value_202;
     }
             
-    // tools -> raptor -> installation_path
+    // tools -> yosys -> yosys_synth_options
     let current_value_203 = undefined;
     try {
-        current_value_203 = json_config['tools']['raptor']['installation_path'];
+        current_value_203 = json_config['tools']['yosys']['yosys_synth_options'];
     }
     catch(e){}
-    if (typeof current_value_203 === 'string'){
-        default_config['tools']['raptor']['installation_path'] = current_value_203;
+    if (Array.isArray(current_value_203)){
+        default_config['tools']['yosys']['yosys_synth_options'] = current_value_203;
     }
             
-    // tools -> raptor -> target_device
+    // tools -> openfpga -> installation_path
     let current_value_204 = undefined;
     try {
-        current_value_204 = json_config['tools']['raptor']['target_device'];
+        current_value_204 = json_config['tools']['openfpga']['installation_path'];
     }
     catch(e){}
     if (typeof current_value_204 === 'string'){
-        default_config['tools']['raptor']['target_device'] = current_value_204;
+        default_config['tools']['openfpga']['installation_path'] = current_value_204;
+    }
+            
+    // tools -> openfpga -> arch
+    let current_value_205 = undefined;
+    try {
+        current_value_205 = json_config['tools']['openfpga']['arch'];
+    }
+    catch(e){}
+    if (typeof current_value_205 === 'string'){
+        default_config['tools']['openfpga']['arch'] = current_value_205;
+    }
+            
+    // tools -> openfpga -> task_options
+    let current_value_206 = undefined;
+    try {
+        current_value_206 = json_config['tools']['openfpga']['task_options'];
+    }
+    catch(e){}
+    if (Array.isArray(current_value_206)){
+        default_config['tools']['openfpga']['task_options'] = current_value_206;
+    }
+            
+    // tools -> activehdl -> installation_path
+    let current_value_207 = undefined;
+    try {
+        current_value_207 = json_config['tools']['activehdl']['installation_path'];
+    }
+    catch(e){}
+    if (typeof current_value_207 === 'string'){
+        default_config['tools']['activehdl']['installation_path'] = current_value_207;
+    }
+            
+    // tools -> questa -> installation_path
+    let current_value_208 = undefined;
+    try {
+        current_value_208 = json_config['tools']['questa']['installation_path'];
+    }
+    catch(e){}
+    if (typeof current_value_208 === 'string'){
+        default_config['tools']['questa']['installation_path'] = current_value_208;
+    }
+            
+    // tools -> raptor -> installation_path
+    let current_value_209 = undefined;
+    try {
+        current_value_209 = json_config['tools']['raptor']['installation_path'];
+    }
+    catch(e){}
+    if (typeof current_value_209 === 'string'){
+        default_config['tools']['raptor']['installation_path'] = current_value_209;
+    }
+            
+    // tools -> raptor -> target_device
+    let current_value_210 = undefined;
+    try {
+        current_value_210 = json_config['tools']['raptor']['target_device'];
+    }
+    catch(e){}
+    if (typeof current_value_210 === 'string'){
+        default_config['tools']['raptor']['target_device'] = current_value_210;
     }
             
     // tools -> raptor -> vhdl_version
-    let current_value_205 = undefined;
+    let current_value_211 = undefined;
     try {
-        current_value_205 = json_config['tools']['raptor']['vhdl_version'];
+        current_value_211 = json_config['tools']['raptor']['vhdl_version'];
     }
     catch(e){}
-    if ( current_value_205 === "VHDL_1987"){
+    if ( current_value_211 === "VHDL_1987"){
         default_config['tools']['raptor']['vhdl_version'] = e_tools_raptor_vhdl_version.VHDL_1987;
     }
-    if ( current_value_205 === "VHDL_1993"){
+    if ( current_value_211 === "VHDL_1993"){
         default_config['tools']['raptor']['vhdl_version'] = e_tools_raptor_vhdl_version.VHDL_1993;
     }
-    if ( current_value_205 === "VHDL_2000"){
+    if ( current_value_211 === "VHDL_2000"){
         default_config['tools']['raptor']['vhdl_version'] = e_tools_raptor_vhdl_version.VHDL_2000;
     }
-    if ( current_value_205 === "VHDL_2008"){
+    if ( current_value_211 === "VHDL_2008"){
         default_config['tools']['raptor']['vhdl_version'] = e_tools_raptor_vhdl_version.VHDL_2008;
     }
-    if ( current_value_205 === "VHDL_2019"){
+    if ( current_value_211 === "VHDL_2019"){
         default_config['tools']['raptor']['vhdl_version'] = e_tools_raptor_vhdl_version.VHDL_2019;
     }
             
     // tools -> raptor -> verilog_version
-    let current_value_206 = undefined;
+    let current_value_212 = undefined;
     try {
-        current_value_206 = json_config['tools']['raptor']['verilog_version'];
+        current_value_212 = json_config['tools']['raptor']['verilog_version'];
     }
     catch(e){}
-    if ( current_value_206 === "V_1995"){
+    if ( current_value_212 === "V_1995"){
         default_config['tools']['raptor']['verilog_version'] = e_tools_raptor_verilog_version.V_1995;
     }
-    if ( current_value_206 === "V_2001"){
+    if ( current_value_212 === "V_2001"){
         default_config['tools']['raptor']['verilog_version'] = e_tools_raptor_verilog_version.V_2001;
     }
             
     // tools -> raptor -> sv_version
-    let current_value_207 = undefined;
+    let current_value_213 = undefined;
     try {
-        current_value_207 = json_config['tools']['raptor']['sv_version'];
+        current_value_213 = json_config['tools']['raptor']['sv_version'];
     }
     catch(e){}
-    if ( current_value_207 === "SV_2005"){
+    if ( current_value_213 === "SV_2005"){
         default_config['tools']['raptor']['sv_version'] = e_tools_raptor_sv_version.SV_2005;
     }
-    if ( current_value_207 === "SV_2009"){
+    if ( current_value_213 === "SV_2009"){
         default_config['tools']['raptor']['sv_version'] = e_tools_raptor_sv_version.SV_2009;
     }
-    if ( current_value_207 === "SV_2012"){
+    if ( current_value_213 === "SV_2012"){
         default_config['tools']['raptor']['sv_version'] = e_tools_raptor_sv_version.SV_2012;
     }
-    if ( current_value_207 === "SV_2017"){
+    if ( current_value_213 === "SV_2017"){
         default_config['tools']['raptor']['sv_version'] = e_tools_raptor_sv_version.SV_2017;
     }
             
     // tools -> raptor -> div_0
             
     // tools -> raptor -> optimization
-    let current_value_209 = undefined;
+    let current_value_215 = undefined;
     try {
-        current_value_209 = json_config['tools']['raptor']['optimization'];
+        current_value_215 = json_config['tools']['raptor']['optimization'];
     }
     catch(e){}
-    if ( current_value_209 === "area"){
+    if ( current_value_215 === "area"){
         default_config['tools']['raptor']['optimization'] = e_tools_raptor_optimization.area;
     }
-    if ( current_value_209 === "delay"){
+    if ( current_value_215 === "delay"){
         default_config['tools']['raptor']['optimization'] = e_tools_raptor_optimization.delay;
     }
-    if ( current_value_209 === "mixed"){
+    if ( current_value_215 === "mixed"){
         default_config['tools']['raptor']['optimization'] = e_tools_raptor_optimization.mixed;
     }
-    if ( current_value_209 === "none"){
+    if ( current_value_215 === "none"){
         default_config['tools']['raptor']['optimization'] = e_tools_raptor_optimization.none;
     }
             
     // tools -> raptor -> effort
-    let current_value_210 = undefined;
+    let current_value_216 = undefined;
     try {
-        current_value_210 = json_config['tools']['raptor']['effort'];
+        current_value_216 = json_config['tools']['raptor']['effort'];
     }
     catch(e){}
-    if ( current_value_210 === "high"){
+    if ( current_value_216 === "high"){
         default_config['tools']['raptor']['effort'] = e_tools_raptor_effort.high;
     }
-    if ( current_value_210 === "medium"){
+    if ( current_value_216 === "medium"){
         default_config['tools']['raptor']['effort'] = e_tools_raptor_effort.medium;
     }
-    if ( current_value_210 === "low"){
+    if ( current_value_216 === "low"){
         default_config['tools']['raptor']['effort'] = e_tools_raptor_effort.low;
     }
             
     // tools -> raptor -> fsm_encoding
-    let current_value_211 = undefined;
+    let current_value_217 = undefined;
     try {
-        current_value_211 = json_config['tools']['raptor']['fsm_encoding'];
+        current_value_217 = json_config['tools']['raptor']['fsm_encoding'];
     }
     catch(e){}
-    if ( current_value_211 === "binary"){
+    if ( current_value_217 === "binary"){
         default_config['tools']['raptor']['fsm_encoding'] = e_tools_raptor_fsm_encoding.binary;
     }
-    if ( current_value_211 === "onehot"){
+    if ( current_value_217 === "onehot"){
         default_config['tools']['raptor']['fsm_encoding'] = e_tools_raptor_fsm_encoding.onehot;
     }
             
     // tools -> raptor -> carry
-    let current_value_212 = undefined;
+    let current_value_218 = undefined;
     try {
-        current_value_212 = json_config['tools']['raptor']['carry'];
+        current_value_218 = json_config['tools']['raptor']['carry'];
     }
     catch(e){}
-    if ( current_value_212 === "auto"){
+    if ( current_value_218 === "auto"){
         default_config['tools']['raptor']['carry'] = e_tools_raptor_carry.auto;
     }
-    if ( current_value_212 === "all"){
+    if ( current_value_218 === "all"){
         default_config['tools']['raptor']['carry'] = e_tools_raptor_carry.all;
     }
-    if ( current_value_212 === "none"){
+    if ( current_value_218 === "none"){
         default_config['tools']['raptor']['carry'] = e_tools_raptor_carry.none;
     }
             
     // tools -> raptor -> pnr_netlist_language
-    let current_value_213 = undefined;
+    let current_value_219 = undefined;
     try {
-        current_value_213 = json_config['tools']['raptor']['pnr_netlist_language'];
+        current_value_219 = json_config['tools']['raptor']['pnr_netlist_language'];
     }
     catch(e){}
-    if ( current_value_213 === "blif"){
+    if ( current_value_219 === "blif"){
         default_config['tools']['raptor']['pnr_netlist_language'] = e_tools_raptor_pnr_netlist_language.blif;
     }
-    if ( current_value_213 === "edif"){
+    if ( current_value_219 === "edif"){
         default_config['tools']['raptor']['pnr_netlist_language'] = e_tools_raptor_pnr_netlist_language.edif;
     }
-    if ( current_value_213 === "verilog"){
+    if ( current_value_219 === "verilog"){
         default_config['tools']['raptor']['pnr_netlist_language'] = e_tools_raptor_pnr_netlist_language.verilog;
     }
-    if ( current_value_213 === "vhdl"){
+    if ( current_value_219 === "vhdl"){
         default_config['tools']['raptor']['pnr_netlist_language'] = e_tools_raptor_pnr_netlist_language.vhdl;
     }
             
     // tools -> raptor -> dsp_limit
-    let current_value_214 = undefined;
+    let current_value_220 = undefined;
     try {
-        current_value_214 = json_config['tools']['raptor']['dsp_limit'];
+        current_value_220 = json_config['tools']['raptor']['dsp_limit'];
     }
     catch(e){}
-    if (typeof current_value_214 === 'number'){
-        default_config['tools']['raptor']['dsp_limit'] = current_value_214;
+    if (typeof current_value_220 === 'number'){
+        default_config['tools']['raptor']['dsp_limit'] = current_value_220;
     }
             
     // tools -> raptor -> block_ram_limit
-    let current_value_215 = undefined;
+    let current_value_221 = undefined;
     try {
-        current_value_215 = json_config['tools']['raptor']['block_ram_limit'];
+        current_value_221 = json_config['tools']['raptor']['block_ram_limit'];
     }
     catch(e){}
-    if (typeof current_value_215 === 'number'){
-        default_config['tools']['raptor']['block_ram_limit'] = current_value_215;
+    if (typeof current_value_221 === 'number'){
+        default_config['tools']['raptor']['block_ram_limit'] = current_value_221;
     }
             
     // tools -> raptor -> fast_synthesis
-    let current_value_216 = undefined;
+    let current_value_222 = undefined;
     try {
-        current_value_216 = json_config['tools']['raptor']['fast_synthesis'];
+        current_value_222 = json_config['tools']['raptor']['fast_synthesis'];
     }
     catch(e){}
-    if (current_value_216 === true || current_value_216 === false){
-        default_config['tools']['raptor']['fast_synthesis'] = current_value_216;
+    if (current_value_222 === true || current_value_222 === false){
+        default_config['tools']['raptor']['fast_synthesis'] = current_value_222;
     }
             
     // tools -> raptor -> div_1
             
     // tools -> raptor -> top_level
-    let current_value_218 = undefined;
+    let current_value_224 = undefined;
     try {
-        current_value_218 = json_config['tools']['raptor']['top_level'];
+        current_value_224 = json_config['tools']['raptor']['top_level'];
     }
     catch(e){}
-    if (typeof current_value_218 === 'string'){
-        default_config['tools']['raptor']['top_level'] = current_value_218;
+    if (typeof current_value_224 === 'string'){
+        default_config['tools']['raptor']['top_level'] = current_value_224;
     }
             
     // tools -> raptor -> sim_source_list
-    let current_value_219 = undefined;
+    let current_value_225 = undefined;
     try {
-        current_value_219 = json_config['tools']['raptor']['sim_source_list'];
+        current_value_225 = json_config['tools']['raptor']['sim_source_list'];
     }
     catch(e){}
-    if (Array.isArray(current_value_219)){
-        default_config['tools']['raptor']['sim_source_list'] = current_value_219;
+    if (Array.isArray(current_value_225)){
+        default_config['tools']['raptor']['sim_source_list'] = current_value_225;
     }
             
     // tools -> raptor -> simulate_rtl
-    let current_value_220 = undefined;
+    let current_value_226 = undefined;
     try {
-        current_value_220 = json_config['tools']['raptor']['simulate_rtl'];
+        current_value_226 = json_config['tools']['raptor']['simulate_rtl'];
     }
     catch(e){}
-    if (current_value_220 === true || current_value_220 === false){
-        default_config['tools']['raptor']['simulate_rtl'] = current_value_220;
+    if (current_value_226 === true || current_value_226 === false){
+        default_config['tools']['raptor']['simulate_rtl'] = current_value_226;
     }
             
     // tools -> raptor -> waveform_rtl
-    let current_value_221 = undefined;
+    let current_value_227 = undefined;
     try {
-        current_value_221 = json_config['tools']['raptor']['waveform_rtl'];
+        current_value_227 = json_config['tools']['raptor']['waveform_rtl'];
     }
     catch(e){}
-    if (typeof current_value_221 === 'string'){
-        default_config['tools']['raptor']['waveform_rtl'] = current_value_221;
+    if (typeof current_value_227 === 'string'){
+        default_config['tools']['raptor']['waveform_rtl'] = current_value_227;
     }
             
     // tools -> raptor -> simulator_rtl
-    let current_value_222 = undefined;
+    let current_value_228 = undefined;
     try {
-        current_value_222 = json_config['tools']['raptor']['simulator_rtl'];
+        current_value_228 = json_config['tools']['raptor']['simulator_rtl'];
     }
     catch(e){}
-    if ( current_value_222 === "verilator"){
+    if ( current_value_228 === "verilator"){
         default_config['tools']['raptor']['simulator_rtl'] = e_tools_raptor_simulator_rtl.verilator;
     }
-    if ( current_value_222 === "ghdl"){
+    if ( current_value_228 === "ghdl"){
         default_config['tools']['raptor']['simulator_rtl'] = e_tools_raptor_simulator_rtl.ghdl;
     }
-    if ( current_value_222 === "icarus"){
+    if ( current_value_228 === "icarus"){
         default_config['tools']['raptor']['simulator_rtl'] = e_tools_raptor_simulator_rtl.icarus;
     }
             
     // tools -> raptor -> simulation_options_rtl
-    let current_value_223 = undefined;
+    let current_value_229 = undefined;
     try {
-        current_value_223 = json_config['tools']['raptor']['simulation_options_rtl'];
+        current_value_229 = json_config['tools']['raptor']['simulation_options_rtl'];
     }
     catch(e){}
-    if (typeof current_value_223 === 'string'){
-        default_config['tools']['raptor']['simulation_options_rtl'] = current_value_223;
+    if (typeof current_value_229 === 'string'){
+        default_config['tools']['raptor']['simulation_options_rtl'] = current_value_229;
     }
             
     // tools -> raptor -> simulate_gate
-    let current_value_224 = undefined;
+    let current_value_230 = undefined;
     try {
-        current_value_224 = json_config['tools']['raptor']['simulate_gate'];
+        current_value_230 = json_config['tools']['raptor']['simulate_gate'];
     }
     catch(e){}
-    if (current_value_224 === true || current_value_224 === false){
-        default_config['tools']['raptor']['simulate_gate'] = current_value_224;
+    if (current_value_230 === true || current_value_230 === false){
+        default_config['tools']['raptor']['simulate_gate'] = current_value_230;
     }
             
     // tools -> raptor -> waveform_gate
-    let current_value_225 = undefined;
+    let current_value_231 = undefined;
     try {
-        current_value_225 = json_config['tools']['raptor']['waveform_gate'];
+        current_value_231 = json_config['tools']['raptor']['waveform_gate'];
     }
     catch(e){}
-    if (typeof current_value_225 === 'string'){
-        default_config['tools']['raptor']['waveform_gate'] = current_value_225;
+    if (typeof current_value_231 === 'string'){
+        default_config['tools']['raptor']['waveform_gate'] = current_value_231;
     }
             
     // tools -> raptor -> simulator_gate
-    let current_value_226 = undefined;
+    let current_value_232 = undefined;
     try {
-        current_value_226 = json_config['tools']['raptor']['simulator_gate'];
+        current_value_232 = json_config['tools']['raptor']['simulator_gate'];
     }
     catch(e){}
-    if ( current_value_226 === "verilator"){
+    if ( current_value_232 === "verilator"){
         default_config['tools']['raptor']['simulator_gate'] = e_tools_raptor_simulator_gate.verilator;
     }
-    if ( current_value_226 === "ghdl"){
+    if ( current_value_232 === "ghdl"){
         default_config['tools']['raptor']['simulator_gate'] = e_tools_raptor_simulator_gate.ghdl;
     }
-    if ( current_value_226 === "icarus"){
+    if ( current_value_232 === "icarus"){
         default_config['tools']['raptor']['simulator_gate'] = e_tools_raptor_simulator_gate.icarus;
     }
             
     // tools -> raptor -> simulation_options_gate
-    let current_value_227 = undefined;
+    let current_value_233 = undefined;
     try {
-        current_value_227 = json_config['tools']['raptor']['simulation_options_gate'];
+        current_value_233 = json_config['tools']['raptor']['simulation_options_gate'];
     }
     catch(e){}
-    if (typeof current_value_227 === 'string'){
-        default_config['tools']['raptor']['simulation_options_gate'] = current_value_227;
+    if (typeof current_value_233 === 'string'){
+        default_config['tools']['raptor']['simulation_options_gate'] = current_value_233;
     }
             
     // tools -> raptor -> simulate_pnr
-    let current_value_228 = undefined;
+    let current_value_234 = undefined;
     try {
-        current_value_228 = json_config['tools']['raptor']['simulate_pnr'];
+        current_value_234 = json_config['tools']['raptor']['simulate_pnr'];
     }
     catch(e){}
-    if (current_value_228 === true || current_value_228 === false){
-        default_config['tools']['raptor']['simulate_pnr'] = current_value_228;
+    if (current_value_234 === true || current_value_234 === false){
+        default_config['tools']['raptor']['simulate_pnr'] = current_value_234;
     }
             
     // tools -> raptor -> waveform_pnr
-    let current_value_229 = undefined;
+    let current_value_235 = undefined;
     try {
-        current_value_229 = json_config['tools']['raptor']['waveform_pnr'];
+        current_value_235 = json_config['tools']['raptor']['waveform_pnr'];
     }
     catch(e){}
-    if (typeof current_value_229 === 'string'){
-        default_config['tools']['raptor']['waveform_pnr'] = current_value_229;
+    if (typeof current_value_235 === 'string'){
+        default_config['tools']['raptor']['waveform_pnr'] = current_value_235;
     }
             
     // tools -> raptor -> simulator_pnr
-    let current_value_230 = undefined;
+    let current_value_236 = undefined;
     try {
-        current_value_230 = json_config['tools']['raptor']['simulator_pnr'];
+        current_value_236 = json_config['tools']['raptor']['simulator_pnr'];
     }
     catch(e){}
-    if ( current_value_230 === "verilator"){
+    if ( current_value_236 === "verilator"){
         default_config['tools']['raptor']['simulator_pnr'] = e_tools_raptor_simulator_pnr.verilator;
     }
-    if ( current_value_230 === "ghdl"){
+    if ( current_value_236 === "ghdl"){
         default_config['tools']['raptor']['simulator_pnr'] = e_tools_raptor_simulator_pnr.ghdl;
     }
-    if ( current_value_230 === "icarus"){
+    if ( current_value_236 === "icarus"){
         default_config['tools']['raptor']['simulator_pnr'] = e_tools_raptor_simulator_pnr.icarus;
     }
             
     // tools -> raptor -> simulation_options_pnr
-    let current_value_231 = undefined;
+    let current_value_237 = undefined;
     try {
-        current_value_231 = json_config['tools']['raptor']['simulation_options_pnr'];
+        current_value_237 = json_config['tools']['raptor']['simulation_options_pnr'];
     }
     catch(e){}
-    if (typeof current_value_231 === 'string'){
-        default_config['tools']['raptor']['simulation_options_pnr'] = current_value_231;
+    if (typeof current_value_237 === 'string'){
+        default_config['tools']['raptor']['simulation_options_pnr'] = current_value_237;
     }
             
 

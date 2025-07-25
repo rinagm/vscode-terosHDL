@@ -8,7 +8,9 @@
                     {{type_declaration[tp0]["title"]}}: {{type_declaration[tp0]["pages"][tp1]["title"]}}
                     {%- endif %}
                     {%- if type_declaration[tp0]["pages"][tp1]["docLink"] %}
-                    <i class="codicon codicon-question help-icon-button" onclick="window.open('{{type_declaration[tp0]["pages"][tp1]["docLink"]}}', '_blank')" title="Go To Documentation"></i>
+                    <a href="{{type_declaration[tp0]["pages"][tp1]["docLink"]}}" target="_blank" class="help-icon-button">
+                        <i class="codicon codicon-question" title="Go To Documentation"></i>
+                    </a>
                     {%- endif %}
                 </div>
                 <div class="settings-group-description">{{type_declaration[tp0]["pages"][tp1]["description"]}}</div>
@@ -77,6 +79,7 @@
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="{{tp0}}-{{tp1}}-{{tp2}}">
                     </div>
+                  {%- else %}
                   {%- endif %}
                 {%- endfor %}
             </div>

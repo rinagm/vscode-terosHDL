@@ -1,29 +1,23 @@
-        <div class="flex-shrink-0 p-3 bg-white overflow-auto sidebar">
-            <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
-                {% include 'logo.svg.nj' %}
-
-                <div class="fs-5 fw-semibold sidebar-heading h5" id="configTitle">Global Configuration</div>
-            </a>
-            <ul class="list-unstyled ps-0">
+                <div class="settings-toc-container">
 {%- for tp0 in type_declaration %}
-                <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        {% if type_declaration[tp0]["pages"]|length > 1 %}data-bs-toggle="collapse"{% endif %} 
-                        data-bs-target="#{{type_declaration[tp0]["title"] | replace(" ","-")}}" aria-expanded="false"
-                        id="btn-{{tp0}}-general"
-                    >
-                        {{type_declaration[tp0]["title"]}}
-                    </button>
-                    <div class="collapse" id="{{type_declaration[tp0]["title"] | replace(" ","-")}}">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    {%- for tp1 in type_declaration[tp0]["pages"] %}
-                        {%- if tp1 != "general" %}
-                            <li><a id="btn-{{tp0}}-{{tp1}}" href="#" class="link-dark d-inline-flex text-decoration-none rounded">{{type_declaration[tp0]["pages"][tp1]["title"]}}</a></li>
+                    <div class="settings-toc-entry" id="toc-{{tp0}}">
+                        <div class="settings-toc-entry-label" id="btn-{{tp0}}-general">
+                            {%- if type_declaration[tp0]["pages"]|length > 1 %}
+                            <i class="codicon codicon-chevron-down"></i>
+                            {%- endif %}
+                            {{type_declaration[tp0]["title"]}}
+                        </div>
+                        {%- if type_declaration[tp0]["pages"]|length > 1 %}
+                        <div class="settings-toc-children" id="children-{{tp0}}">
+                        {%- for tp1 in type_declaration[tp0]["pages"] %}
+                            {%- if tp1 != "general" %}
+                            <div class="settings-toc-child" id="btn-{{tp0}}-{{tp1}}">
+                                {{type_declaration[tp0]["pages"][tp1]["title"]}}
+                            </div>
+                            {%- endif %}
+                        {%- endfor %}
+                        </div>
                         {%- endif %}
-                    {%- endfor %}
-                        </ul>
                     </div>
-                </li>
 {%- endfor %}
-            </ul>
-        </div>
+                </div>

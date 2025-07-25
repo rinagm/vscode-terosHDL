@@ -3,18 +3,18 @@ installation_path:
   type: string
   value: ""
 methodology:
-  description: ""
+  description: "Methodology"
   type: string
   value: ""
 goals:
-  description: ""
+  description: "Goals"
   type: array
   value: []
 spyglass_options:
-  description: ""
+  description: "Spyglass Options"
   type: array
   value: []
 rule_parameters:
-  description: ""
+  description: "Rule Parameters"
   type: array
   value: []

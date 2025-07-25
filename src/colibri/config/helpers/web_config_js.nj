@@ -1,47 +1,67 @@
-    
+  // VSCode Settings Style JavaScript
+  
   function enable_tab(tp0, tp1){
-    const complete = tp0 + "-" + tp1;
+    // Hide all sections
 {%- for tp0 in type_declaration %}
     {%- for tp1 in type_declaration[tp0]["pages"] %}
-  if ("{{tp0}}" == tp0 && "{{tp1}}" == tp1){
-    document.getElementById("{{tp0}}-{{tp1}}").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("{{tp0}}-{{tp1}}").classList.remove('d-none');
-    document.getElementById("{{tp0}}-{{tp1}}").classList.add('d-none');
-  }
+    document.getElementById("{{tp0}}-{{tp1}}").classList.remove('active');
     {%- endfor %}
 {%- endfor %}
+    
+    // Show the selected section
+    document.getElementById(tp0 + "-" + tp1).classList.add('active');
+    
+    // Update sidebar selection
+    updateSidebarSelection(tp0, tp1);
   }
 
+  function updateSidebarSelection(tp0, tp1) {
+    // Remove all selections
+{%- for tp0 in type_declaration %}
+    document.getElementById("btn-{{tp0}}-general").classList.remove('selected');
+    {%- for tp1 in type_declaration[tp0]["pages"] %}
+        {%- if tp1 != "general" %}
+    if (document.getElementById("btn-{{tp0}}-{{tp1}}")) {
+        document.getElementById("btn-{{tp0}}-{{tp1}}").classList.remove('selected');
+    }
+        {%- endif %}
+    {%- endfor %}
+{%- endfor %}
+    
+    // Add selection to current item
+    if (tp1 === "general") {
+        document.getElementById("btn-" + tp0 + "-general").classList.add('selected');
+    } else {
+        document.getElementById("btn-" + tp0 + "-" + tp1).classList.add('selected');
+    }
+  }
+
+  function toggleSidebarSection(tp0) {
+    // Functionality disabled - sections should always remain open
+    return;
+  }
+
+  // Initialize
   enable_tab('general', 'general');
 
+  // Add event listeners for sidebar
 {%- for tp0 in type_declaration %}
-    {%- for tp1 in type_declaration[tp0]["pages"] %}
-
-  document.getElementById("btn-{{tp0}}-{{tp1}}").addEventListener("click", function() {
-    enable_tab("{{tp0}}","{{tp1}}")
+  document.getElementById("btn-{{tp0}}-general").addEventListener("click", function(e) {
+    e.preventDefault();
+    enable_tab("{{tp0}}", "general");
   });
 
-    {%- endfor %}
-{%- endfor %}
-
-  /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - 
-  This allows the user to have multiple dropdowns without any conflict */
-  var dropdown = document.getElementsByClassName("dropdown-btn");
-  var i;
-
-  for (i = 0; i < dropdown.length; i++) {
-    dropdown[i].addEventListener("click", function() {
-      this.classList.toggle("active");
-      var dropdownContent = this.nextElementSibling;
-      if (dropdownContent.style.display === "block") {
-        dropdownContent.style.display = "none";
-      } else {
-        dropdownContent.style.display = "block";
-      }
+    {%- for tp1 in type_declaration[tp0]["pages"] %}
+        {%- if tp1 != "general" %}
+  if (document.getElementById("btn-{{tp0}}-{{tp1}}")) {
+    document.getElementById("btn-{{tp0}}-{{tp1}}").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("{{tp0}}", "{{tp1}}");
     });
   }
+        {%- endif %}
+    {%- endfor %}
+{%- endfor %}
   
   const vscode = acquireVsCodeApi();
 
@@ -132,12 +152,18 @@
         {%- for tp2 in type_declaration[tp0]["pages"][tp1] %}
             {%- if tp2 != "title" and tp2 != "description" and tp2 != "docLink"%}
                 {%- if type_declaration[tp0]["pages"][tp1][tp2]["type"] == "boolean" %}
-    document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").checked = config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"];
+    if (config["{{tp0}}"] && config["{{tp0}}"]["{{tp1}}"] && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] !== undefined) {
+        document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").checked = config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"];
+    }
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
-    element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value = String(config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"]);
+    if (config["{{tp0}}"] && config["{{tp0}}"]["{{tp1}}"] && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] !== undefined) {
+        element_value = document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value = String(config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"]);
+    }
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
                 {%- else %}
-    document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value = config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"];
+    if (config["{{tp0}}"] && config["{{tp0}}"]["{{tp1}}"] && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] !== undefined) {
+        document.getElementById("{{tp0}}-{{tp1}}-{{tp2}}").value = config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"];
+    }
                 {%- endif %}
             {%- endif %}
         {%- endfor %}
@@ -154,20 +180,20 @@
             {%- if tp2 != "title" and tp2 != "description" and tp2 != "docLink" %}
                 {%- if type_declaration[tp0]["pages"][tp1][tp2]["type"] == "boolean" %}
     mark = "";
-    if (projectName !== undefined && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] != undefined) {
+    if (projectName !== undefined && config["{{tp0}}"] && config["{{tp0}}"]["{{tp1}}"] && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_{{tp0}}-{{tp1}}-{{tp2}}").innerHTML = mark;
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "array" %}
     mark = "";
-    if (projectName !== undefined && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] != undefined) {
+    if (projectName !== undefined && config["{{tp0}}"] && config["{{tp0}}"]["{{tp1}}"] && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_{{tp0}}-{{tp1}}-{{tp2}}").innerHTML = mark;
                 {%- elif type_declaration[tp0]["pages"][tp1][tp2]["type"] == "divider" %}
                 {%- else %}
     mark = "";
-    if (projectName !== undefined && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] != undefined) {
+    if (projectName !== undefined && config["{{tp0}}"] && config["{{tp0}}"]["{{tp1}}"] && config["{{tp0}}"]["{{tp1}}"]["{{tp2}}"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_{{tp0}}-{{tp1}}-{{tp2}}").innerHTML = mark;

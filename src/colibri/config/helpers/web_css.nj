@@ -1,105 +1,666 @@
+/* VSCode Settings Style */
+body {
+    font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,system-ui,Ubuntu,Droid Sans,sans-serif;
+    font-size: 13px;
+    line-height: 1.4em;
+    color: var(--vscode-foreground);
+    background-color: var(--vscode-editor-background);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
 
-        /* Move down content because we have a fixed navbar that is 50px tall */
-        body {
-            padding-top: 20px;
-            padding-left: 10px;
-            padding-right: 10px;
-        }
+.settings-editor {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
-        .markConfig {
-            font-size: 0.6em;
-        }
+.settings-header {
+    height: 35px;
+    border-bottom: 1px solid var(--vscode-settings-headerBorder);
+    background-color: var(--vscode-settings-headerBackground);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
 
-        .sidebar {
-            position: fixed;
-            top: 0px;
-            bottom: 0;
-            left: 0;
-            z-index: 1000;
-            display: block;
-            padding: 20px;
-            overflow-x: hidden;
-            overflow-y: auto;
-            /* Scrollable contents if viewport is shorter than content. */
-            width: 270px;
-        }
+.settings-header-controls {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
 
-        .main {
-            padding-left: 290px;
-        }
+.settings-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--vscode-settings-headerForeground);
+}
 
-        .main .page-header {
-            margin-top: 0;
-        }
+.settings-body {
+    flex: 1;
+    display: flex;
+    height: calc(100vh - 35px);
+    overflow: hidden;
+}
 
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-        }
+.settings-tree-container {
+    width: 300px;
+    background-color: var(--vscode-sideBar-background);
+    border-right: 1px solid var(--vscode-sideBar-border);
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-shrink: 0;
+    height: 100%;
+}
 
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
+.settings-editor-tree {
+    flex: 1;
+    background-color: var(--vscode-editor-background);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    max-height: calc(100vh - 35px);
+    scroll-behavior: smooth;
+}
 
-        .b-example-divider {
-            height: 3rem;
-            background-color: rgba(0, 0, 0, .1);
-            border: solid rgba(0, 0, 0, .15);
-            border-width: 1px 0;
-            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-        }
+/* Sidebar Tree Styles */
+.settings-toc-container {
+    padding: 8px 0;
+    height: 100%;
+}
 
-        .b-example-vr {
-            flex-shrink: 0;
-            width: 1.5rem;
-            height: 100vh;
-        }
+.settings-toc-entry {
+    color: var(--vscode-settings-dropdownListBorder);
+    position: relative;
+}
 
-        .bi {
-            vertical-align: -.125em;
-            fill: currentColor;
-        }
+.settings-toc-entry .settings-toc-entry-label {
+    display: flex;
+    align-items: center;
+    padding: 4px 22px 4px 8px;
+    cursor: pointer;
+    user-select: none;
+    line-height: 20px;
+    color: var(--vscode-sideBarTitle-foreground);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.1s ease;
+    border-radius: 2px;
+}
 
-        .nav-scroller {
-            position: relative;
-            z-index: 2;
-            height: 2.75rem;
-            overflow-y: hidden;
-        }
+.settings-toc-entry .settings-toc-entry-label:hover {
+    background-color: var(--vscode-list-hoverBackground);
+}
 
-        .nav-scroller .nav {
-            display: flex;
-            flex-wrap: nowrap;
-            padding-bottom: 1rem;
-            margin-top: -1px;
-            overflow-x: auto;
-            text-align: center;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-        }
+.settings-toc-entry .settings-toc-entry-label.selected {
+    background-color: var(--vscode-list-activeSelectionBackground);
+    color: var(--vscode-list-activeSelectionForeground);
+}
 
-        html,
-        body {
-            height: 100%;
-            overflow-y: hidden;
-        }
+.settings-toc-entry .codicon {
+    margin-right: 6px;
+    /* Remove transition since collapse functionality is disabled */
+}
 
-        .card {
-            height: 100%;
-        }
+/* Remove collapsed class references */
 
-        .help-icon {
-            width: 35px;
-            height: 35px;
-            transition: filter 0.3s;
-            filter: brightness(0) saturate(100%) invert(86%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(93%) contrast(88%);
-        }
+.settings-toc-children {
+    margin-left: 8px;
+    display: block;
+    /* Remove transition and collapsed functionality */
+}
 
-        .help-icon:hover {
-            filter: invert(23%) sepia(89%) saturate(3750%) hue-rotate(201deg) brightness(89%) contrast(91%);
-        }
+.settings-toc-entry .settings-toc-child {
+    padding: 2px 8px 2px 24px;
+    cursor: pointer;
+    line-height: 20px;
+    color: var(--vscode-sideBar-foreground);
+    font-size: 13px;
+    transition: background-color 0.1s ease;
+    border-radius: 2px;
+    margin: 1px 4px;
+}
+
+.settings-toc-entry .settings-toc-child:hover {
+    background-color: var(--vscode-list-hoverBackground);
+}
+
+.settings-toc-entry .settings-toc-child.selected {
+    background-color: var(--vscode-list-activeSelectionBackground);
+    color: var(--vscode-list-activeSelectionForeground);
+}
+
+/* Settings Content Styles */
+.settings-group-title-label {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--vscode-settings-headerForeground);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.settings-group-description {
+    font-size: 13px;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.setting-item {
+    margin-bottom: 24px;
+    padding: 12px 0;
+}
+
+.setting-item-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--vscode-settings-textInputForeground);
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.setting-item-description {
+    font-size: 12px;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+/* Form Controls */
+.setting-input-box {
+    width: 320px;
+    height: 26px;
+    padding: 4px 8px;
+    border: 1px solid var(--vscode-settings-textInputBorder);
+    background-color: var(--vscode-settings-textInputBackground);
+    color: var(--vscode-settings-textInputForeground);
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 2px;
+    transition: border-color 0.2s ease;
+}
+
+.setting-input-box:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder);
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.setting-input-box:hover {
+    border-color: var(--vscode-focusBorder);
+}
+
+.setting-select-box {
+    width: 320px;
+    height: 26px;
+    padding: 2px 8px;
+    border: 1px solid var(--vscode-settings-dropdownBorder);
+    background-color: var(--vscode-settings-dropdownBackground);
+    color: var(--vscode-settings-dropdownForeground);
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 2px;
+    appearance: none;
+    padding-right: 32px;
+    transition: border-color 0.2s ease;
+    background-image: none;
+}
+
+.setting-select-box:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder);
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.setting-select-box:hover {
+    border-color: var(--vscode-focusBorder);
+}
+
+/* Container for select to position the arrow */
+.select-container {
+    position: relative;
+    display: inline-block;
+    width: 320px;
+}
+
+/* Custom dropdown arrow using CSS - more visible fallback */
+.select-container::after {
+    content: '⌄'; /* Downward-pointing chevron */
+    font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--vscode-settings-dropdownForeground);
+    pointer-events: none;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+/* Alternative approach with background-image for better visibility */
+.select-container .setting-select-box {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px;
+}
+
+/* Ensure the arrow is visible on hover and focus states */
+.select-container .setting-select-box:hover,
+.select-container .setting-select-box:focus {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23007acc' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+}
+
+.setting-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.setting-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    border: 1px solid var(--vscode-settings-checkboxBorder);
+    background-color: var(--vscode-settings-checkboxBackground);
+    border-radius: 2px;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.setting-checkbox input[type="checkbox"]:checked {
+    background-color: var(--vscode-checkbox-background);
+    border-color: var(--vscode-checkbox-border);
+}
+
+.setting-checkbox input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    left: 2px;
+    top: -1px;
+    color: var(--vscode-checkbox-foreground);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.setting-checkbox input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.setting-checkbox:hover input[type="checkbox"] {
+    border-color: var(--vscode-focusBorder);
+    transition: border-color 0.2s ease;
+}
+
+.setting-checkbox-label {
+    font-size: 13px;
+    color: var(--vscode-settings-textInputForeground);
+    cursor: pointer;
+}
+
+/* Number input */
+.setting-number-input {
+    width: 100px;
+    height: 26px;
+    padding: 4px 8px;
+    border: 1px solid var(--vscode-settings-numberInputBorder);
+    background-color: var(--vscode-settings-numberInputBackground);
+    color: var(--vscode-settings-numberInputForeground);
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 2px;
+    transition: border-color 0.2s ease;
+}
+
+.setting-number-input:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder);
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.setting-number-input:hover {
+    border-color: var(--vscode-focusBorder);
+}
+
+/* Divider */
+.setting-divider {
+    border: none;
+    border-top: 1px solid var(--vscode-settings-headerBorder);
+    margin: 20px 0;
+}
+
+.setting-divider-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--vscode-settings-headerForeground);
+    margin: 16px 0 8px 0;
+}
+
+/* Buttons */
+.settings-buttons {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background-color: var(--vscode-editor-background);
+    border-top: 1px solid var(--vscode-settings-headerBorder);
+    padding: 12px 20px;
+    display: flex;
+    gap: 8px;
+}
+
+.setting-button {
+    height: 26px;
+    padding: 4px 14px;
+    border: 1px solid var(--vscode-button-border);
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: background-color 0.1s ease, border-color 0.1s ease;
+}
+
+.setting-button:hover {
+    background-color: var(--vscode-button-hoverBackground) !important;
+    border-color: var(--vscode-button-hoverBackground) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.setting-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.setting-button.primary {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+}
+
+.setting-button.primary:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.setting-button.secondary {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    border-color: var(--vscode-button-secondaryBorder);
+}
+
+.setting-button.secondary:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground) !important;
+    border-color: var(--vscode-button-secondaryHoverBackground) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.setting-button.danger {
+    background-color: var(--vscode-inputValidation-errorBackground);
+    color: var(--vscode-inputValidation-errorForeground);
+    border-color: var(--vscode-inputValidation-errorBorder);
+}
+
+.setting-button.danger:hover {
+    background-color: var(--vscode-errorForeground);
+    border-color: var(--vscode-errorForeground);
+}
+
+/* Help icon button with codicon */
+.help-icon-button {
+    margin-left: 8px;
+    cursor: pointer;
+    color: var(--vscode-descriptionForeground);
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.help-icon-button:hover {
+    color: var(--vscode-foreground);
+}
+
+.help-icon-button:active {
+    color: var(--vscode-focusBorder);
+}
+
+.help-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.help-icon:hover {
+    opacity: 1;
+}
+
+/* Badge for markConfig */
+.markConfig {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background-color: var(--vscode-badge-background);
+    color: var(--vscode-badge-foreground);
+    border-radius: 2px;
+    margin-left: 8px;
+}
+
+.help-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.help-icon:hover {
+    opacity: 1;
+}
+
+/* Show/hide sections */
+.settings-section {
+    display: none;
+}
+
+.settings-section.active {
+    display: block;
+}
+
+/* Fallback colors for older VSCode versions */
+:root {
+    --vscode-foreground: #cccccc;
+    --vscode-editor-background: #1e1e1e;
+    --vscode-sideBar-background: #252526;
+    --vscode-sideBar-border: #2b2b2b;
+    --vscode-sideBar-foreground: #cccccc;
+    --vscode-sideBarTitle-foreground: #cccccc;
+    --vscode-list-hoverBackground: #2a2d2e;
+    --vscode-list-activeSelectionBackground: #094771;
+    --vscode-list-activeSelectionForeground: #ffffff;
+    --vscode-settings-headerBackground: #252526;
+    --vscode-settings-headerBorder: #2b2b2b;
+    --vscode-settings-headerForeground: #cccccc;
+    --vscode-settings-textInputBackground: #3c3c3c;
+    --vscode-settings-textInputForeground: #cccccc;
+    --vscode-settings-textInputBorder: #3c3c3c;
+    --vscode-settings-dropdownBackground: #3c3c3c;
+    --vscode-settings-dropdownForeground: #cccccc;
+    --vscode-settings-dropdownBorder: #3c3c3c;
+    --vscode-settings-dropdownListBorder: #555555;
+    --vscode-settings-checkboxBackground: #3c3c3c;
+    --vscode-settings-checkboxBorder: #3c3c3c;
+    --vscode-settings-numberInputBackground: #3c3c3c;
+    --vscode-settings-numberInputForeground: #cccccc;
+    --vscode-settings-numberInputBorder: #3c3c3c;
+    --vscode-checkbox-background: #0e639c;
+    --vscode-checkbox-border: #0e639c;
+    --vscode-checkbox-foreground: #ffffff;
+    --vscode-button-background: #0e639c;
+    --vscode-button-foreground: #ffffff;
+    --vscode-button-hoverBackground: #1177bb;
+    --vscode-button-border: transparent;
+    --vscode-button-secondaryBackground: #3c3c3c;
+    --vscode-button-secondaryForeground: #cccccc;
+    --vscode-button-secondaryHoverBackground: #4a4a4a;
+    --vscode-button-secondaryBorder: #3c3c3c;
+    --vscode-inputValidation-errorBackground: #5a1d1d;
+    --vscode-inputValidation-errorForeground: #ffffff;
+    --vscode-inputValidation-errorBorder: #be1100;
+    --vscode-errorForeground: #f44747;
+    --vscode-badge-background: #4d4d4d;
+    --vscode-badge-foreground: #ffffff;
+    --vscode-focusBorder: #007acc;
+    --vscode-descriptionForeground: #9d9d9d;
+    --vscode-input-background: #3c3c3c;
+    --vscode-dropdown-background: #3c3c3c;
+    --vscode-inputOption-activeBorder: #007acc;
+}
+
+/* Dark theme adjustments */
+body.vscode-dark {
+    --vscode-foreground: #cccccc;
+    --vscode-editor-background: #1e1e1e;
+}
+
+/* Light theme adjustments */
+body.vscode-light {
+    --vscode-foreground: #333333;
+    --vscode-editor-background: #ffffff;
+    --vscode-sideBar-background: #f3f3f3;
+    --vscode-sideBar-border: #e7e7e7;
+    --vscode-sideBar-foreground: #333333;
+    --vscode-sideBarTitle-foreground: #333333;
+    --vscode-list-hoverBackground: #e8e8e8;
+    --vscode-list-activeSelectionBackground: #0078d4;
+    --vscode-list-activeSelectionForeground: #ffffff;
+    --vscode-settings-headerBackground: #f3f3f3;
+    --vscode-settings-headerBorder: #e7e7e7;
+    --vscode-settings-headerForeground: #333333;
+    --vscode-settings-textInputBackground: #ffffff;
+    --vscode-settings-textInputForeground: #333333;
+    --vscode-settings-textInputBorder: #cecece;
+    --vscode-settings-dropdownBackground: #ffffff;
+    --vscode-settings-dropdownForeground: #333333;
+    --vscode-settings-dropdownBorder: #cecece;
+    --vscode-settings-dropdownListBorder: #cecece;
+    --vscode-settings-checkboxBackground: #ffffff;
+    --vscode-settings-checkboxBorder: #cecece;
+    --vscode-settings-numberInputBackground: #ffffff;
+    --vscode-settings-numberInputForeground: #333333;
+    --vscode-settings-numberInputBorder: #cecece;
+    --vscode-checkbox-background: #0078d4;
+    --vscode-checkbox-border: #0078d4;
+    --vscode-checkbox-foreground: #ffffff;
+    --vscode-button-background: #0078d4;
+    --vscode-button-foreground: #ffffff;
+    --vscode-button-hoverBackground: #106ebe;
+    --vscode-button-border: transparent;
+    --vscode-button-secondaryBackground: #e1e1e1;
+    --vscode-button-secondaryForeground: #333333;
+    --vscode-button-secondaryHoverBackground: #d0d0d0;
+    --vscode-button-secondaryBorder: #e1e1e1;
+    --vscode-inputValidation-errorBackground: #f2dede;
+    --vscode-inputValidation-errorForeground: #a94442;
+    --vscode-inputValidation-errorBorder: #a94442;
+    --vscode-errorForeground: #e51400;
+    --vscode-badge-background: #c4c4c4;
+    --vscode-badge-foreground: #333333;
+    --vscode-focusBorder: #0078d4;
+    --vscode-descriptionForeground: #717171;
+    --vscode-input-background: #ffffff;
+    --vscode-dropdown-background: #ffffff;
+    --vscode-inputOption-activeBorder: #0078d4;
+}
+
+/* High contrast theme adjustments */
+body.vscode-high-contrast {
+    --vscode-foreground: #ffffff;
+    --vscode-editor-background: #000000;
+    --vscode-sideBar-background: #000000;
+    --vscode-sideBar-border: #6fc3df;
+    --vscode-sideBar-foreground: #ffffff;
+    --vscode-sideBarTitle-foreground: #ffffff;
+    --vscode-list-hoverBackground: #2d2d30;
+    --vscode-list-activeSelectionBackground: #ffffff;
+    --vscode-list-activeSelectionForeground: #000000;
+    --vscode-settings-headerBackground: #000000;
+    --vscode-settings-headerBorder: #6fc3df;
+    --vscode-settings-headerForeground: #ffffff;
+    --vscode-settings-textInputBackground: #000000;
+    --vscode-settings-textInputForeground: #ffffff;
+    --vscode-settings-textInputBorder: #6fc3df;
+    --vscode-settings-dropdownBackground: #000000;
+    --vscode-settings-dropdownForeground: #ffffff;
+    --vscode-settings-dropdownBorder: #6fc3df;
+    --vscode-settings-dropdownListBorder: #6fc3df;
+    --vscode-settings-checkboxBackground: #000000;
+    --vscode-settings-checkboxBorder: #6fc3df;
+    --vscode-settings-numberInputBackground: #000000;
+    --vscode-settings-numberInputForeground: #ffffff;
+    --vscode-settings-numberInputBorder: #6fc3df;
+    --vscode-checkbox-background: #ffffff;
+    --vscode-checkbox-border: #ffffff;
+    --vscode-checkbox-foreground: #000000;
+    --vscode-button-background: #ffffff;
+    --vscode-button-foreground: #000000;
+    --vscode-button-hoverBackground: #6fc3df;
+    --vscode-button-border: #ffffff;
+    --vscode-button-secondaryBackground: #000000;
+    --vscode-button-secondaryForeground: #ffffff;
+    --vscode-inputValidation-errorBackground: #5a1d1d;
+    --vscode-inputValidation-errorForeground: #ffffff;
+    --vscode-inputValidation-errorBorder: #be1100;
+    --vscode-badge-background: #ffffff;
+    --vscode-badge-foreground: #000000;
+    --vscode-focusBorder: #f38518;
+    --vscode-descriptionForeground: #ffffff;
+    --vscode-input-background: #000000;
+    --vscode-dropdown-background: #000000;
+    --vscode-inputOption-activeBorder: #f38518;
+}
+
+/* Enhanced hover effects for form elements */
+.setting-input-box:hover {
+    border-color: var(--vscode-inputOption-activeBorder);
+    background-color: var(--vscode-input-background);
+}
+
+.setting-select-box:hover {
+    border-color: var(--vscode-inputOption-activeBorder);
+    background-color: var(--vscode-dropdown-background);
+}
+
+.setting-number-input:hover {
+    border-color: var(--vscode-inputOption-activeBorder);
+    background-color: var(--vscode-input-background);
+}
+
+.setting-checkbox:hover input[type="checkbox"] {
+    border-color: var(--vscode-inputOption-activeBorder);
+}
+
+/* Smooth scrolling for better UX */
+.settings-tree-container {
+    scroll-behavior: smooth;
+}
+
+.settings-editor-tree {
+    scroll-behavior: smooth;
+}

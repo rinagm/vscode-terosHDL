@@ -22,4683 +22,4456 @@ export const WEB_CONFIG = `
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{{css_0}}" rel="stylesheet">
-    <link href="{{css_1}}" rel="stylesheet">
-    <script src="{{js_0}}"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; font-src {{cspSource}}; style-src 'unsafe-inline' {{cspSource}}; script-src 'unsafe-inline' {{cspSource}};">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{css_codicons}}" rel="stylesheet">
+    <title>Settings</title>
 
 <style>
 
+/* VSCode Settings Style */
+body {
+    font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,system-ui,Ubuntu,Droid Sans,sans-serif;
+    font-size: 13px;
+    line-height: 1.4em;
+    color: var(--vscode-foreground);
+    background-color: var(--vscode-editor-background);
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
 
-        /* Move down content because we have a fixed navbar that is 50px tall */
-        body {
-            padding-top: 20px;
-            padding-left: 10px;
-            padding-right: 10px;
-        }
+.settings-editor {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
-        .markConfig {
-            font-size: 0.6em;
-        }
+.settings-header {
+    height: 35px;
+    border-bottom: 1px solid var(--vscode-settings-headerBorder);
+    background-color: var(--vscode-settings-headerBackground);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
 
-        .sidebar {
-            position: fixed;
-            top: 0px;
-            bottom: 0;
-            left: 0;
-            z-index: 1000;
-            display: block;
-            padding: 20px;
-            overflow-x: hidden;
-            overflow-y: auto;
-            /* Scrollable contents if viewport is shorter than content. */
-            width: 270px;
-        }
+.settings-header-controls {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
 
-        .main {
-            padding-left: 290px;
-        }
+.settings-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--vscode-settings-headerForeground);
+}
 
-        .main .page-header {
-            margin-top: 0;
-        }
+.settings-body {
+    flex: 1;
+    display: flex;
+    height: calc(100vh - 35px);
+    overflow: hidden;
+}
 
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-        }
+.settings-tree-container {
+    width: 300px;
+    background-color: var(--vscode-sideBar-background);
+    border-right: 1px solid var(--vscode-sideBar-border);
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-shrink: 0;
+    height: 100%;
+}
 
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
+.settings-editor-tree {
+    flex: 1;
+    background-color: var(--vscode-editor-background);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    max-height: calc(100vh - 35px);
+    scroll-behavior: smooth;
+}
 
-        .b-example-divider {
-            height: 3rem;
-            background-color: rgba(0, 0, 0, .1);
-            border: solid rgba(0, 0, 0, .15);
-            border-width: 1px 0;
-            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-        }
+/* Sidebar Tree Styles */
+.settings-toc-container {
+    padding: 8px 0;
+    height: 100%;
+}
 
-        .b-example-vr {
-            flex-shrink: 0;
-            width: 1.5rem;
-            height: 100vh;
-        }
+.settings-toc-entry {
+    color: var(--vscode-settings-dropdownListBorder);
+    position: relative;
+}
 
-        .bi {
-            vertical-align: -.125em;
-            fill: currentColor;
-        }
+.settings-toc-entry .settings-toc-entry-label {
+    display: flex;
+    align-items: center;
+    padding: 4px 22px 4px 8px;
+    cursor: pointer;
+    user-select: none;
+    line-height: 20px;
+    color: var(--vscode-sideBarTitle-foreground);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.1s ease;
+    border-radius: 2px;
+}
 
-        .nav-scroller {
-            position: relative;
-            z-index: 2;
-            height: 2.75rem;
-            overflow-y: hidden;
-        }
+.settings-toc-entry .settings-toc-entry-label:hover {
+    background-color: var(--vscode-list-hoverBackground);
+}
 
-        .nav-scroller .nav {
-            display: flex;
-            flex-wrap: nowrap;
-            padding-bottom: 1rem;
-            margin-top: -1px;
-            overflow-x: auto;
-            text-align: center;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-        }
+.settings-toc-entry .settings-toc-entry-label.selected {
+    background-color: var(--vscode-list-activeSelectionBackground);
+    color: var(--vscode-list-activeSelectionForeground);
+}
 
-        html,
-        body {
-            height: 100%;
-            overflow-y: hidden;
-        }
+.settings-toc-entry .codicon {
+    margin-right: 6px;
+    /* Remove transition since collapse functionality is disabled */
+}
 
-        .card {
-            height: 100%;
-        }
+/* Remove collapsed class references */
 
-        .help-icon {
-            width: 35px;
-            height: 35px;
-            transition: filter 0.3s;
-            filter: brightness(0) saturate(100%) invert(86%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(93%) contrast(88%);
-        }
+.settings-toc-children {
+    margin-left: 8px;
+    display: block;
+    /* Remove transition and collapsed functionality */
+}
 
-        .help-icon:hover {
-            filter: invert(23%) sepia(89%) saturate(3750%) hue-rotate(201deg) brightness(89%) contrast(91%);
-        }
+.settings-toc-entry .settings-toc-child {
+    padding: 2px 8px 2px 24px;
+    cursor: pointer;
+    line-height: 20px;
+    color: var(--vscode-sideBar-foreground);
+    font-size: 13px;
+    transition: background-color 0.1s ease;
+    border-radius: 2px;
+    margin: 1px 4px;
+}
+
+.settings-toc-entry .settings-toc-child:hover {
+    background-color: var(--vscode-list-hoverBackground);
+}
+
+.settings-toc-entry .settings-toc-child.selected {
+    background-color: var(--vscode-list-activeSelectionBackground);
+    color: var(--vscode-list-activeSelectionForeground);
+}
+
+/* Settings Content Styles */
+.settings-group-title-label {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--vscode-settings-headerForeground);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.settings-group-description {
+    font-size: 13px;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.setting-item {
+    margin-bottom: 24px;
+    padding: 12px 0;
+}
+
+.setting-item-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--vscode-settings-textInputForeground);
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.setting-item-description {
+    font-size: 12px;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+/* Form Controls */
+.setting-input-box {
+    width: 320px;
+    height: 26px;
+    padding: 4px 8px;
+    border: 1px solid var(--vscode-settings-textInputBorder);
+    background-color: var(--vscode-settings-textInputBackground);
+    color: var(--vscode-settings-textInputForeground);
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 2px;
+    transition: border-color 0.2s ease;
+}
+
+.setting-input-box:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder);
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.setting-input-box:hover {
+    border-color: var(--vscode-focusBorder);
+}
+
+.setting-select-box {
+    width: 320px;
+    height: 26px;
+    padding: 2px 8px;
+    border: 1px solid var(--vscode-settings-dropdownBorder);
+    background-color: var(--vscode-settings-dropdownBackground);
+    color: var(--vscode-settings-dropdownForeground);
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 2px;
+    appearance: none;
+    padding-right: 32px;
+    transition: border-color 0.2s ease;
+    background-image: none;
+}
+
+.setting-select-box:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder);
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.setting-select-box:hover {
+    border-color: var(--vscode-focusBorder);
+}
+
+/* Container for select to position the arrow */
+.select-container {
+    position: relative;
+    display: inline-block;
+    width: 320px;
+}
+
+/* Custom dropdown arrow using CSS - more visible fallback */
+.select-container::after {
+    content: '⌄'; /* Downward-pointing chevron */
+    font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, Arial, sans-serif;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--vscode-settings-dropdownForeground);
+    pointer-events: none;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+/* Alternative approach with background-image for better visibility */
+.select-container .setting-select-box {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px;
+}
+
+/* Ensure the arrow is visible on hover and focus states */
+.select-container .setting-select-box:hover,
+.select-container .setting-select-box:focus {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23007acc' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+}
+
+.setting-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.setting-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    border: 1px solid var(--vscode-settings-checkboxBorder);
+    background-color: var(--vscode-settings-checkboxBackground);
+    border-radius: 2px;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.setting-checkbox input[type="checkbox"]:checked {
+    background-color: var(--vscode-checkbox-background);
+    border-color: var(--vscode-checkbox-border);
+}
+
+.setting-checkbox input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    left: 2px;
+    top: -1px;
+    color: var(--vscode-checkbox-foreground);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.setting-checkbox input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.setting-checkbox:hover input[type="checkbox"] {
+    border-color: var(--vscode-focusBorder);
+    transition: border-color 0.2s ease;
+}
+
+.setting-checkbox-label {
+    font-size: 13px;
+    color: var(--vscode-settings-textInputForeground);
+    cursor: pointer;
+}
+
+/* Number input */
+.setting-number-input {
+    width: 100px;
+    height: 26px;
+    padding: 4px 8px;
+    border: 1px solid var(--vscode-settings-numberInputBorder);
+    background-color: var(--vscode-settings-numberInputBackground);
+    color: var(--vscode-settings-numberInputForeground);
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 2px;
+    transition: border-color 0.2s ease;
+}
+
+.setting-number-input:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder);
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.setting-number-input:hover {
+    border-color: var(--vscode-focusBorder);
+}
+
+/* Divider */
+.setting-divider {
+    border: none;
+    border-top: 1px solid var(--vscode-settings-headerBorder);
+    margin: 20px 0;
+}
+
+.setting-divider-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--vscode-settings-headerForeground);
+    margin: 16px 0 8px 0;
+}
+
+/* Buttons */
+.settings-buttons {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background-color: var(--vscode-editor-background);
+    border-top: 1px solid var(--vscode-settings-headerBorder);
+    padding: 12px 20px;
+    display: flex;
+    gap: 8px;
+}
+
+.setting-button {
+    height: 26px;
+    padding: 4px 14px;
+    border: 1px solid var(--vscode-button-border);
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: background-color 0.1s ease, border-color 0.1s ease;
+}
+
+.setting-button:hover {
+    background-color: var(--vscode-button-hoverBackground) !important;
+    border-color: var(--vscode-button-hoverBackground) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.setting-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder);
+}
+
+.setting-button.primary {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+}
+
+.setting-button.primary:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.setting-button.secondary {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    border-color: var(--vscode-button-secondaryBorder);
+}
+
+.setting-button.secondary:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground) !important;
+    border-color: var(--vscode-button-secondaryHoverBackground) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.setting-button.danger {
+    background-color: var(--vscode-inputValidation-errorBackground);
+    color: var(--vscode-inputValidation-errorForeground);
+    border-color: var(--vscode-inputValidation-errorBorder);
+}
+
+.setting-button.danger:hover {
+    background-color: var(--vscode-errorForeground);
+    border-color: var(--vscode-errorForeground);
+}
+
+/* Help icon button with codicon */
+.help-icon-button {
+    margin-left: 8px;
+    cursor: pointer;
+    color: var(--vscode-descriptionForeground);
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+.help-icon-button:hover {
+    color: var(--vscode-foreground);
+}
+
+.help-icon-button:active {
+    color: var(--vscode-focusBorder);
+}
+
+.help-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.help-icon:hover {
+    opacity: 1;
+}
+
+/* Badge for markConfig */
+.markConfig {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background-color: var(--vscode-badge-background);
+    color: var(--vscode-badge-foreground);
+    border-radius: 2px;
+    margin-left: 8px;
+}
+
+.help-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.help-icon:hover {
+    opacity: 1;
+}
+
+/* Show/hide sections */
+.settings-section {
+    display: none;
+}
+
+.settings-section.active {
+    display: block;
+}
+
+/* Fallback colors for older VSCode versions */
+:root {
+    --vscode-foreground: #cccccc;
+    --vscode-editor-background: #1e1e1e;
+    --vscode-sideBar-background: #252526;
+    --vscode-sideBar-border: #2b2b2b;
+    --vscode-sideBar-foreground: #cccccc;
+    --vscode-sideBarTitle-foreground: #cccccc;
+    --vscode-list-hoverBackground: #2a2d2e;
+    --vscode-list-activeSelectionBackground: #094771;
+    --vscode-list-activeSelectionForeground: #ffffff;
+    --vscode-settings-headerBackground: #252526;
+    --vscode-settings-headerBorder: #2b2b2b;
+    --vscode-settings-headerForeground: #cccccc;
+    --vscode-settings-textInputBackground: #3c3c3c;
+    --vscode-settings-textInputForeground: #cccccc;
+    --vscode-settings-textInputBorder: #3c3c3c;
+    --vscode-settings-dropdownBackground: #3c3c3c;
+    --vscode-settings-dropdownForeground: #cccccc;
+    --vscode-settings-dropdownBorder: #3c3c3c;
+    --vscode-settings-dropdownListBorder: #555555;
+    --vscode-settings-checkboxBackground: #3c3c3c;
+    --vscode-settings-checkboxBorder: #3c3c3c;
+    --vscode-settings-numberInputBackground: #3c3c3c;
+    --vscode-settings-numberInputForeground: #cccccc;
+    --vscode-settings-numberInputBorder: #3c3c3c;
+    --vscode-checkbox-background: #0e639c;
+    --vscode-checkbox-border: #0e639c;
+    --vscode-checkbox-foreground: #ffffff;
+    --vscode-button-background: #0e639c;
+    --vscode-button-foreground: #ffffff;
+    --vscode-button-hoverBackground: #1177bb;
+    --vscode-button-border: transparent;
+    --vscode-button-secondaryBackground: #3c3c3c;
+    --vscode-button-secondaryForeground: #cccccc;
+    --vscode-button-secondaryHoverBackground: #4a4a4a;
+    --vscode-button-secondaryBorder: #3c3c3c;
+    --vscode-inputValidation-errorBackground: #5a1d1d;
+    --vscode-inputValidation-errorForeground: #ffffff;
+    --vscode-inputValidation-errorBorder: #be1100;
+    --vscode-errorForeground: #f44747;
+    --vscode-badge-background: #4d4d4d;
+    --vscode-badge-foreground: #ffffff;
+    --vscode-focusBorder: #007acc;
+    --vscode-descriptionForeground: #9d9d9d;
+    --vscode-input-background: #3c3c3c;
+    --vscode-dropdown-background: #3c3c3c;
+    --vscode-inputOption-activeBorder: #007acc;
+}
+
+/* Dark theme adjustments */
+body.vscode-dark {
+    --vscode-foreground: #cccccc;
+    --vscode-editor-background: #1e1e1e;
+}
+
+/* Light theme adjustments */
+body.vscode-light {
+    --vscode-foreground: #333333;
+    --vscode-editor-background: #ffffff;
+    --vscode-sideBar-background: #f3f3f3;
+    --vscode-sideBar-border: #e7e7e7;
+    --vscode-sideBar-foreground: #333333;
+    --vscode-sideBarTitle-foreground: #333333;
+    --vscode-list-hoverBackground: #e8e8e8;
+    --vscode-list-activeSelectionBackground: #0078d4;
+    --vscode-list-activeSelectionForeground: #ffffff;
+    --vscode-settings-headerBackground: #f3f3f3;
+    --vscode-settings-headerBorder: #e7e7e7;
+    --vscode-settings-headerForeground: #333333;
+    --vscode-settings-textInputBackground: #ffffff;
+    --vscode-settings-textInputForeground: #333333;
+    --vscode-settings-textInputBorder: #cecece;
+    --vscode-settings-dropdownBackground: #ffffff;
+    --vscode-settings-dropdownForeground: #333333;
+    --vscode-settings-dropdownBorder: #cecece;
+    --vscode-settings-dropdownListBorder: #cecece;
+    --vscode-settings-checkboxBackground: #ffffff;
+    --vscode-settings-checkboxBorder: #cecece;
+    --vscode-settings-numberInputBackground: #ffffff;
+    --vscode-settings-numberInputForeground: #333333;
+    --vscode-settings-numberInputBorder: #cecece;
+    --vscode-checkbox-background: #0078d4;
+    --vscode-checkbox-border: #0078d4;
+    --vscode-checkbox-foreground: #ffffff;
+    --vscode-button-background: #0078d4;
+    --vscode-button-foreground: #ffffff;
+    --vscode-button-hoverBackground: #106ebe;
+    --vscode-button-border: transparent;
+    --vscode-button-secondaryBackground: #e1e1e1;
+    --vscode-button-secondaryForeground: #333333;
+    --vscode-button-secondaryHoverBackground: #d0d0d0;
+    --vscode-button-secondaryBorder: #e1e1e1;
+    --vscode-inputValidation-errorBackground: #f2dede;
+    --vscode-inputValidation-errorForeground: #a94442;
+    --vscode-inputValidation-errorBorder: #a94442;
+    --vscode-errorForeground: #e51400;
+    --vscode-badge-background: #c4c4c4;
+    --vscode-badge-foreground: #333333;
+    --vscode-focusBorder: #0078d4;
+    --vscode-descriptionForeground: #717171;
+    --vscode-input-background: #ffffff;
+    --vscode-dropdown-background: #ffffff;
+    --vscode-inputOption-activeBorder: #0078d4;
+}
+
+/* High contrast theme adjustments */
+body.vscode-high-contrast {
+    --vscode-foreground: #ffffff;
+    --vscode-editor-background: #000000;
+    --vscode-sideBar-background: #000000;
+    --vscode-sideBar-border: #6fc3df;
+    --vscode-sideBar-foreground: #ffffff;
+    --vscode-sideBarTitle-foreground: #ffffff;
+    --vscode-list-hoverBackground: #2d2d30;
+    --vscode-list-activeSelectionBackground: #ffffff;
+    --vscode-list-activeSelectionForeground: #000000;
+    --vscode-settings-headerBackground: #000000;
+    --vscode-settings-headerBorder: #6fc3df;
+    --vscode-settings-headerForeground: #ffffff;
+    --vscode-settings-textInputBackground: #000000;
+    --vscode-settings-textInputForeground: #ffffff;
+    --vscode-settings-textInputBorder: #6fc3df;
+    --vscode-settings-dropdownBackground: #000000;
+    --vscode-settings-dropdownForeground: #ffffff;
+    --vscode-settings-dropdownBorder: #6fc3df;
+    --vscode-settings-dropdownListBorder: #6fc3df;
+    --vscode-settings-checkboxBackground: #000000;
+    --vscode-settings-checkboxBorder: #6fc3df;
+    --vscode-settings-numberInputBackground: #000000;
+    --vscode-settings-numberInputForeground: #ffffff;
+    --vscode-settings-numberInputBorder: #6fc3df;
+    --vscode-checkbox-background: #ffffff;
+    --vscode-checkbox-border: #ffffff;
+    --vscode-checkbox-foreground: #000000;
+    --vscode-button-background: #ffffff;
+    --vscode-button-foreground: #000000;
+    --vscode-button-hoverBackground: #6fc3df;
+    --vscode-button-border: #ffffff;
+    --vscode-button-secondaryBackground: #000000;
+    --vscode-button-secondaryForeground: #ffffff;
+    --vscode-inputValidation-errorBackground: #5a1d1d;
+    --vscode-inputValidation-errorForeground: #ffffff;
+    --vscode-inputValidation-errorBorder: #be1100;
+    --vscode-badge-background: #ffffff;
+    --vscode-badge-foreground: #000000;
+    --vscode-focusBorder: #f38518;
+    --vscode-descriptionForeground: #ffffff;
+    --vscode-input-background: #000000;
+    --vscode-dropdown-background: #000000;
+    --vscode-inputOption-activeBorder: #f38518;
+}
+
+/* Enhanced hover effects for form elements */
+.setting-input-box:hover {
+    border-color: var(--vscode-inputOption-activeBorder);
+    background-color: var(--vscode-input-background);
+}
+
+.setting-select-box:hover {
+    border-color: var(--vscode-inputOption-activeBorder);
+    background-color: var(--vscode-dropdown-background);
+}
+
+.setting-number-input:hover {
+    border-color: var(--vscode-inputOption-activeBorder);
+    background-color: var(--vscode-input-background);
+}
+
+.setting-checkbox:hover input[type="checkbox"] {
+    border-color: var(--vscode-inputOption-activeBorder);
+}
+
+/* Smooth scrolling for better UX */
+.settings-tree-container {
+    scroll-behavior: smooth;
+}
+
+.settings-editor-tree {
+    scroll-behavior: smooth;
+}
 
 </style>
 </head>
 <body>
-    <div class="container-fluid h-100">
-        <div class="row h-100">
-
-        <div class="flex-shrink-0 p-3 bg-white overflow-auto sidebar">
-            <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
-                
-<svg class="bi pe-none me-2" width="40" height="30" viewBox="0 0 54.463092 43.762592">
-  <defs
-     id="defs2" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="95.379217"
-     inkscape:cy="75.795012"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:window-width="1853"
-     inkscape:window-height="1019"
-     inkscape:window-x="67"
-     inkscape:window-y="33"
-     inkscape:window-maximized="1"
-     inkscape:pagecheckerboard="false">
-    <inkscape:grid
-       type="xygrid"
-       id="grid225"
-       originx="144.3368"
-       originy="16.902247" />
-  </sodipodi:namedview>
-  <metadata
-     id="metadata5">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:label="Capa 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(98.991305,-81.967747)">
-    <g
-       id="g4024"
-       transform="translate(-189.94604,14.565045)">
-      <path
-         style="fill:#cf1f1f;stroke-width:0.08466666"
-         d="m 109.16607,111.15252 c -2.76202,-0.17762 -5.25248,-0.82708 -7.57766,-1.97612 -5.245982,-2.5924 -9.018108,-7.42985 -10.235132,-13.125739 -0.395046,-1.848886 -0.39976,-2.004655 -0.398436,-13.165666 0.0015,-12.486355 -0.0148,-10.965476 0.114981,-10.741517 0.705588,1.217633 1.72246,2.142913 3.042571,2.768522 1.197997,0.567739 2.736724,0.921535 4.004681,0.920787 1.330863,-7.62e-4 1.206124,0.03949 2.164005,-0.698769 1.82744,-1.408446 2.22148,-1.694689 2.982,-2.166197 4.21457,-2.612945 10.70159,-4.519946 17.79866,-5.232301 4.42109,-0.443758 9.29491,-0.443758 13.716,0 3.59587,0.360929 7.28788,1.07816 10.4775,2.03542 0.38198,0.114638 0.0704,0.20242 -0.71967,0.20273 -5.52998,0.0022 -10.88534,4.253247 -13.4418,10.670087 -0.9712,2.437758 -1.60995,5.585167 -1.60609,7.913904 0.002,1.118977 -0.25376,5.033654 -0.34277,5.249333 -0.0384,0.09313 -0.0942,0.416984 -0.12381,0.719667 -0.0869,0.886517 -0.44396,2.412891 -0.84623,3.617292 -1.34535,4.027947 -4.00775,7.480757 -7.62113,9.883657 -2.31449,1.53915 -5.51581,2.70217 -8.255,2.99901 -0.97406,0.10555 -2.49715,0.16676 -3.13267,0.1259 z m 3.56356,-6.96115 c 1.54585,-0.35865 2.87771,-0.91409 4.09878,-1.70936 2.81848,-1.83565 4.69254,-4.581507 5.42956,-7.955349 0.22481,-1.029132 0.22481,-3.796868 0,-4.826 -1.0902,-4.990548 -4.71468,-8.615033 -9.70523,-9.705226 -1.02913,-0.224815 -3.79687,-0.224815 -4.826,0 -4.93013,1.076995 -8.537953,4.634462 -9.6632,9.528332 -0.216431,0.941293 -0.303503,3.14629 -0.16519,4.183272 0.730491,5.476784 4.971,9.787681 10.46339,10.637081 0.86867,0.13434 3.53193,0.0412 4.36789,-0.15275 z m -3.30956,-8.404459 c -1.45204,-0.238267 -2.63214,-1.444232 -2.86951,-2.932417 -0.36868,-2.311319 1.67295,-4.354024 3.99135,-3.993459 2.78398,0.432975 3.94879,3.820271 2.01633,5.863562 -0.82072,0.867793 -1.96435,1.254925 -3.13817,1.062314 z"
-         id="path4028"
-         inkscape:connector-curvature="0" />
-      <path
-         style="fill:#4e4e4e;stroke-width:0.08466666"
-         d="m 109.16607,111.15252 c -2.76202,-0.17762 -5.25248,-0.82708 -7.57766,-1.97612 -5.245982,-2.5924 -9.018108,-7.42985 -10.235132,-13.125739 -0.395046,-1.848886 -0.39976,-2.004655 -0.398436,-13.165666 0.0015,-12.486355 -0.0148,-10.965476 0.114981,-10.741517 0.705588,1.217633 1.72246,2.142913 3.042571,2.768522 1.197997,0.567739 2.736724,0.921535 4.004681,0.920787 1.330863,-7.62e-4 1.206124,0.03949 2.164005,-0.698769 1.82744,-1.408446 2.22148,-1.694689 2.982,-2.166197 4.21457,-2.612945 10.70159,-4.519946 17.79866,-5.232301 4.42109,-0.443758 9.29491,-0.443758 13.716,0 3.59587,0.360929 7.28788,1.07816 10.4775,2.03542 0.38198,0.114638 0.0704,0.20242 -0.71967,0.20273 -5.52998,0.0022 -10.88534,4.253247 -13.4418,10.670087 -0.9712,2.437758 -1.60995,5.585167 -1.60609,7.913904 0.002,1.118977 -0.25376,5.033654 -0.34277,5.249333 -0.0384,0.09313 -0.0942,0.416984 -0.12381,0.719667 -0.0869,0.886517 -0.44396,2.412891 -0.84623,3.617292 -1.34535,4.027947 -4.00775,7.480757 -7.62113,9.883657 -2.31449,1.53915 -5.51581,2.70217 -8.255,2.99901 -0.97406,0.10555 -2.49715,0.16676 -3.13267,0.1259 z m 3.56356,-6.96115 c 1.54585,-0.35865 2.87771,-0.91409 4.09878,-1.70936 2.81848,-1.83565 4.69254,-4.581507 5.42956,-7.955349 0.22481,-1.029132 0.22481,-3.796868 0,-4.826 -1.0902,-4.990548 -4.71468,-8.615033 -9.70523,-9.705226 -1.02913,-0.224815 -3.79687,-0.224815 -4.826,0 -4.93013,1.076995 -8.537953,4.634462 -9.6632,9.528332 -0.216431,0.941293 -0.303503,3.14629 -0.16519,4.183272 0.730491,5.476784 4.971,9.787681 10.46339,10.637081 0.86867,0.13434 3.53193,0.0412 4.36789,-0.15275 z"
-         id="path4026"
-         inkscape:connector-curvature="0" />
-    </g>
-  </g>
-</svg>
-
-                <div class="fs-5 fw-semibold sidebar-heading h5" id="configTitle">Global Configuration</div>
-            </a>
-            <ul class="list-unstyled ps-0">
-                <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                         
-                        data-bs-target="#General" aria-expanded="false"
-                        id="btn-general-general"
-                    >
-                        General
-                    </button>
-                    <div class="collapse" id="General">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        </ul>
-                    </div>
-                </li>
-                <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                         
-                        data-bs-target="#Documentation" aria-expanded="false"
-                        id="btn-documentation-general"
-                    >
-                        Documentation
-                    </button>
-                    <div class="collapse" id="Documentation">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        </ul>
-                    </div>
-                </li>
-                <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                         
-                        data-bs-target="#Editor" aria-expanded="false"
-                        id="btn-editor-general"
-                    >
-                        Editor
-                    </button>
-                    <div class="collapse" id="Editor">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        </ul>
-                    </div>
-                </li>
-                <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" 
-                        data-bs-target="#Formatter" aria-expanded="false"
-                        id="btn-formatter-general"
-                    >
-                        Formatter
-                    </button>
-                    <div class="collapse" id="Formatter">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-formatter-istyle" href="#" class="link-dark d-inline-flex text-decoration-none rounded">iStyle</a></li>
-                            <li><a id="btn-formatter-s3sv" href="#" class="link-dark d-inline-flex text-decoration-none rounded">s3sv</a></li>
-                            <li><a id="btn-formatter-verible" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Verible</a></li>
-                            <li><a id="btn-formatter-standalone" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VHDL standalone</a></li>
-                            <li><a id="btn-formatter-vsg" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VHDL VSG</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" 
-                        data-bs-target="#Linter-settings" aria-expanded="false"
-                        id="btn-linter-general"
-                    >
-                        Linter settings
-                    </button>
-                    <div class="collapse" id="Linter-settings">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-linter-vhdlls" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VHDL-LS linter</a></li>
-                            <li><a id="btn-linter-ghdl" href="#" class="link-dark d-inline-flex text-decoration-none rounded">GHDL linter</a></li>
-                            <li><a id="btn-linter-icarus" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Icarus linter</a></li>
-                            <li><a id="btn-linter-modelsim" href="#" class="link-dark d-inline-flex text-decoration-none rounded">ModelSim linter</a></li>
-                            <li><a id="btn-linter-verible" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Verible linter</a></li>
-                            <li><a id="btn-linter-verilator" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Verilator linter</a></li>
-                            <li><a id="btn-linter-vivado" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Vivado linter</a></li>
-                            <li><a id="btn-linter-vsg" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VSG linter</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                         
-                        data-bs-target="#Schematic-viewer" aria-expanded="false"
-                        id="btn-schematic-general"
-                    >
-                        Schematic viewer
-                    </button>
-                    <div class="collapse" id="Schematic-viewer">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        </ul>
-                    </div>
-                </li>
-                <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                         
-                        data-bs-target="#Templates" aria-expanded="false"
-                        id="btn-templates-general"
-                    >
-                        Templates
-                    </button>
-                    <div class="collapse" id="Templates">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        </ul>
-                    </div>
-                </li>
-                <li class="mb-1">
-                    <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-                        data-bs-toggle="collapse" 
-                        data-bs-target="#Tools" aria-expanded="false"
-                        id="btn-tools-general"
-                    >
-                        Tools
-                    </button>
-                    <div class="collapse" id="Tools">
-                        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a id="btn-tools-quartus" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Intel@ Quartus@ Prime</a></li>
-                            <li><a id="btn-tools-vsg" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VSG</a></li>
-                            <li><a id="btn-tools-osvvm" href="#" class="link-dark d-inline-flex text-decoration-none rounded">OSVVM</a></li>
-                            <li><a id="btn-tools-ascenlint" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Ascenlint</a></li>
-                            <li><a id="btn-tools-cocotb" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Cocotb</a></li>
-                            <li><a id="btn-tools-diamond" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Diamond</a></li>
-                            <li><a id="btn-tools-ghdl" href="#" class="link-dark d-inline-flex text-decoration-none rounded">GHDL</a></li>
-                            <li><a id="btn-tools-icarus" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Icarus</a></li>
-                            <li><a id="btn-tools-icestorm" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Icestorm</a></li>
-                            <li><a id="btn-tools-ise" href="#" class="link-dark d-inline-flex text-decoration-none rounded">ISE</a></li>
-                            <li><a id="btn-tools-isem" href="#" class="link-dark d-inline-flex text-decoration-none rounded">ISIM</a></li>
-                            <li><a id="btn-tools-modelsim" href="#" class="link-dark d-inline-flex text-decoration-none rounded">ModelSim</a></li>
-                            <li><a id="btn-tools-morty" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Morty</a></li>
-                            <li><a id="btn-tools-radiant" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Radiant</a></li>
-                            <li><a id="btn-tools-rivierapro" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Rivierapro</a></li>
-                            <li><a id="btn-tools-spyglass" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Spyglass</a></li>
-                            <li><a id="btn-tools-symbiyosys" href="#" class="link-dark d-inline-flex text-decoration-none rounded">SymbiYosys</a></li>
-                            <li><a id="btn-tools-symbiflow" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Symbiflow</a></li>
-                            <li><a id="btn-tools-trellis" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Trellis</a></li>
-                            <li><a id="btn-tools-vcs" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VCS</a></li>
-                            <li><a id="btn-tools-verible" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Verible</a></li>
-                            <li><a id="btn-tools-verilator" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Verilator</a></li>
-                            <li><a id="btn-tools-vivado" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Vivado</a></li>
-                            <li><a id="btn-tools-vunit" href="#" class="link-dark d-inline-flex text-decoration-none rounded">VUnit</a></li>
-                            <li><a id="btn-tools-xcelium" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Xcelium</a></li>
-                            <li><a id="btn-tools-xsim" href="#" class="link-dark d-inline-flex text-decoration-none rounded">XSIM</a></li>
-                            <li><a id="btn-tools-yosys" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Yosys</a></li>
-                            <li><a id="btn-tools-openfpga" href="#" class="link-dark d-inline-flex text-decoration-none rounded">OpenFPGA</a></li>
-                            <li><a id="btn-tools-activehdl" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Active-HDL</a></li>
-                            <li><a id="btn-tools-questa" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Questa Advanced Simulator</a></li>
-                            <li><a id="btn-tools-raptor" href="#" class="link-dark d-inline-flex text-decoration-none rounded">Raptor Design Suite</a></li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
+    <div class="settings-editor">
+        <div class="settings-header">
+            <div class="settings-header-controls">
+                <div class="settings-title" id="configTitle">Global Configuration</div>
+            </div>
         </div>
+        
+        <div class="settings-body">
+            <div class="settings-tree-container">
+                <div class="settings-toc-container">
+                    <div class="settings-toc-entry" id="toc-general">
+                        <div class="settings-toc-entry-label" id="btn-general-general">
+                            General
+                        </div>
+                    </div>
+                    <div class="settings-toc-entry" id="toc-documentation">
+                        <div class="settings-toc-entry-label" id="btn-documentation-general">
+                            Documentation
+                        </div>
+                    </div>
+                    <div class="settings-toc-entry" id="toc-editor">
+                        <div class="settings-toc-entry-label" id="btn-editor-general">
+                            Editor
+                        </div>
+                    </div>
+                    <div class="settings-toc-entry" id="toc-formatter">
+                        <div class="settings-toc-entry-label" id="btn-formatter-general">
+                            <i class="codicon codicon-chevron-down"></i>
+                            Formatter
+                        </div>
+                        <div class="settings-toc-children" id="children-formatter">
+                            <div class="settings-toc-child" id="btn-formatter-istyle">
+                                iStyle
+                            </div>
+                            <div class="settings-toc-child" id="btn-formatter-s3sv">
+                                s3sv
+                            </div>
+                            <div class="settings-toc-child" id="btn-formatter-verible">
+                                Verible
+                            </div>
+                            <div class="settings-toc-child" id="btn-formatter-standalone">
+                                VHDL standalone
+                            </div>
+                            <div class="settings-toc-child" id="btn-formatter-vsg">
+                                VHDL VSG
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-toc-entry" id="toc-linter">
+                        <div class="settings-toc-entry-label" id="btn-linter-general">
+                            <i class="codicon codicon-chevron-down"></i>
+                            Linter settings
+                        </div>
+                        <div class="settings-toc-children" id="children-linter">
+                            <div class="settings-toc-child" id="btn-linter-vhdlls">
+                                VHDL-LS linter
+                            </div>
+                            <div class="settings-toc-child" id="btn-linter-ghdl">
+                                GHDL linter
+                            </div>
+                            <div class="settings-toc-child" id="btn-linter-icarus">
+                                Icarus linter
+                            </div>
+                            <div class="settings-toc-child" id="btn-linter-modelsim">
+                                ModelSim linter
+                            </div>
+                            <div class="settings-toc-child" id="btn-linter-verible">
+                                Verible linter
+                            </div>
+                            <div class="settings-toc-child" id="btn-linter-verilator">
+                                Verilator linter
+                            </div>
+                            <div class="settings-toc-child" id="btn-linter-vivado">
+                                Vivado linter
+                            </div>
+                            <div class="settings-toc-child" id="btn-linter-vsg">
+                                VSG linter
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-toc-entry" id="toc-schematic">
+                        <div class="settings-toc-entry-label" id="btn-schematic-general">
+                            Schematic viewer
+                        </div>
+                    </div>
+                    <div class="settings-toc-entry" id="toc-templates">
+                        <div class="settings-toc-entry-label" id="btn-templates-general">
+                            Templates
+                        </div>
+                    </div>
+                    <div class="settings-toc-entry" id="toc-tools">
+                        <div class="settings-toc-entry-label" id="btn-tools-general">
+                            <i class="codicon codicon-chevron-down"></i>
+                            Tools
+                        </div>
+                        <div class="settings-toc-children" id="children-tools">
+                            <div class="settings-toc-child" id="btn-tools-quartus">
+                                Intel@ Quartus@ Prime
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-vsg">
+                                VSG
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-osvvm">
+                                OSVVM
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-ascenlint">
+                                Ascenlint
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-cocotb">
+                                Cocotb
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-diamond">
+                                Diamond
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-ghdl">
+                                GHDL
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-icarus">
+                                Icarus
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-icestorm">
+                                Icestorm
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-ise">
+                                ISE
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-isem">
+                                ISIM
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-modelsim">
+                                ModelSim
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-morty">
+                                Morty
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-radiant">
+                                Radiant
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-rivierapro">
+                                Rivierapro
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-siliconcompiler">
+                                SiliconCompiler
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-spyglass">
+                                Spyglass
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-symbiyosys">
+                                SymbiYosys
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-symbiflow">
+                                Symbiflow
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-trellis">
+                                Trellis
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-vcs">
+                                VCS
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-verible">
+                                Verible
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-verilator">
+                                Verilator
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-vivado">
+                                Vivado
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-vunit">
+                                VUnit
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-xcelium">
+                                Xcelium
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-xsim">
+                                XSIM
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-yosys">
+                                Yosys
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-openfpga">
+                                OpenFPGA
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-activehdl">
+                                Active-HDL
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-questa">
+                                Questa Advanced Simulator
+                            </div>
+                            <div class="settings-toc-child" id="btn-tools-raptor">
+                                Raptor Design Suite
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-editor-tree">
 
-<div class="col-sm-12 main h-100">
-    <div class="card h-100" id="general-general">
-      <div class="card-header">
-        <h1 class="card-title">General<a href="https://terostechnology.github.io/terosHDLdoc/docs/installation_checklist/installation" target="_blank"><img class="help-icon" src="HELP_ICON" alt="Go To Documentation"></a></h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-          
-            <div class="mb-3">
-              <label for="general-general-pypath" class="form-label">
-                Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install teroshdl. E.g: pip3 install teroshdl</strong> <a href=https://terostechnology.github.io/terosHDLdoc/docs/installation_checklist/installation#2-python3>https://terostechnology.github.io/terosHDLdoc/docs/installation_checklist/installation#2-python3</a>
-                <span class="markConfig badge bg-secondary" id="mark_general-general-pypath"></span>
-              </label>
-                <input class="form-control" id="general-general-pypath" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="general-general-makepath" class="form-label">
-                Make binary directory (e.g.: /usr/bin). Empty if you want to use the system path.
-                <span class="markConfig badge bg-secondary" id="mark_general-general-makepath"></span>
-              </label>
-                <input class="form-control" id="general-general-makepath" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="general-general-go_to_definition_vhdl">
-                <label class="form-check-label" for="general-general-go_to_definition_vhdl">
-                  Activate go to definition feature for VHDL (you need to restart VSCode).
-                  <span class="markConfig badge bg-secondary" id="mark_general-general-go_to_definition_vhdl"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="general-general-go_to_definition_verilog">
-                <label class="form-check-label" for="general-general-go_to_definition_verilog">
-                  Activate go to definition feature for Verilog/SV (you need to restart VSCode).
-                  <span class="markConfig badge bg-secondary" id="mark_general-general-go_to_definition_verilog"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="general-general-developer_mode">
-                <label class="form-check-label" for="general-general-developer_mode">
-                  Developer mode: be careful!!
-                  <span class="markConfig badge bg-secondary" id="mark_general-general-developer_mode"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="documentation-general">
-      <div class="card-header">
-        <h1 class="card-title">Documentation<a href="https://terostechnology.github.io/terosHDLdoc/docs/category/auto-documentation" target="_blank"><img class="help-icon" src="HELP_ICON" alt="Go To Documentation"></a></h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-language" class="form-label">
-                Documentation language:
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-language"></span>
-              </label>
-              <select class="form-select" aria-label="Documentation language:" id="documentation-general-language">
-                      <option value='english'>English</option>
-                      <option value='russian'>Russian</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-symbol_vhdl" class="form-label">
-                Special VHDL symbol at the begin of the comment to extract documentation. Example: <code>--! Code comment</code>
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-symbol_vhdl"></span>
-              </label>
-                <input class="form-control" id="documentation-general-symbol_vhdl" rows="3"  value="!"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-symbol_verilog" class="form-label">
-                Special Verilog symbol at the begin of the comment to extract documentation. Example: <code>//! Code comment</code>
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-symbol_verilog"></span>
-              </label>
-                <input class="form-control" id="documentation-general-symbol_verilog" rows="3"  value="!"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="documentation-general-dependency_graph">
-                <label class="form-check-label" for="documentation-general-dependency_graph">
-                  Include dependency graph:
-                  <span class="markConfig badge bg-secondary" id="mark_documentation-general-dependency_graph"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="documentation-general-self_contained">
-                <label class="form-check-label" for="documentation-general-self_contained">
-                  HTML documentation self contained:
-                  <span class="markConfig badge bg-secondary" id="mark_documentation-general-self_contained"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="documentation-general-fsm">
-                <label class="form-check-label" for="documentation-general-fsm">
-                  Include FSM:
-                  <span class="markConfig badge bg-secondary" id="mark_documentation-general-fsm"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-ports" class="form-label">
-                Include ports:
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-ports"></span>
-              </label>
-              <select class="form-select" aria-label="Include ports:" id="documentation-general-ports">
-                      <option value='all'>All</option>
-                      <option value='only_commented'>Only commented</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-generics" class="form-label">
-                Include generics:
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-generics"></span>
-              </label>
-              <select class="form-select" aria-label="Include generics:" id="documentation-general-generics">
-                      <option value='all'>All</option>
-                      <option value='only_commented'>Only commented</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-instantiations" class="form-label">
-                Include instantiations:
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-instantiations"></span>
-              </label>
-              <select class="form-select" aria-label="Include instantiations:" id="documentation-general-instantiations">
-                      <option value='all'>All</option>
-                      <option value='only_commented'>Only commented</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-signals" class="form-label">
-                Include signals:
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-signals"></span>
-              </label>
-              <select class="form-select" aria-label="Include signals:" id="documentation-general-signals">
-                      <option value='all'>All</option>
-                      <option value='only_commented'>Only commented</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-constants" class="form-label">
-                Include consants:
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-constants"></span>
-              </label>
-              <select class="form-select" aria-label="Include consants:" id="documentation-general-constants">
-                      <option value='all'>All</option>
-                      <option value='only_commented'>Only commented</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-types" class="form-label">
-                Include types:
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-types"></span>
-              </label>
-              <select class="form-select" aria-label="Include types:" id="documentation-general-types">
-                      <option value='all'>All</option>
-                      <option value='only_commented'>Only commented</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-process" class="form-label">
-                Include always/processes:
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-process"></span>
-              </label>
-              <select class="form-select" aria-label="Include always/processes:" id="documentation-general-process">
-                      <option value='all'>All</option>
-                      <option value='only_commented'>Only commented</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-functions" class="form-label">
-                Include functions:
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-functions"></span>
-              </label>
-              <select class="form-select" aria-label="Include functions:" id="documentation-general-functions">
-                      <option value='all'>All</option>
-                      <option value='only_commented'>Only commented</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-tasks" class="form-label">
-                Include tasks:
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-tasks"></span>
-              </label>
-              <select class="form-select" aria-label="Include tasks:" id="documentation-general-tasks">
-                      <option value='all'>All</option>
-                      <option value='only_commented'>Only commented</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="documentation-general-magic_config_path" class="form-label">
-                Magic config file path
-                <span class="markConfig badge bg-secondary" id="mark_documentation-general-magic_config_path"></span>
-              </label>
-                <input class="form-control" id="documentation-general-magic_config_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="editor-general">
-      <div class="card-header">
-        <h1 class="card-title">Editor<a href="https://terostechnology.github.io/terosHDLdoc/docs/category/editor" target="_blank"><img class="help-icon" src="HELP_ICON" alt="Go To Documentation"></a></h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="editor-general-stutter_comment_shortcuts">
-                <label class="form-check-label" for="editor-general-stutter_comment_shortcuts">
-                  Stutter mode: an enter keypress at the end of a line that contains a non-empty comment will continue the comment on the next line. This can be cancelled by pressing enter again. You must also set <code>"editor.formatOnType": true"</code>
-                  <span class="markConfig badge bg-secondary" id="mark_editor-general-stutter_comment_shortcuts"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="editor-general-stutter_block_width" class="form-label">
-                Width of block comment elements inserted by stutter completions
-                <span class="markConfig badge bg-secondary" id="mark_editor-general-stutter_block_width"></span>
-              </label>
-              <input type='number' class="form-control" id="editor-general-stutter_block_width" rows="3"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="editor-general-stutter_max_width" class="form-label">
-                Max width of block comment elements inserted by stutter completions. Set to zero to disable.
-                <span class="markConfig badge bg-secondary" id="mark_editor-general-stutter_max_width"></span>
-              </label>
-              <input type='number' class="form-control" id="editor-general-stutter_max_width" rows="3"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="editor-general-stutter_delimiters">
-                <label class="form-check-label" for="editor-general-stutter_delimiters">
-                  Stutter mode: enable Delimiter Shortcuts
-                  <span class="markConfig badge bg-secondary" id="mark_editor-general-stutter_delimiters"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="editor-general-stutter_bracket_shortcuts">
-                <label class="form-check-label" for="editor-general-stutter_bracket_shortcuts">
-                  Stutter mode: enable Bracket Shortcuts
-                  <span class="markConfig badge bg-secondary" id="mark_editor-general-stutter_bracket_shortcuts"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="formatter-general">
-      <div class="card-header">
-        <h1 class="card-title">Formatter<a href="https://terostechnology.github.io/terosHDLdoc/docs/guides/formatter" target="_blank"><img class="help-icon" src="HELP_ICON" alt="Go To Documentation"></a></h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-general-formatter_verilog" class="form-label">
-                Verilog/SV formatter:
-                <span class="markConfig badge bg-secondary" id="mark_formatter-general-formatter_verilog"></span>
-              </label>
-              <select class="form-select" aria-label="Verilog/SV formatter:" id="formatter-general-formatter_verilog">
-                      <option value='istyle'>iStyle</option>
-                      <option value='s3sv'>s3sv</option>
-                      <option value='verible'>Verible</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-general-formatter_vhdl" class="form-label">
-                VHDL formatter:
-                <span class="markConfig badge bg-secondary" id="mark_formatter-general-formatter_vhdl"></span>
-              </label>
-              <select class="form-select" aria-label="VHDL formatter:" id="formatter-general-formatter_vhdl">
-                      <option value='standalone'>Standalone</option>
-                      <option value='vsg'>VSG</option>
-              </select>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="formatter-istyle">
-      <div class="card-header">
-        <h1 class="card-title">Formatter: iStyle</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Verilog/SV iStyle formatter</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="formatter-istyle-style" class="form-label">
-                Predefined Styling options.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-istyle-style"></span>
-              </label>
-              <select class="form-select" aria-label="Predefined Styling options." id="formatter-istyle-style">
-                      <option value='ansi'>ANSI</option>
-                      <option value='kr'>Kernighan&Ritchie</option>
-                      <option value='gnu'>GNU</option>
-                      <option value='indent_only'>Indent only</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-istyle-indentation_size" class="form-label">
-                Indentation size in number of characters.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-istyle-indentation_size"></span>
-              </label>
-              <input type='number' class="form-control" id="formatter-istyle-indentation_size" rows="3"></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="formatter-s3sv">
-      <div class="card-header">
-        <h1 class="card-title">Formatter: s3sv</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Verilog/SV S3SV formatter</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="formatter-s3sv-one_bind_per_line">
-                <label class="form-check-label" for="formatter-s3sv-one_bind_per_line">
-                  Force one binding per line in instanciations statements.
-                  <span class="markConfig badge bg-secondary" id="mark_formatter-s3sv-one_bind_per_line"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="formatter-s3sv-one_declaration_per_line">
-                <label class="form-check-label" for="formatter-s3sv-one_declaration_per_line">
-                  Force one declaration per line.
-                  <span class="markConfig badge bg-secondary" id="mark_formatter-s3sv-one_declaration_per_line"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="formatter-s3sv-use_tabs">
-                <label class="form-check-label" for="formatter-s3sv-use_tabs">
-                  Use tabs instead of spaces for indentation.
-                  <span class="markConfig badge bg-secondary" id="mark_formatter-s3sv-use_tabs"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-s3sv-indentation_size" class="form-label">
-                Indentation size in number of characters.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-s3sv-indentation_size"></span>
-              </label>
-              <input type='number' class="form-control" id="formatter-s3sv-indentation_size" rows="3"></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="formatter-verible">
-      <div class="card-header">
-        <h1 class="card-title">Formatter: Verible</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Verilog/SV Verible formatter</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="formatter-verible-format_args" class="form-label">
-                Extra command line arguments passed to the Verible tool
-                <span class="markConfig badge bg-secondary" id="mark_formatter-verible-format_args"></span>
-              </label>
-                <input class="form-control" id="formatter-verible-format_args" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="formatter-standalone">
-      <div class="card-header">
-        <h1 class="card-title">Formatter: VHDL standalone</h1>
-        <h6 class="card-subtitle mb-2 text-muted">VHDL standalone formatter</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="formatter-standalone-keyword_case" class="form-label">
-                Keyword case. e.g. begin, case, when 
-                <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-keyword_case"></span>
-              </label>
-              <select class="form-select" aria-label="Keyword case. e.g. begin, case, when " id="formatter-standalone-keyword_case">
-                      <option value='lowercase'>LowerCase</option>
-                      <option value='uppercase'>UpperCase</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-standalone-name_case" class="form-label">
-                Type name case. e.g. boolean, natural, string 
-                <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-name_case"></span>
-              </label>
-              <select class="form-select" aria-label="Type name case. e.g. boolean, natural, string " id="formatter-standalone-name_case">
-                      <option value='lowercase'>LowerCase</option>
-                      <option value='uppercase'>UpperCase</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-standalone-indentation" class="form-label">
-                Indentation.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-indentation"></span>
-              </label>
-                <input class="form-control" id="formatter-standalone-indentation" rows="3"  value="  "></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="formatter-standalone-align_port_generic">
-                <label class="form-check-label" for="formatter-standalone-align_port_generic">
-                  Align signs in ports and generics.
-                  <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-align_port_generic"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="formatter-standalone-align_comment">
-                <label class="form-check-label" for="formatter-standalone-align_comment">
-                  Align comments.
-                  <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-align_comment"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="formatter-standalone-remove_comments">
-                <label class="form-check-label" for="formatter-standalone-remove_comments">
-                  Remove comments.
-                  <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-remove_comments"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="formatter-standalone-remove_reports">
-                <label class="form-check-label" for="formatter-standalone-remove_reports">
-                  Remove reports.
-                  <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-remove_reports"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="formatter-standalone-check_alias">
-                <label class="form-check-label" for="formatter-standalone-check_alias">
-                  All long names will be replaced by ALIAS names.
-                  <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-check_alias"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-standalone-new_line_after_then" class="form-label">
-                New line after THEN.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-new_line_after_then"></span>
-              </label>
-              <select class="form-select" aria-label="New line after THEN." id="formatter-standalone-new_line_after_then">
-                      <option value='new_line'>New line</option>
-                      <option value='no_new_line'>No new line</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-standalone-new_line_after_semicolon" class="form-label">
-                New line after semicolon ';'.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-new_line_after_semicolon"></span>
-              </label>
-              <select class="form-select" aria-label="New line after semicolon ';'." id="formatter-standalone-new_line_after_semicolon">
-                      <option value='new_line'>New line</option>
-                      <option value='no_new_line'>No new line</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-standalone-new_line_after_else" class="form-label">
-                New line after ELSE.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-new_line_after_else"></span>
-              </label>
-              <select class="form-select" aria-label="New line after ELSE." id="formatter-standalone-new_line_after_else">
-                      <option value='new_line'>New line</option>
-                      <option value='no_new_line'>No new line</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-standalone-new_line_after_port" class="form-label">
-                New line after PORT | PORT MAP.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-new_line_after_port"></span>
-              </label>
-              <select class="form-select" aria-label="New line after PORT | PORT MAP." id="formatter-standalone-new_line_after_port">
-                      <option value='new_line'>New line</option>
-                      <option value='no_new_line'>No new line</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="formatter-standalone-new_line_after_generic" class="form-label">
-                New line after GENERIC.
-                <span class="markConfig badge bg-secondary" id="mark_formatter-standalone-new_line_after_generic"></span>
-              </label>
-              <select class="form-select" aria-label="New line after GENERIC." id="formatter-standalone-new_line_after_generic">
-                      <option value='new_line'>New line</option>
-                      <option value='no_new_line'>No new line</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="formatter-vsg">
-      <div class="card-header">
-        <h1 class="card-title">Formatter: VHDL VSG</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Configure VSG in the tool section: tools -> VSG</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="linter-general">
-      <div class="card-header">
-        <h1 class="card-title">Linter settings<a href="https://terostechnology.github.io/terosHDLdoc/docs/guides/linter" target="_blank"><img class="help-icon" src="HELP_ICON" alt="Go To Documentation"></a></h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-          
-            <div class="mb-3">
-              <label for="linter-general-linter_vhdl" class="form-label">
-                VHDL linter: disable VHDL-LS needs restart VSCode.
-                <span class="markConfig badge bg-secondary" id="mark_linter-general-linter_vhdl"></span>
-              </label>
-              <select class="form-select" aria-label="VHDL linter: disable VHDL-LS needs restart VSCode." id="linter-general-linter_vhdl">
-                      <option value='disabled'>Disabled</option>
-                      <option value='ghdl'>GHDL</option>
-                      <option value='modelsim'>Modelsim</option>
-                      <option value='vivado'>Vivado (xvhdl)</option>
-                      <option value='none'>VHDL-LS</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="linter-general-linter_verilog" class="form-label">
-                Verilog/SV linter:
-                <span class="markConfig badge bg-secondary" id="mark_linter-general-linter_verilog"></span>
-              </label>
-              <select class="form-select" aria-label="Verilog/SV linter:" id="linter-general-linter_verilog">
-                      <option value='disabled'>Disabled</option>
-                      <option value='icarus'>Icarus</option>
-                      <option value='modelsim'>Modelsim</option>
-                      <option value='verilator'>Verilator</option>
-                      <option value='vivado'>Vivado (xvlog)</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="linter-general-lstyle_verilog" class="form-label">
-                Verilog/SV style checker:
-                <span class="markConfig badge bg-secondary" id="mark_linter-general-lstyle_verilog"></span>
-              </label>
-              <select class="form-select" aria-label="Verilog/SV style checker:" id="linter-general-lstyle_verilog">
-                      <option value='verible'>Verible</option>
-                      <option value='disabled'>Disabled</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="linter-general-lstyle_vhdl" class="form-label">
-                VHDL style checker:
-                <span class="markConfig badge bg-secondary" id="mark_linter-general-lstyle_vhdl"></span>
-              </label>
-              <select class="form-select" aria-label="VHDL style checker:" id="linter-general-lstyle_vhdl">
-                      <option value='vsg'>VSG</option>
-                      <option value='disabled'>Disabled</option>
-              </select>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="linter-vhdlls">
-      <div class="card-header">
-        <h1 class="card-title">Linter settings: VHDL-LS linter</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Fast VHDL language server and analysis library written in Rust.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="linter-vhdlls-standard" class="form-label">
-                Define the VHDL revision to use for parsing and analysis with the standard key. The expected value is the year associated the VHDL standard. Defining the standard feature is a relatively new feature (since april 2024). Anything but the 2008 standard will not change much at the moment.
-                <span class="markConfig badge bg-secondary" id="mark_linter-vhdlls-standard"></span>
-              </label>
-              <select class="form-select" aria-label="Define the VHDL revision to use for parsing and analysis with the standard key. The expected value is the year associated the VHDL standard. Defining the standard feature is a relatively new feature (since april 2024). Anything but the 2008 standard will not change much at the moment." id="linter-vhdlls-standard">
-                      <option value='v1993'>1993</option>
-                      <option value='v2008'>2008</option>
-                      <option value='v2019'>2019</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="linter-vhdlls-ignoreVunit">
-                <label class="form-check-label" for="linter-vhdlls-ignoreVunit">
-                  It will ignore the VUnit library in vunit_lib.
-                  <span class="markConfig badge bg-secondary" id="mark_linter-vhdlls-ignoreVunit"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="linter-vhdlls-vunitPath" class="form-label">
-                Path to the VUnit files. Example: '/home/myuser/.venvs/default/lib/python3.12/site-packages/vunit/vhdl/**/*.vhd'
-                <span class="markConfig badge bg-secondary" id="mark_linter-vhdlls-vunitPath"></span>
-              </label>
-                <input class="form-control" id="linter-vhdlls-vunitPath" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="linter-ghdl">
-      <div class="card-header">
-        <h1 class="card-title">Linter settings: GHDL linter</h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="linter-ghdl-arguments" class="form-label">
-                Arguments.
-                <span class="markConfig badge bg-secondary" id="mark_linter-ghdl-arguments"></span>
-              </label>
-                <input class="form-control" id="linter-ghdl-arguments" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="linter-icarus">
-      <div class="card-header">
-        <h1 class="card-title">Linter settings: Icarus linter</h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="linter-icarus-arguments" class="form-label">
-                Arguments.
-                <span class="markConfig badge bg-secondary" id="mark_linter-icarus-arguments"></span>
-              </label>
-                <input class="form-control" id="linter-icarus-arguments" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="linter-modelsim">
-      <div class="card-header">
-        <h1 class="card-title">Linter settings: ModelSim linter</h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="linter-modelsim-vhdl_arguments" class="form-label">
-                VHDL linter arguments.
-                <span class="markConfig badge bg-secondary" id="mark_linter-modelsim-vhdl_arguments"></span>
-              </label>
-                <input class="form-control" id="linter-modelsim-vhdl_arguments" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="linter-modelsim-verilog_arguments" class="form-label">
-                Verilog/SV linter arguments.
-                <span class="markConfig badge bg-secondary" id="mark_linter-modelsim-verilog_arguments"></span>
-              </label>
-                <input class="form-control" id="linter-modelsim-verilog_arguments" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="linter-verible">
-      <div class="card-header">
-        <h1 class="card-title">Linter settings: Verible linter</h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="linter-verible-arguments" class="form-label">
-                Arguments.
-                <span class="markConfig badge bg-secondary" id="mark_linter-verible-arguments"></span>
-              </label>
-                <input class="form-control" id="linter-verible-arguments" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="linter-verilator">
-      <div class="card-header">
-        <h1 class="card-title">Linter settings: Verilator linter</h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="linter-verilator-arguments" class="form-label">
-                Arguments.
-                <span class="markConfig badge bg-secondary" id="mark_linter-verilator-arguments"></span>
-              </label>
-                <input class="form-control" id="linter-verilator-arguments" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="linter-vivado">
-      <div class="card-header">
-        <h1 class="card-title">Linter settings: Vivado linter</h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="linter-vivado-vhdl_arguments" class="form-label">
-                VHDL linter arguments.
-                <span class="markConfig badge bg-secondary" id="mark_linter-vivado-vhdl_arguments"></span>
-              </label>
-                <input class="form-control" id="linter-vivado-vhdl_arguments" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="linter-vivado-verilog_arguments" class="form-label">
-                Verilog/SV linter arguments.
-                <span class="markConfig badge bg-secondary" id="mark_linter-vivado-verilog_arguments"></span>
-              </label>
-                <input class="form-control" id="linter-vivado-verilog_arguments" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="linter-vsg">
-      <div class="card-header">
-        <h1 class="card-title">Linter settings: VSG linter</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Configure VSG in the tool section: tools -> VSG</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="schematic-general">
-      <div class="card-header">
-        <h1 class="card-title">Schematic viewer<a href="https://terostechnology.github.io/terosHDLdoc/docs/guides/schematic_viewer/installation" target="_blank"><img class="help-icon" src="HELP_ICON" alt="Go To Documentation"></a></h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-          
-            <div class="mb-3">
-              <label for="schematic-general-backend" class="form-label">
-                Select the backend:
-                <span class="markConfig badge bg-secondary" id="mark_schematic-general-backend"></span>
-              </label>
-              <select class="form-select" aria-label="Select the backend:" id="schematic-general-backend">
-                      <option value='yowasp'>YoWASP (Only Verilog/SV)</option>
-                      <option value='yosys'>Yosys (Only Verilog/SV)</option>
-                      <option value='yosys_ghdl'>GHDL + Yosys (VHDL+Verilog/SV)</option>
-                      <option value='standalone'>Standalone (Verilog/SV)</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="schematic-general-extra" class="form-label">
-                Extra options passed before to run yowasp-yosys or yosys. Eg: 'conda activate base & ' or 'C:/OSS-CAD-SUITE/oss-cad-suite/start.bat & '
-                <span class="markConfig badge bg-secondary" id="mark_schematic-general-extra"></span>
-              </label>
-                <input class="form-control" id="schematic-general-extra" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="schematic-general-args" class="form-label">
-                Arguments passed to Yosys
-                <span class="markConfig badge bg-secondary" id="mark_schematic-general-args"></span>
-              </label>
-                <input class="form-control" id="schematic-general-args" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="schematic-general-args_ghdl" class="form-label">
-                Arguments passed to GHDL
-                <span class="markConfig badge bg-secondary" id="mark_schematic-general-args_ghdl"></span>
-              </label>
-                <input class="form-control" id="schematic-general-args_ghdl" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="templates-general">
-      <div class="card-header">
-        <h1 class="card-title">Templates<a href="https://terostechnology.github.io/terosHDLdoc/docs/guides/templates" target="_blank"><img class="help-icon" src="HELP_ICON" alt="Go To Documentation"></a></h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-          
-            <div class="mb-3">
-              <label for="templates-general-header_file_path" class="form-label">
-                File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template
-                <span class="markConfig badge bg-secondary" id="mark_templates-general-header_file_path"></span>
-              </label>
-                <input class="form-control" id="templates-general-header_file_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="templates-general-indent" class="form-label">
-                Indent
-                <span class="markConfig badge bg-secondary" id="mark_templates-general-indent"></span>
-              </label>
-                <input class="form-control" id="templates-general-indent" rows="3"  value="  "></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="templates-general-clock_generation_style" class="form-label">
-                Clock generation style:
-                <span class="markConfig badge bg-secondary" id="mark_templates-general-clock_generation_style"></span>
-              </label>
-              <select class="form-select" aria-label="Clock generation style:" id="templates-general-clock_generation_style">
-                      <option value='inline'>Inline</option>
-                      <option value='ifelse'>if/else</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="templates-general-instance_style" class="form-label">
-                Instantiation style:
-                <span class="markConfig badge bg-secondary" id="mark_templates-general-instance_style"></span>
-              </label>
-              <select class="form-select" aria-label="Instantiation style:" id="templates-general-instance_style">
-                      <option value='inline'>Inline</option>
-                      <option value='separate'>Separate</option>
-              </select>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-general">
-      <div class="card-header">
-        <h1 class="card-title">Tools</h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-general-select_tool" class="form-label">
-                Select a tool, framework, simulator...
-                <span class="markConfig badge bg-secondary" id="mark_tools-general-select_tool"></span>
-              </label>
-              <select class="form-select" aria-label="Select a tool, framework, simulator..." id="tools-general-select_tool">
-                      <option value='osvvm'>OSVVM</option>
-                      <option value='vunit'>VUnit</option>
-                      <option value='ghdl'>GHDL</option>
-                      <option value='cocotb'>cocotb</option>
-                      <option value='icarus'>Icarus</option>
-                      <option value='icestorm'>Icestorm</option>
-                      <option value='ise'>ISE</option>
-                      <option value='isim'>ISIM</option>
-                      <option value='modelsim'>ModelSim</option>
-                      <option value='openfpga'>OpenFPGA</option>
-                      <option value='quartus'>Quartus</option>
-                      <option value='rivierapro'>Riviera-PRO</option>
-                      <option value='spyglass'>SpyGlass</option>
-                      <option value='trellis'>Trellis</option>
-                      <option value='vcs'>VCS</option>
-                      <option value='verilator'>Verilator</option>
-                      <option value='vivado'>Vivado</option>
-                      <option value='xcelium'>Xcelium</option>
-                      <option value='xsim'>XSIM</option>
-                      <option value='raptor'>Raptor Design Suite</option>
-                      <option value='radiant'>Radiant</option>
-                      <option value='sandpiper'>SandPiper</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-general-manual_compilation_order" class="form-label">
-                Path to the file with the manual compilation order.
-                <span class="markConfig badge bg-secondary" id="mark_tools-general-manual_compilation_order"></span>
-              </label>
-                <input class="form-control" id="tools-general-manual_compilation_order" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-general-execution_mode" class="form-label">
-                Select the execution mode.
-                <span class="markConfig badge bg-secondary" id="mark_tools-general-execution_mode"></span>
-              </label>
-              <select class="form-select" aria-label="Select the execution mode." id="tools-general-execution_mode">
-                      <option value='gui'>GUI</option>
-                      <option value='cmd'>Command line</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-general-waveform_viewer" class="form-label">
-                Select the waveform viewer. For GTKWave you need to install it.
-                <span class="markConfig badge bg-secondary" id="mark_tools-general-waveform_viewer"></span>
-              </label>
-              <select class="form-select" aria-label="Select the waveform viewer. For GTKWave you need to install it." id="tools-general-waveform_viewer">
-                      <option value='tool'>Tool GUI</option>
-                      <option value='gtkwave'>GTKWave</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-general-gtkwave_installation_path" class="form-label">
-                GTKWave installation directory.
-                <span class="markConfig badge bg-secondary" id="mark_tools-general-gtkwave_installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-general-gtkwave_installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-general-gtkwave_extra_arguments" class="form-label">
-                Extra arguments passed to GTKwave. E.g: --script=script.tcl
-                <span class="markConfig badge bg-secondary" id="mark_tools-general-gtkwave_extra_arguments"></span>
-              </label>
-                <input class="form-control" id="tools-general-gtkwave_extra_arguments" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-quartus">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Intel@ Quartus@ Prime</h1>
-        <h6 class="card-subtitle mb-2 text-muted">The intuitive high-performance design environment. From design entry and synthesis to optimization, verification, and simulation, Intel® Quartus® Prime Design Software unlocks increased capabilities on devices with multi-million logic elements, providing designers with the ideal platform to meet next-generation design opportunities.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-quartus-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-family" class="form-label">
-                FPGA family (e.g. Cyclone V).
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-family"></span>
-              </label>
-                <input class="form-control" id="tools-quartus-family" rows="3"  value="" disabled></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-device" class="form-label">
-                FPGA device (e.g. 5CSXFC6D6F31C8ES).
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-device"></span>
-              </label>
-                <input class="form-control" id="tools-quartus-device" rows="3"  value="" disabled></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-optimization_mode" class="form-label">
-                Specifies your overall optimization focus for implementation of your synthesized logic. By default, the Compiler uses a balanced mode respecting the design's timing constraints. Use alternate modes to specify a different optimization focus. High effort modes enable additional optimizations that increase compilation time. Aggressive modes may increase compilation time and may also be detrimental to other optimizations.
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-optimization_mode"></span>
-              </label>
-              <select class="form-select" aria-label="Specifies your overall optimization focus for implementation of your synthesized logic. By default, the Compiler uses a balanced mode respecting the design's timing constraints. Use alternate modes to specify a different optimization focus. High effort modes enable additional optimizations that increase compilation time. Aggressive modes may increase compilation time and may also be detrimental to other optimizations." id="tools-quartus-optimization_mode">
-                      <option value='BALANCED'>Balanced (normal flow)</option>
-                      <option value='HIGH_PERFORMANCE_EFFORT'>High Performance Effort</option>
-                      <option value='HIGH_PERFORMANCE_EFFORT_WITH_MAXIMUM_PLACEMENT_EFFORT'>High Performance with Maximum Placement Effort</option>
-                      <option value='HIGH_PERFORMANCE_WITH_AGGRESSIVE_POWER_EFFORT'>High Performance with Aggressive Power Effort</option>
-                      <option value='SUPERIOR_PERFORMANCE'>Superior Performance (adds synthesis optimization for speed)</option>
-                      <option value='SUPERIOR_PERFORMANCE_WITH_MAXIMUM_PLACEMENT_EFFORT'>Superior Performance with Maximum Placement Effort</option>
-                      <option value='AGGRESSIVE_AREA'>Aggressive Area (reduces performance)</option>
-                      <option value='HIGH_PLACEMENT_ROUTABILITY_EFFORT'>High Placement Routability Effort</option>
-                      <option value='HIGH_PACKING_ROUTABILITY_EFFORT'>High Packing Routability Effort</option>
-                      <option value='OPTIMIZE_NETLIST_FOR_ROUTABILITY'>Optimize Netlist for Routability</option>
-                      <option value='AGGRESSIVE_POWER'>Aggressive Power (reduces performance)</option>
-                      <option value='AGGRESSIVE_COMPILE_TIME'>Agressive Compile Time (reduces performance)</option>
-                      <option value='FAST_FUNCTIONAL_TEST'>Fast Functional Test (reduces performance)</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-quartus-allow_register_retiming">
-                <label class="form-check-label" for="tools-quartus-allow_register_retiming">
-                  Allow Register Retiming.
-                  <span class="markConfig badge bg-secondary" id="mark_tools-quartus-allow_register_retiming"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-quartus-wave_file_questa" class="form-label">
-                Custom waves file path for simulations:
-                <span class="markConfig badge bg-secondary" id="mark_tools-quartus-wave_file_questa"></span>
-              </label>
-                <input class="form-control" id="tools-quartus-wave_file_questa" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-vsg">
-      <div class="card-header">
-        <h1 class="card-title">Tools: VSG</h1>
-        <h6 class="card-subtitle mb-2 text-muted">VHDL Style Guide.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-vsg-installation_path" class="form-label">
-                Installation path. E.g. /home/myuser/.venvs/default/bin/
-                <span class="markConfig badge bg-secondary" id="mark_tools-vsg-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-vsg-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vsg-style_config" class="form-label">
-                Path JSON or YAML configuration file.
-                <span class="markConfig badge bg-secondary" id="mark_tools-vsg-style_config"></span>
-              </label>
-                <input class="form-control" id="tools-vsg-style_config" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vsg-core_number" class="form-label">
-                Number of parallel jobs to use, default is the number of cpu cores.
-                <span class="markConfig badge bg-secondary" id="mark_tools-vsg-core_number"></span>
-              </label>
-              <input type='number' class="form-control" id="tools-vsg-core_number" rows="3"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vsg-aditional_arguments" class="form-label">
-                Additional arguments to pass to the VSG command.
-                <span class="markConfig badge bg-secondary" id="mark_tools-vsg-aditional_arguments"></span>
-              </label>
-                <input class="form-control" id="tools-vsg-aditional_arguments" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-osvvm">
-      <div class="card-header">
-        <h1 class="card-title">Tools: OSVVM</h1>
-        <h6 class="card-subtitle mb-2 text-muted">OSVVM is an advanced verification methodology that defines a VHDL verification framework, verification utility library, verification component library, and a scripting flow that simplifies your FPGA or ASIC verification project from start to finish. Using these libraries you can create a simple, readable, and powerful testbench that is suitable for either a simple FPGA block or a complex ASIC.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-osvvm-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-osvvm-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-osvvm-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-osvvm-tclsh_binary" class="form-label">
-                tclsh binary path. E.g: /usr/bin/tclsh8.6
-                <span class="markConfig badge bg-secondary" id="mark_tools-osvvm-tclsh_binary"></span>
-              </label>
-                <input class="form-control" id="tools-osvvm-tclsh_binary" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-osvvm-simulator_name" class="form-label">
-                Selects which simulator to use.
-                <span class="markConfig badge bg-secondary" id="mark_tools-osvvm-simulator_name"></span>
-              </label>
-              <select class="form-select" aria-label="Selects which simulator to use." id="tools-osvvm-simulator_name">
-                      <option value='activehdl'>Aldec Active-HDL</option>
-                      <option value='ghdl'>GHDL</option>
-                      <option value='nvc'>NVC</option>
-                      <option value='rivierapro'>Aldec Riviera-PRO</option>
-                      <option value='questa'>Mentor/Siemens EDA Questa</option>
-                      <option value='modelsim'>Mentor/Siemens EDA ModelSim</option>
-                      <option value='vcs'>VCS</option>
-                      <option value='xsim'>XSIM</option>
-                      <option value='xcelium'>Xcelium</option>
-              </select>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-ascenlint">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Ascenlint</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Ascent Lint performs static source code analysis on HDL code and checks for common coding errors or coding style violations.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-ascenlint-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-ascenlint-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-ascenlint-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-ascenlint-ascentlint_options" class="form-label">
-                Additional run options for ascentlint. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-ascenlint-ascentlint_options"></span>
-              </label>
-              <input class="form-control" id="tools-ascenlint-ascentlint_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-cocotb">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Cocotb</h1>
-        <h6 class="card-subtitle mb-2 text-muted"></h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-cocotb-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-cocotb-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-cocotb-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-cocotb-simulator_name" class="form-label">
-                Selects which simulator Makefile to use. Attempts to include a simulator specific makefile from cocotb/share/makefiles/simulators/makefile.$(SIM)
-                <span class="markConfig badge bg-secondary" id="mark_tools-cocotb-simulator_name"></span>
-              </label>
-              <select class="form-select" aria-label="Selects which simulator Makefile to use. Attempts to include a simulator specific makefile from cocotb/share/makefiles/simulators/makefile.$(SIM)" id="tools-cocotb-simulator_name">
-                      <option value='icarus'>icarus</option>
-                      <option value='verilator'>Verilator</option>
-                      <option value='vcs'>Synopsys VCS</option>
-                      <option value='riviera'>Aldec Riviera-PRO</option>
-                      <option value='activehdl'>Aldec Active-HDL</option>
-                      <option value='questa'>Mentor/Siemens EDA Questa</option>
-                      <option value='modelsim'>Mentor/Siemens EDA ModelSim</option>
-                      <option value='ius'>Cadence Incisive</option>
-                      <option value='xcelium'>Cadence Xcelium</option>
-                      <option value='ghdl'>GHDL</option>
-                      <option value='cvc'>Tachyon DA CVC</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-cocotb-compile_args" class="form-label">
-                Any arguments or flags to pass to the compile stage of the simulation.
-                <span class="markConfig badge bg-secondary" id="mark_tools-cocotb-compile_args"></span>
-              </label>
-                <input class="form-control" id="tools-cocotb-compile_args" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-cocotb-run_args" class="form-label">
-                Any argument to be passed to the “first” invocation of a simulator that runs via a TCL script. One motivating usage is to pass -noautoldlibpath to Questa to prevent it from loading the out-of-date libraries it ships with. Used by Aldec Riviera-PRO and Mentor Graphics Questa simulator.
-                <span class="markConfig badge bg-secondary" id="mark_tools-cocotb-run_args"></span>
-              </label>
-                <input class="form-control" id="tools-cocotb-run_args" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-cocotb-plusargs" class="form-label">
-                They are options that are starting with a plus (+) sign. They are passed to the simulator and are also available within cocotb as cocotb.plusargs. In the simulator, they can be read by the Verilog/SystemVerilog system functions $test$plusargs and $value$plusargs. The special plusargs +ntb_random_seed and +seed, if present, are evaluated to set the random seed value if RANDOM_SEED is not set. If both +ntb_random_seed and +seed are set, +ntb_random_seed is used.
-                <span class="markConfig badge bg-secondary" id="mark_tools-cocotb-plusargs"></span>
-              </label>
-                <input class="form-control" id="tools-cocotb-plusargs" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-diamond">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Diamond</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Backend for Lattice Diamond.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-diamond-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-diamond-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-diamond-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-diamond-part" class="form-label">
-                FPGA part number (e.g. LFE5U-45F-6BG381C).
-                <span class="markConfig badge bg-secondary" id="mark_tools-diamond-part"></span>
-              </label>
-                <input class="form-control" id="tools-diamond-part" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-ghdl">
-      <div class="card-header">
-        <h1 class="card-title">Tools: GHDL</h1>
-        <h6 class="card-subtitle mb-2 text-muted">GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE 1076-2002 and partially the 1076-2008 version of VHDL.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-ghdl-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-ghdl-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-ghdl-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-ghdl-waveform" class="form-label">
-                Waveform output format:
-                <span class="markConfig badge bg-secondary" id="mark_tools-ghdl-waveform"></span>
-              </label>
-              <select class="form-select" aria-label="Waveform output format:" id="tools-ghdl-waveform">
-                      <option value='vcd'>VCD</option>
-                      <option value='ghw'>GHW</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-ghdl-analyze_options" class="form-label">
-                analyze options. Extra options used for the GHDL analyze stage (ghdl -a). <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-ghdl-analyze_options"></span>
-              </label>
-              <input class="form-control" id="tools-ghdl-analyze_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-ghdl-run_options" class="form-label">
-                Run options. Extra options used when running GHDL simulations (ghdl -r). <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-ghdl-run_options"></span>
-              </label>
-              <input class="form-control" id="tools-ghdl-run_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-icarus">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Icarus</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Icarus Verilog is a Verilog simulation and synthesis tool. It operates as a compiler, compiling source code written in Verilog (IEEE-1364) into some target format.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-icarus-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-icarus-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-icarus-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-icarus-timescale" class="form-label">
-                Default timescale.
-                <span class="markConfig badge bg-secondary" id="mark_tools-icarus-timescale"></span>
-              </label>
-                <input class="form-control" id="tools-icarus-timescale" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-icarus-iverilog_options" class="form-label">
-                Additional options for iverilog. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-icarus-iverilog_options"></span>
-              </label>
-              <input class="form-control" id="tools-icarus-iverilog_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-icestorm">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Icestorm</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Open source toolchain for Lattice iCE40 FPGAs. Uses yosys for synthesis and arachne-pnr or nextpnr for Place & Route.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-icestorm-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-icestorm-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-icestorm-pnr" class="form-label">
-                Select P&R tool. Valid values are arachne and next. Default is arachne.
-                <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-pnr"></span>
-              </label>
-              <select class="form-select" aria-label="Select P&R tool. Valid values are arachne and next. Default is arachne." id="tools-icestorm-pnr">
-                      <option value='arachne'>Arachne-pnr</option>
-                      <option value='next'>nextpnr</option>
-                      <option value='none'>Only perform synthesis</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-icestorm-arch" class="form-label">
-                Target architecture.
-                <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-arch"></span>
-              </label>
-              <select class="form-select" aria-label="Target architecture." id="tools-icestorm-arch">
-                      <option value='xilinx'>Xilinx</option>
-                      <option value='ice40'>ICE40</option>
-                      <option value='ecp5'>ECP5</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-icestorm-output_format" class="form-label">
-                Output file format.
-                <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-output_format"></span>
-              </label>
-              <select class="form-select" aria-label="Output file format." id="tools-icestorm-output_format">
-                      <option value='json'>JSON</option>
-                      <option value='edif'>EDIF</option>
-                      <option value='blif'>BLIF</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-icestorm-yosys_as_subtool">
-                <label class="form-check-label" for="tools-icestorm-yosys_as_subtool">
-                  Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.
-                  <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-yosys_as_subtool"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-icestorm-makefile_name" class="form-label">
-                Generated makefile name, defaults to $name.mk
-                <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-makefile_name"></span>
-              </label>
-                <input class="form-control" id="tools-icestorm-makefile_name" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-icestorm-arachne_pnr_options" class="form-label">
-                Options for ArachnePNR Place & Route. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-arachne_pnr_options"></span>
-              </label>
-              <input class="form-control" id="tools-icestorm-arachne_pnr_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-icestorm-nextpnr_options" class="form-label">
-                Options for NextPNR Place & Route. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-nextpnr_options"></span>
-              </label>
-              <input class="form-control" id="tools-icestorm-nextpnr_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-icestorm-yosys_synth_options" class="form-label">
-                Additional options for the synth_ice40 command. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-icestorm-yosys_synth_options"></span>
-              </label>
-              <input class="form-control" id="tools-icestorm-yosys_synth_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-ise">
-      <div class="card-header">
-        <h1 class="card-title">Tools: ISE</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Xilinx ISE Design Suite.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-ise-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-ise-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-ise-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-ise-family" class="form-label">
-                FPGA family (e.g. spartan6).
-                <span class="markConfig badge bg-secondary" id="mark_tools-ise-family"></span>
-              </label>
-                <input class="form-control" id="tools-ise-family" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-ise-device" class="form-label">
-                FPGA device (e.g. xc6slx45).
-                <span class="markConfig badge bg-secondary" id="mark_tools-ise-device"></span>
-              </label>
-                <input class="form-control" id="tools-ise-device" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-ise-package" class="form-label">
-                FPGA package (e.g. csg324).
-                <span class="markConfig badge bg-secondary" id="mark_tools-ise-package"></span>
-              </label>
-                <input class="form-control" id="tools-ise-package" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-ise-speed" class="form-label">
-                FPGA speed grade (e.g. -2).
-                <span class="markConfig badge bg-secondary" id="mark_tools-ise-speed"></span>
-              </label>
-                <input class="form-control" id="tools-ise-speed" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-isem">
-      <div class="card-header">
-        <h1 class="card-title">Tools: ISIM</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Xilinx ISim simulator from ISE design suite.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-isem-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-isem-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-isem-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-isem-fuse_options" class="form-label">
-                Additional options for compilation with FUSE. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-isem-fuse_options"></span>
-              </label>
-              <input class="form-control" id="tools-isem-fuse_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-isem-isim_options" class="form-label">
-                Additional run options for ISim. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-isem-isim_options"></span>
-              </label>
-              <input class="form-control" id="tools-isem-isim_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-modelsim">
-      <div class="card-header">
-        <h1 class="card-title">Tools: ModelSim</h1>
-        <h6 class="card-subtitle mb-2 text-muted">ModelSim simulator from Mentor Graphics.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-modelsim-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-modelsim-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-modelsim-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-modelsim-vcom_options" class="form-label">
-                Additional options for compilation with vcom. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-modelsim-vcom_options"></span>
-              </label>
-              <input class="form-control" id="tools-modelsim-vcom_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-modelsim-vlog_options" class="form-label">
-                Additional options for compilation with vlog. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-modelsim-vlog_options"></span>
-              </label>
-              <input class="form-control" id="tools-modelsim-vlog_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-modelsim-vsim_options" class="form-label">
-                Additional run options for vsim. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-modelsim-vsim_options"></span>
-              </label>
-              <input class="form-control" id="tools-modelsim-vsim_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-morty">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Morty</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Run the (System-) Verilog pickle tool called morty.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-morty-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-morty-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-morty-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-morty-morty_options" class="form-label">
-                Run-time options passed to morty.. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-morty-morty_options"></span>
-              </label>
-              <input class="form-control" id="tools-morty-morty_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-radiant">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Radiant</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Backend for Lattice Radiant.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-radiant-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-radiant-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-radiant-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-radiant-part" class="form-label">
-                FPGA part number (e.g. LIFCL-40-9BG400C).
-                <span class="markConfig badge bg-secondary" id="mark_tools-radiant-part"></span>
-              </label>
-                <input class="form-control" id="tools-radiant-part" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-rivierapro">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Rivierapro</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Riviera Pro simulator from Aldec.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-rivierapro-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-rivierapro-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-rivierapro-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-rivierapro-compilation_mode" class="form-label">
-                Common or separate compilation, sep - for separate compilation, common - for common compilation.
-                <span class="markConfig badge bg-secondary" id="mark_tools-rivierapro-compilation_mode"></span>
-              </label>
-                <input class="form-control" id="tools-rivierapro-compilation_mode" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-rivierapro-vlog_options" class="form-label">
-                Additional options for compilation with vlog. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-rivierapro-vlog_options"></span>
-              </label>
-              <input class="form-control" id="tools-rivierapro-vlog_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-rivierapro-vsim_options" class="form-label">
-                Additional run options for vsim. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-rivierapro-vsim_options"></span>
-              </label>
-              <input class="form-control" id="tools-rivierapro-vsim_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-spyglass">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Spyglass</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Synopsys (formerly Atrenta) Spyglass Backend. Spyglass performs static source code analysis on HDL code and checks for common coding errors or coding style violations.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-spyglass-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-spyglass-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-spyglass-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-spyglass-methodology" class="form-label">
-                
-                <span class="markConfig badge bg-secondary" id="mark_tools-spyglass-methodology"></span>
-              </label>
-                <input class="form-control" id="tools-spyglass-methodology" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-spyglass-goals" class="form-label">
-                 <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-spyglass-goals"></span>
-              </label>
-              <input class="form-control" id="tools-spyglass-goals" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-spyglass-spyglass_options" class="form-label">
-                 <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-spyglass-spyglass_options"></span>
-              </label>
-              <input class="form-control" id="tools-spyglass-spyglass_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-spyglass-rule_parameters" class="form-label">
-                 <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-spyglass-rule_parameters"></span>
-              </label>
-              <input class="form-control" id="tools-spyglass-rule_parameters" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-symbiyosys">
-      <div class="card-header">
-        <h1 class="card-title">Tools: SymbiYosys</h1>
-        <h6 class="card-subtitle mb-2 text-muted">SymbiYosys formal verification wrapper for Yosys.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-symbiyosys-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-symbiyosys-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-symbiyosys-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-symbiyosys-tasknames" class="form-label">
-                A list of the .sby file’s tasks to run. Passed on the sby command line.. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-symbiyosys-tasknames"></span>
-              </label>
-              <input class="form-control" id="tools-symbiyosys-tasknames" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-symbiflow">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Symbiflow</h1>
-        <h6 class="card-subtitle mb-2 text-muted">VHDL Style Guide. Analyzes VHDL files for style guide violations.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-symbiflow-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-symbiflow-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-symbiflow-package" class="form-label">
-                FPGA chip package (e.g. clg400-1).
-                <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-package"></span>
-              </label>
-                <input class="form-control" id="tools-symbiflow-package" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-symbiflow-part" class="form-label">
-                FPGA part type (e.g. xc7a50t).
-                <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-part"></span>
-              </label>
-                <input class="form-control" id="tools-symbiflow-part" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-symbiflow-vendor" class="form-label">
-                Target architecture. Currently only “xilinx” is supported.
-                <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-vendor"></span>
-              </label>
-                <input class="form-control" id="tools-symbiflow-vendor" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-symbiflow-pnr" class="form-label">
-                Place and Route tool. Currently only “vpr” is supported.
-                <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-pnr"></span>
-              </label>
-              <select class="form-select" aria-label="Place and Route tool. Currently only “vpr” is supported." id="tools-symbiflow-pnr">
-                      <option value='vpr'>VPR</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-symbiflow-vpr_options" class="form-label">
-                Additional vpr tool options. If not used, default options for the tool will be used.
-                <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-vpr_options"></span>
-              </label>
-                <input class="form-control" id="tools-symbiflow-vpr_options" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-symbiflow-environment_script" class="form-label">
-                Optional bash script that will be sourced before each build step..
-                <span class="markConfig badge bg-secondary" id="mark_tools-symbiflow-environment_script"></span>
-              </label>
-                <input class="form-control" id="tools-symbiflow-environment_script" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-trellis">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Trellis</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Project Trellis enables a fully open-source flow for ECP5 FPGAs using Yosys for Verilog synthesis and nextpnr for place and route.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-trellis-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-trellis-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-trellis-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-trellis-arch" class="form-label">
-                Target architecture.
-                <span class="markConfig badge bg-secondary" id="mark_tools-trellis-arch"></span>
-              </label>
-              <select class="form-select" aria-label="Target architecture." id="tools-trellis-arch">
-                      <option value='xilinx'>Xilinx</option>
-                      <option value='ice40'>ICE40</option>
-                      <option value='ecp5'>ECP5</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-trellis-output_format" class="form-label">
-                Output file format.
-                <span class="markConfig badge bg-secondary" id="mark_tools-trellis-output_format"></span>
-              </label>
-              <select class="form-select" aria-label="Output file format." id="tools-trellis-output_format">
-                      <option value='json'>JSON</option>
-                      <option value='edif'>EDIF</option>
-                      <option value='blif'>BLIF</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-trellis-yosys_as_subtool">
-                <label class="form-check-label" for="tools-trellis-yosys_as_subtool">
-                  Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.
-                  <span class="markConfig badge bg-secondary" id="mark_tools-trellis-yosys_as_subtool"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-trellis-makefile_name" class="form-label">
-                Generated makefile name, defaults to $name.mk
-                <span class="markConfig badge bg-secondary" id="mark_tools-trellis-makefile_name"></span>
-              </label>
-                <input class="form-control" id="tools-trellis-makefile_name" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-trellis-script_name" class="form-label">
-                Generated tcl script filename, defaults to $name.mk
-                <span class="markConfig badge bg-secondary" id="mark_tools-trellis-script_name"></span>
-              </label>
-                <input class="form-control" id="tools-trellis-script_name" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-trellis-nextpnr_options" class="form-label">
-                Options for NextPNR Place & Route. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-trellis-nextpnr_options"></span>
-              </label>
-              <input class="form-control" id="tools-trellis-nextpnr_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-trellis-yosys_synth_options" class="form-label">
-                Additional options for the synth_ice40 command. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-trellis-yosys_synth_options"></span>
-              </label>
-              <input class="form-control" id="tools-trellis-yosys_synth_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-vcs">
-      <div class="card-header">
-        <h1 class="card-title">Tools: VCS</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Synopsys VCS Backend</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-vcs-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-vcs-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-vcs-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vcs-vcs_options" class="form-label">
-                Compile time options passed to vcs <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-vcs-vcs_options"></span>
-              </label>
-              <input class="form-control" id="tools-vcs-vcs_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vcs-run_options" class="form-label">
-                Runtime options passed to the simulation <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-vcs-run_options"></span>
-              </label>
-              <input class="form-control" id="tools-vcs-run_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-verible">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Verible</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Verible.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-verible-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-verible-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-verible-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-verilator">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Verilator</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Verilator."</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-verilator-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-verilator-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-verilator-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-verilator-mode" class="form-label">
-                Select compilation mode. Legal values are cc for C++ testbenches, sc for SystemC testbenches or lint-only to only perform linting on the Verilog code.
-                <span class="markConfig badge bg-secondary" id="mark_tools-verilator-mode"></span>
-              </label>
-              <select class="form-select" aria-label="Select compilation mode. Legal values are cc for C++ testbenches, sc for SystemC testbenches or lint-only to only perform linting on the Verilog code." id="tools-verilator-mode">
-                      <option value='cc'>cc</option>
-                      <option value='sc'>sc</option>
-                      <option value='lint-only'>lint-only</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-verilator-libs" class="form-label">
-                Extra libraries for the verilated model to link against. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-verilator-libs"></span>
-              </label>
-              <input class="form-control" id="tools-verilator-libs" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-verilator-verilator_options" class="form-label">
-                Additional options for verilator. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-verilator-verilator_options"></span>
-              </label>
-              <input class="form-control" id="tools-verilator-verilator_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-verilator-make_options" class="form-label">
-                Additional arguments passed to make when compiling the simulation. This is commonly used to set OPT/OPT_FAST/OPT_SLOW. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-verilator-make_options"></span>
-              </label>
-              <input class="form-control" id="tools-verilator-make_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-verilator-run_options" class="form-label">
-                Additional arguments directly passed to the verilated model. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-verilator-run_options"></span>
-              </label>
-              <input class="form-control" id="tools-verilator-run_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-vivado">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Vivado</h1>
-        <h6 class="card-subtitle mb-2 text-muted">The Vivado backend executes Xilinx Vivado to build systems and program the FPGA.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-vivado-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-vivado-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-vivado-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vivado-part" class="form-label">
-                Part. Device identifier. e.g. xc7a35tcsg324-1.
-                <span class="markConfig badge bg-secondary" id="mark_tools-vivado-part"></span>
-              </label>
-                <input class="form-control" id="tools-vivado-part" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vivado-synth" class="form-label">
-                Synthesis tool. Allowed values are vivado (default) and yosys..
-                <span class="markConfig badge bg-secondary" id="mark_tools-vivado-synth"></span>
-              </label>
-                <input class="form-control" id="tools-vivado-synth" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vivado-pnr" class="form-label">
-                Choose only synthesis or place and route and bitstream generation:
-                <span class="markConfig badge bg-secondary" id="mark_tools-vivado-pnr"></span>
-              </label>
-              <select class="form-select" aria-label="Choose only synthesis or place and route and bitstream generation:" id="tools-vivado-pnr">
-                      <option value='vivado'>Place and route</option>
-                      <option value='none'>Only synthesis</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vivado-jtag_freq" class="form-label">
-                The frequency for jtag communication.
-                <span class="markConfig badge bg-secondary" id="mark_tools-vivado-jtag_freq"></span>
-              </label>
-              <input type='number' class="form-control" id="tools-vivado-jtag_freq" rows="3"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vivado-hw_target" class="form-label">
-                Board identifier (e.g. */xilinx_tcf/Digilent/123456789123A.
-                <span class="markConfig badge bg-secondary" id="mark_tools-vivado-hw_target"></span>
-              </label>
-                <input class="form-control" id="tools-vivado-hw_target" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-vunit">
-      <div class="card-header">
-        <h1 class="card-title">Tools: VUnit</h1>
-        <h6 class="card-subtitle mb-2 text-muted">VUnit testing framework.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-vunit-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-vunit-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-vunit-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vunit-simulator_name" class="form-label">
-                VUnit simulator:
-                <span class="markConfig badge bg-secondary" id="mark_tools-vunit-simulator_name"></span>
-              </label>
-              <select class="form-select" aria-label="VUnit simulator:" id="tools-vunit-simulator_name">
-                      <option value='rivierapro'>Aldec Riviera-PRO</option>
-                      <option value='activehdl'>Aldec Active-HDL</option>
-                      <option value='ghdl'>GHDL</option>
-                      <option value='modelsim'>Mentor Graphics ModelSim/Questa</option>
-                      <option value='xsim'>XSIM (Not supported in official VUnit)</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vunit-runpy_mode" class="form-label">
-                runpy mode:
-                <span class="markConfig badge bg-secondary" id="mark_tools-vunit-runpy_mode"></span>
-              </label>
-              <select class="form-select" aria-label="runpy mode:" id="tools-vunit-runpy_mode">
-                      <option value='standalone'>Standalone</option>
-                      <option value='creation'>Creation</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-vunit-extra_options" class="form-label">
-                VUnit options. Extra options for the VUnit test runner.
-                <span class="markConfig badge bg-secondary" id="mark_tools-vunit-extra_options"></span>
-              </label>
-                <input class="form-control" id="tools-vunit-extra_options" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-vunit-enable_array_util_lib">
-                <label class="form-check-label" for="tools-vunit-enable_array_util_lib">
-                  Enable array util library in non standalone mode.
-                  <span class="markConfig badge bg-secondary" id="mark_tools-vunit-enable_array_util_lib"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-vunit-enable_com_lib">
-                <label class="form-check-label" for="tools-vunit-enable_com_lib">
-                  Enable com library in non standalone mode.
-                  <span class="markConfig badge bg-secondary" id="mark_tools-vunit-enable_com_lib"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-vunit-enable_json4vhdl_lib">
-                <label class="form-check-label" for="tools-vunit-enable_json4vhdl_lib">
-                  Enable json4vhdl library in non standalone mode.
-                  <span class="markConfig badge bg-secondary" id="mark_tools-vunit-enable_json4vhdl_lib"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-vunit-enable_osvvm_lib">
-                <label class="form-check-label" for="tools-vunit-enable_osvvm_lib">
-                  Enable OSVVM library in non standalone mode.
-                  <span class="markConfig badge bg-secondary" id="mark_tools-vunit-enable_osvvm_lib"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-vunit-enable_random_lib">
-                <label class="form-check-label" for="tools-vunit-enable_random_lib">
-                  Enable random library in non standalone mode.
-                  <span class="markConfig badge bg-secondary" id="mark_tools-vunit-enable_random_lib"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-vunit-enable_verification_components_lib">
-                <label class="form-check-label" for="tools-vunit-enable_verification_components_lib">
-                  Enable verification components library in non standalone mode.
-                  <span class="markConfig badge bg-secondary" id="mark_tools-vunit-enable_verification_components_lib"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-xcelium">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Xcelium</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Xcelium simulator from Cadence Design Systems.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-xcelium-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-xcelium-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-xcelium-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-xcelium-xmvhdl_options" class="form-label">
-                Additional options for compilation with xmvhdl. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-xcelium-xmvhdl_options"></span>
-              </label>
-              <input class="form-control" id="tools-xcelium-xmvhdl_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-xcelium-xmvlog_options" class="form-label">
-                Additional options for compilation with xmvlog. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-xcelium-xmvlog_options"></span>
-              </label>
-              <input class="form-control" id="tools-xcelium-xmvlog_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-xcelium-xmsim_options" class="form-label">
-                Additional run options for xmsim. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-xcelium-xmsim_options"></span>
-              </label>
-              <input class="form-control" id="tools-xcelium-xmsim_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-xcelium-xrun_options" class="form-label">
-                Additional run options for xrun. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-xcelium-xrun_options"></span>
-              </label>
-              <input class="form-control" id="tools-xcelium-xrun_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-xsim">
-      <div class="card-header">
-        <h1 class="card-title">Tools: XSIM</h1>
-        <h6 class="card-subtitle mb-2 text-muted">XSim simulator from the Xilinx Vivado suite.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-xsim-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-xsim-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-xsim-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-xsim-xelab_options" class="form-label">
-                Additional options for compilation with xelab. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-xsim-xelab_options"></span>
-              </label>
-              <input class="form-control" id="tools-xsim-xelab_options" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-xsim-xsim_options" class="form-label">
-                Additional run options for XSim. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-xsim-xsim_options"></span>
-              </label>
-              <input class="form-control" id="tools-xsim-xsim_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-yosys">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Yosys</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Open source synthesis tool targeting many different FPGAs.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-yosys-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-yosys-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-yosys-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-yosys-arch" class="form-label">
-                Target architecture.
-                <span class="markConfig badge bg-secondary" id="mark_tools-yosys-arch"></span>
-              </label>
-              <select class="form-select" aria-label="Target architecture." id="tools-yosys-arch">
-                      <option value='xilinx'>Xilinx</option>
-                      <option value='ice40'>ICE40</option>
-                      <option value='ecp5'>ECP5</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-yosys-output_format" class="form-label">
-                Output file format.
-                <span class="markConfig badge bg-secondary" id="mark_tools-yosys-output_format"></span>
-              </label>
-              <select class="form-select" aria-label="Output file format." id="tools-yosys-output_format">
-                      <option value='json'>JSON</option>
-                      <option value='edif'>EDIF</option>
-                      <option value='blif'>BLIF</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-yosys-yosys_as_subtool">
-                <label class="form-check-label" for="tools-yosys-yosys_as_subtool">
-                  Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.
-                  <span class="markConfig badge bg-secondary" id="mark_tools-yosys-yosys_as_subtool"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-yosys-makefile_name" class="form-label">
-                Generated makefile name, defaults to $name.mk
-                <span class="markConfig badge bg-secondary" id="mark_tools-yosys-makefile_name"></span>
-              </label>
-                <input class="form-control" id="tools-yosys-makefile_name" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-yosys-script_name" class="form-label">
-                Generated tcl script filename, defaults to $name.mk
-                <span class="markConfig badge bg-secondary" id="mark_tools-yosys-script_name"></span>
-              </label>
-                <input class="form-control" id="tools-yosys-script_name" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-yosys-yosys_synth_options" class="form-label">
-                Additional options for the synth_ice40 command. <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-yosys-yosys_synth_options"></span>
-              </label>
-              <input class="form-control" id="tools-yosys-yosys_synth_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-openfpga">
-      <div class="card-header">
-        <h1 class="card-title">Tools: OpenFPGA</h1>
-        <h6 class="card-subtitle mb-2 text-muted">The award-winning OpenFPGA framework is the first open-source FPGA IP generator with silicon proofs supporting highly-customizable FPGA architectures.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-openfpga-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-openfpga-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-openfpga-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-openfpga-arch" class="form-label">
-                FPGA architecture e.g. sofa-hd, sofa-chd, sofa-qlhd and sofa-plus-hd
-                <span class="markConfig badge bg-secondary" id="mark_tools-openfpga-arch"></span>
-              </label>
-                <input class="form-control" id="tools-openfpga-arch" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-openfpga-task_options" class="form-label">
-                Extra options for running the task simulation with OpenFPGA framework (see the OpenFPGA documentation). <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-openfpga-task_options"></span>
-              </label>
-              <input class="form-control" id="tools-openfpga-task_options" rows="3"></input>
-            </div>
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-activehdl">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Active-HDL</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Active-HDL™ is a Windows based, integrated FPGA Design Creation and Simulation solution for team-based environments.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-activehdl-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-activehdl-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-activehdl-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-questa">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Questa Advanced Simulator</h1>
-        <h6 class="card-subtitle mb-2 text-muted">The Questa advanced simulator is the core simulation and debug engine of the Questa verification solution.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-questa-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-questa-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-questa-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
-    <div class="card h-100" id="tools-raptor">
-      <div class="card-header">
-        <h1 class="card-title">Tools: Raptor Design Suite</h1>
-        <h6 class="card-subtitle mb-2 text-muted">Raptor Design Suite.</h6>
-      </div>
-      <div class="card-body overflow-auto">
-      
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-installation_path" class="form-label">
-                Installation path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-installation_path"></span>
-              </label>
-                <input class="form-control" id="tools-raptor-installation_path" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-target_device" class="form-label">
-                Target device
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-target_device"></span>
-              </label>
-                <input class="form-control" id="tools-raptor-target_device" rows="3"  value="1GE100"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-vhdl_version" class="form-label">
-                VHDL version
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-vhdl_version"></span>
-              </label>
-              <select class="form-select" aria-label="VHDL version" id="tools-raptor-vhdl_version">
-                      <option value='VHDL_1987'>1987</option>
-                      <option value='VHDL_1993'>1993</option>
-                      <option value='VHDL_2000'>2000</option>
-                      <option value='VHDL_2008'>2008</option>
-                      <option value='VHDL_2019'>2019</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-verilog_version" class="form-label">
-                Verilog version
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-verilog_version"></span>
-              </label>
-              <select class="form-select" aria-label="Verilog version" id="tools-raptor-verilog_version">
-                      <option value='V_1995'>1995</option>
-                      <option value='V_2001'>2001</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-sv_version" class="form-label">
-                SV version
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-sv_version"></span>
-              </label>
-              <select class="form-select" aria-label="SV version" id="tools-raptor-sv_version">
-                      <option value='SV_2005'>2005</option>
-                      <option value='SV_2009'>2009</option>
-                      <option value='SV_2012'>2012</option>
-                      <option value='SV_2017'>2017</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <hr class="hr hr-blurry" />
-            <h4 class="card-subtitle text-muted">Synthesis</h4>
-            <hr class="hr hr-blurry" />
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-optimization" class="form-label">
-                Optimization
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-optimization"></span>
-              </label>
-              <select class="form-select" aria-label="Optimization" id="tools-raptor-optimization">
-                      <option value='area'>Area</option>
-                      <option value='delay'>Delay</option>
-                      <option value='mixed'>Mixed</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-effort" class="form-label">
-                Effort
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-effort"></span>
-              </label>
-              <select class="form-select" aria-label="Effort" id="tools-raptor-effort">
-                      <option value='high'>High</option>
-                      <option value='medium'>Medium</option>
-                      <option value='low'>Low</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-fsm_encoding" class="form-label">
-                FSM encoding
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-fsm_encoding"></span>
-              </label>
-              <select class="form-select" aria-label="FSM encoding" id="tools-raptor-fsm_encoding">
-                      <option value='binary'>Binary</option>
-                      <option value='onehot'>One Hot</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-carry" class="form-label">
-                Carry
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-carry"></span>
-              </label>
-              <select class="form-select" aria-label="Carry" id="tools-raptor-carry">
-                      <option value='auto'>Auto</option>
-                      <option value='all'>All</option>
-                      <option value='none'>None</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-pnr_netlist_language" class="form-label">
-                Pnr netlist language
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-pnr_netlist_language"></span>
-              </label>
-              <select class="form-select" aria-label="Pnr netlist language" id="tools-raptor-pnr_netlist_language">
-                      <option value='blif'>Blif</option>
-                      <option value='edif'>edif</option>
-                      <option value='verilog'>Verilog</option>
-                      <option value='vhdl'>VHDL</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-dsp_limit" class="form-label">
-                DSP limit
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-dsp_limit"></span>
-              </label>
-              <input type='number' class="form-control" id="tools-raptor-dsp_limit" rows="3"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-block_ram_limit" class="form-label">
-                Block RAM limit
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-block_ram_limit"></span>
-              </label>
-              <input type='number' class="form-control" id="tools-raptor-block_ram_limit" rows="3"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-fast_synthesis">
-                <label class="form-check-label" for="tools-raptor-fast_synthesis">
-                  Fast Synthesis
-                  <span class="markConfig badge bg-secondary" id="mark_tools-raptor-fast_synthesis"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <hr class="hr hr-blurry" />
-            <h4 class="card-subtitle text-muted">Simulation</h4>
-            <hr class="hr hr-blurry" />
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-top_level" class="form-label">
-                Simulation top level path:
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-top_level"></span>
-              </label>
-                <input class="form-control" id="tools-raptor-top_level" rows="3"  value=""></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-sim_source_list" class="form-label">
-                Other simulation sources (comma separed): <b>(Comma separed)</b>
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-sim_source_list"></span>
-              </label>
-              <input class="form-control" id="tools-raptor-sim_source_list" rows="3"></input>
-            </div>
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-simulate_rtl">
-                <label class="form-check-label" for="tools-raptor-simulate_rtl">
-                  Simulate RTL
-                  <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulate_rtl"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-waveform_rtl" class="form-label">
-                RTL waveform simulation
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-waveform_rtl"></span>
-              </label>
-                <input class="form-control" id="tools-raptor-waveform_rtl" rows="3"  value="syn_tb_rtl.fst"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-simulator_rtl" class="form-label">
-                RTL Simulator
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulator_rtl"></span>
-              </label>
-              <select class="form-select" aria-label="RTL Simulator" id="tools-raptor-simulator_rtl">
-                      <option value='verilator'>Verilator</option>
-                      <option value='ghdl'>GHDL</option>
-                      <option value='icarus'>Icarus</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-simulation_options_rtl" class="form-label">
-                Simulation options
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulation_options_rtl"></span>
-              </label>
-                <input class="form-control" id="tools-raptor-simulation_options_rtl" rows="3"  value="--stop-time=1000ns"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-simulate_gate">
-                <label class="form-check-label" for="tools-raptor-simulate_gate">
-                  Simulate Gate
-                  <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulate_gate"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-waveform_gate" class="form-label">
-                Gate waveform simulation
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-waveform_gate"></span>
-              </label>
-                <input class="form-control" id="tools-raptor-waveform_gate" rows="3"  value="syn_tb_gate.fst"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-simulator_gate" class="form-label">
-                Gate Simulator
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulator_gate"></span>
-              </label>
-              <select class="form-select" aria-label="Gate Simulator" id="tools-raptor-simulator_gate">
-                      <option value='verilator'>Verilator</option>
-                      <option value='ghdl'>GHDL</option>
-                      <option value='icarus'>Icarus</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-simulation_options_gate" class="form-label">
-                Simulation options
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulation_options_gate"></span>
-              </label>
-                <input class="form-control" id="tools-raptor-simulation_options_gate" rows="3"  value="--stop-time=1000ns"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="tools-raptor-simulate_pnr">
-                <label class="form-check-label" for="tools-raptor-simulate_pnr">
-                  Simulate PNR
-                  <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulate_pnr"></span>
-                </label>
-              </div>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-waveform_pnr" class="form-label">
-                PNR waveform simulation
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-waveform_pnr"></span>
-              </label>
-                <input class="form-control" id="tools-raptor-waveform_pnr" rows="3"  value="sim_pnr.fst"></input>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-simulator_pnr" class="form-label">
-                PNR Simulator
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulator_pnr"></span>
-              </label>
-              <select class="form-select" aria-label="PNR Simulator" id="tools-raptor-simulator_pnr">
-                      <option value='verilator'>Verilator</option>
-                      <option value='ghdl'>GHDL</option>
-                      <option value='icarus'>Icarus</option>
-              </select>
-            </div>
-          
-          
-          
-          
-            <div class="mb-3">
-              <label for="tools-raptor-simulation_options_pnr" class="form-label">
-                Simulation options
-                <span class="markConfig badge bg-secondary" id="mark_tools-raptor-simulation_options_pnr"></span>
-              </label>
-                <input class="form-control" id="tools-raptor-simulation_options_pnr" rows="3"  value="--stop-time=1000ns"></input>
-            </div>
-          
-          
-          
-          
-      </div>
-      
-      <div class="card-footer">
-        <button type="button_cancel" class="btn btn-m btn-block btn-primary btn-danger" onclick="close_panel(event)">Close</button>
-        <button type="button_apply" class="btn btn-m btn-block btn-primary btn btn-success" onclick="send_config(event)">Apply</button>
-        <button type="button_apply_close" class="btn btn-m btn-block btn-primary" onclick="send_config_and_close(event)">Apply and close</button>
-      </div>
-  </div>
+            <div class="settings-section" id="general-general">
+                <div class="settings-group-title-label">
+                    General
+                    <i class="codicon codicon-question help-icon-button" onclick="window.open('https://terostechnology.github.io/terosHDLdoc/docs/installation_checklist/installation', '_blank')" title="Go To Documentation"></i>
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Python3 binary path (e.g.: /usr/bin/python3). Empty if you want to use the system path. <strong>Install teroshdl. E.g: pip3 install teroshdl</strong> <a href=https://terostechnology.github.io/terosHDLdoc/docs/installation_checklist/installation#2-python3>https://terostechnology.github.io/terosHDLdoc/docs/installation_checklist/installation#2-python3</a>
+                            <span class="markConfig" id="mark_general-general-pypath"></span>
+                        </div>
+                            <input class="setting-input-box" id="general-general-pypath" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Make binary directory (e.g.: /usr/bin). Empty if you want to use the system path.
+                            <span class="markConfig" id="mark_general-general-makepath"></span>
+                        </div>
+                            <input class="setting-input-box" id="general-general-makepath" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="general-general-go_to_definition_vhdl">
+                            <label class="setting-checkbox-label" for="general-general-go_to_definition_vhdl">
+                                Activate go to definition feature for VHDL (you need to restart VSCode).
+                                <span class="markConfig" id="mark_general-general-go_to_definition_vhdl"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="general-general-go_to_definition_verilog">
+                            <label class="setting-checkbox-label" for="general-general-go_to_definition_verilog">
+                                Activate go to definition feature for Verilog/SV (you need to restart VSCode).
+                                <span class="markConfig" id="mark_general-general-go_to_definition_verilog"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="general-general-developer_mode">
+                            <label class="setting-checkbox-label" for="general-general-developer_mode">
+                                Developer mode: be careful!!
+                                <span class="markConfig" id="mark_general-general-developer_mode"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="documentation-general">
+                <div class="settings-group-title-label">
+                    Documentation
+                    <i class="codicon codicon-question help-icon-button" onclick="window.open('https://terostechnology.github.io/terosHDLdoc/docs/category/auto-documentation', '_blank')" title="Go To Documentation"></i>
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Documentation language:
+                            <span class="markConfig" id="mark_documentation-general-language"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="documentation-general-language">
+                                      <option value='english'>English</option>
+                                      <option value='russian'>Russian</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Special VHDL symbol at the begin of the comment to extract documentation. Example: <code>--! Code comment</code>
+                            <span class="markConfig" id="mark_documentation-general-symbol_vhdl"></span>
+                        </div>
+                            <input class="setting-input-box" id="documentation-general-symbol_vhdl" value="!">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Special Verilog symbol at the begin of the comment to extract documentation. Example: <code>//! Code comment</code>
+                            <span class="markConfig" id="mark_documentation-general-symbol_verilog"></span>
+                        </div>
+                            <input class="setting-input-box" id="documentation-general-symbol_verilog" value="!">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="documentation-general-dependency_graph">
+                            <label class="setting-checkbox-label" for="documentation-general-dependency_graph">
+                                Include dependency graph:
+                                <span class="markConfig" id="mark_documentation-general-dependency_graph"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="documentation-general-self_contained">
+                            <label class="setting-checkbox-label" for="documentation-general-self_contained">
+                                HTML documentation self contained:
+                                <span class="markConfig" id="mark_documentation-general-self_contained"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="documentation-general-fsm">
+                            <label class="setting-checkbox-label" for="documentation-general-fsm">
+                                Include FSM:
+                                <span class="markConfig" id="mark_documentation-general-fsm"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Include ports:
+                            <span class="markConfig" id="mark_documentation-general-ports"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="documentation-general-ports">
+                                      <option value='all'>All</option>
+                                      <option value='only_commented'>Only commented</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Include generics:
+                            <span class="markConfig" id="mark_documentation-general-generics"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="documentation-general-generics">
+                                      <option value='all'>All</option>
+                                      <option value='only_commented'>Only commented</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Include instantiations:
+                            <span class="markConfig" id="mark_documentation-general-instantiations"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="documentation-general-instantiations">
+                                      <option value='all'>All</option>
+                                      <option value='only_commented'>Only commented</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Include signals:
+                            <span class="markConfig" id="mark_documentation-general-signals"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="documentation-general-signals">
+                                      <option value='all'>All</option>
+                                      <option value='only_commented'>Only commented</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Include consants:
+                            <span class="markConfig" id="mark_documentation-general-constants"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="documentation-general-constants">
+                                      <option value='all'>All</option>
+                                      <option value='only_commented'>Only commented</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Include types:
+                            <span class="markConfig" id="mark_documentation-general-types"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="documentation-general-types">
+                                      <option value='all'>All</option>
+                                      <option value='only_commented'>Only commented</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Include always/processes:
+                            <span class="markConfig" id="mark_documentation-general-process"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="documentation-general-process">
+                                      <option value='all'>All</option>
+                                      <option value='only_commented'>Only commented</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Include functions:
+                            <span class="markConfig" id="mark_documentation-general-functions"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="documentation-general-functions">
+                                      <option value='all'>All</option>
+                                      <option value='only_commented'>Only commented</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Include tasks:
+                            <span class="markConfig" id="mark_documentation-general-tasks"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="documentation-general-tasks">
+                                      <option value='all'>All</option>
+                                      <option value='only_commented'>Only commented</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Magic config file path
+                            <span class="markConfig" id="mark_documentation-general-magic_config_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="documentation-general-magic_config_path" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="editor-general">
+                <div class="settings-group-title-label">
+                    Editor
+                    <i class="codicon codicon-question help-icon-button" onclick="window.open('https://terostechnology.github.io/terosHDLdoc/docs/category/editor', '_blank')" title="Go To Documentation"></i>
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="editor-general-stutter_comment_shortcuts">
+                            <label class="setting-checkbox-label" for="editor-general-stutter_comment_shortcuts">
+                                Stutter mode: an enter keypress at the end of a line that contains a non-empty comment will continue the comment on the next line. This can be cancelled by pressing enter again. You must also set <code>"editor.formatOnType": true"</code>
+                                <span class="markConfig" id="mark_editor-general-stutter_comment_shortcuts"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Width of block comment elements inserted by stutter completions
+                            <span class="markConfig" id="mark_editor-general-stutter_block_width"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="editor-general-stutter_block_width">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Max width of block comment elements inserted by stutter completions. Set to zero to disable.
+                            <span class="markConfig" id="mark_editor-general-stutter_max_width"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="editor-general-stutter_max_width">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="editor-general-stutter_delimiters">
+                            <label class="setting-checkbox-label" for="editor-general-stutter_delimiters">
+                                Stutter mode: enable Delimiter Shortcuts
+                                <span class="markConfig" id="mark_editor-general-stutter_delimiters"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="editor-general-stutter_bracket_shortcuts">
+                            <label class="setting-checkbox-label" for="editor-general-stutter_bracket_shortcuts">
+                                Stutter mode: enable Bracket Shortcuts
+                                <span class="markConfig" id="mark_editor-general-stutter_bracket_shortcuts"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="formatter-general">
+                <div class="settings-group-title-label">
+                    Formatter
+                    <i class="codicon codicon-question help-icon-button" onclick="window.open('https://terostechnology.github.io/terosHDLdoc/docs/guides/formatter', '_blank')" title="Go To Documentation"></i>
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Verilog/SV formatter:
+                            <span class="markConfig" id="mark_formatter-general-formatter_verilog"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="formatter-general-formatter_verilog">
+                                      <option value='istyle'>iStyle</option>
+                                      <option value='s3sv'>s3sv</option>
+                                      <option value='verible'>Verible</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VHDL formatter:
+                            <span class="markConfig" id="mark_formatter-general-formatter_vhdl"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="formatter-general-formatter_vhdl">
+                                      <option value='standalone'>Standalone</option>
+                                      <option value='vsg'>VSG</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="formatter-istyle">
+                <div class="settings-group-title-label">
+                    Formatter: iStyle
+                </div>
+                <div class="settings-group-description">Verilog/SV iStyle formatter</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Predefined Styling options.
+                            <span class="markConfig" id="mark_formatter-istyle-style"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="formatter-istyle-style">
+                                      <option value='ansi'>ANSI</option>
+                                      <option value='kr'>Kernighan&Ritchie</option>
+                                      <option value='gnu'>GNU</option>
+                                      <option value='indent_only'>Indent only</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Indentation size in number of characters.
+                            <span class="markConfig" id="mark_formatter-istyle-indentation_size"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="formatter-istyle-indentation_size">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="formatter-s3sv">
+                <div class="settings-group-title-label">
+                    Formatter: s3sv
+                </div>
+                <div class="settings-group-description">Verilog/SV S3SV formatter</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="formatter-s3sv-one_bind_per_line">
+                            <label class="setting-checkbox-label" for="formatter-s3sv-one_bind_per_line">
+                                Force one binding per line in instanciations statements.
+                                <span class="markConfig" id="mark_formatter-s3sv-one_bind_per_line"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="formatter-s3sv-one_declaration_per_line">
+                            <label class="setting-checkbox-label" for="formatter-s3sv-one_declaration_per_line">
+                                Force one declaration per line.
+                                <span class="markConfig" id="mark_formatter-s3sv-one_declaration_per_line"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="formatter-s3sv-use_tabs">
+                            <label class="setting-checkbox-label" for="formatter-s3sv-use_tabs">
+                                Use tabs instead of spaces for indentation.
+                                <span class="markConfig" id="mark_formatter-s3sv-use_tabs"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Indentation size in number of characters.
+                            <span class="markConfig" id="mark_formatter-s3sv-indentation_size"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="formatter-s3sv-indentation_size">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="formatter-verible">
+                <div class="settings-group-title-label">
+                    Formatter: Verible
+                </div>
+                <div class="settings-group-description">Verilog/SV Verible formatter</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Extra command line arguments passed to the Verible tool
+                            <span class="markConfig" id="mark_formatter-verible-format_args"></span>
+                        </div>
+                            <input class="setting-input-box" id="formatter-verible-format_args" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="formatter-standalone">
+                <div class="settings-group-title-label">
+                    Formatter: VHDL standalone
+                </div>
+                <div class="settings-group-description">VHDL standalone formatter</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Keyword case. e.g. begin, case, when 
+                            <span class="markConfig" id="mark_formatter-standalone-keyword_case"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="formatter-standalone-keyword_case">
+                                      <option value='lowercase'>LowerCase</option>
+                                      <option value='uppercase'>UpperCase</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Type name case. e.g. boolean, natural, string 
+                            <span class="markConfig" id="mark_formatter-standalone-name_case"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="formatter-standalone-name_case">
+                                      <option value='lowercase'>LowerCase</option>
+                                      <option value='uppercase'>UpperCase</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Indentation.
+                            <span class="markConfig" id="mark_formatter-standalone-indentation"></span>
+                        </div>
+                            <input class="setting-input-box" id="formatter-standalone-indentation" value="  ">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="formatter-standalone-align_port_generic">
+                            <label class="setting-checkbox-label" for="formatter-standalone-align_port_generic">
+                                Align signs in ports and generics.
+                                <span class="markConfig" id="mark_formatter-standalone-align_port_generic"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="formatter-standalone-align_comment">
+                            <label class="setting-checkbox-label" for="formatter-standalone-align_comment">
+                                Align comments.
+                                <span class="markConfig" id="mark_formatter-standalone-align_comment"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="formatter-standalone-remove_comments">
+                            <label class="setting-checkbox-label" for="formatter-standalone-remove_comments">
+                                Remove comments.
+                                <span class="markConfig" id="mark_formatter-standalone-remove_comments"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="formatter-standalone-remove_reports">
+                            <label class="setting-checkbox-label" for="formatter-standalone-remove_reports">
+                                Remove reports.
+                                <span class="markConfig" id="mark_formatter-standalone-remove_reports"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="formatter-standalone-check_alias">
+                            <label class="setting-checkbox-label" for="formatter-standalone-check_alias">
+                                All long names will be replaced by ALIAS names.
+                                <span class="markConfig" id="mark_formatter-standalone-check_alias"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            New line after THEN.
+                            <span class="markConfig" id="mark_formatter-standalone-new_line_after_then"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="formatter-standalone-new_line_after_then">
+                                      <option value='new_line'>New line</option>
+                                      <option value='no_new_line'>No new line</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            New line after semicolon ';'.
+                            <span class="markConfig" id="mark_formatter-standalone-new_line_after_semicolon"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="formatter-standalone-new_line_after_semicolon">
+                                      <option value='new_line'>New line</option>
+                                      <option value='no_new_line'>No new line</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            New line after ELSE.
+                            <span class="markConfig" id="mark_formatter-standalone-new_line_after_else"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="formatter-standalone-new_line_after_else">
+                                      <option value='new_line'>New line</option>
+                                      <option value='no_new_line'>No new line</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            New line after PORT | PORT MAP.
+                            <span class="markConfig" id="mark_formatter-standalone-new_line_after_port"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="formatter-standalone-new_line_after_port">
+                                      <option value='new_line'>New line</option>
+                                      <option value='no_new_line'>No new line</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            New line after GENERIC.
+                            <span class="markConfig" id="mark_formatter-standalone-new_line_after_generic"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="formatter-standalone-new_line_after_generic">
+                                      <option value='new_line'>New line</option>
+                                      <option value='no_new_line'>No new line</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="formatter-vsg">
+                <div class="settings-group-title-label">
+                    Formatter: VHDL VSG
+                </div>
+                <div class="settings-group-description">Configure VSG in the tool section: tools -> VSG</div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="linter-general">
+                <div class="settings-group-title-label">
+                    Linter settings
+                    <i class="codicon codicon-question help-icon-button" onclick="window.open('https://terostechnology.github.io/terosHDLdoc/docs/guides/linter', '_blank')" title="Go To Documentation"></i>
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VHDL linter: disable VHDL-LS needs restart VSCode.
+                            <span class="markConfig" id="mark_linter-general-linter_vhdl"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="linter-general-linter_vhdl">
+                                      <option value='disabled'>Disabled</option>
+                                      <option value='ghdl'>GHDL</option>
+                                      <option value='modelsim'>Modelsim</option>
+                                      <option value='vivado'>Vivado (xvhdl)</option>
+                                      <option value='none'>VHDL-LS</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Verilog/SV linter:
+                            <span class="markConfig" id="mark_linter-general-linter_verilog"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="linter-general-linter_verilog">
+                                      <option value='disabled'>Disabled</option>
+                                      <option value='icarus'>Icarus</option>
+                                      <option value='modelsim'>Modelsim</option>
+                                      <option value='verilator'>Verilator</option>
+                                      <option value='vivado'>Vivado (xvlog)</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Verilog/SV style checker:
+                            <span class="markConfig" id="mark_linter-general-lstyle_verilog"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="linter-general-lstyle_verilog">
+                                      <option value='verible'>Verible</option>
+                                      <option value='disabled'>Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VHDL style checker:
+                            <span class="markConfig" id="mark_linter-general-lstyle_vhdl"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="linter-general-lstyle_vhdl">
+                                      <option value='vsg'>VSG</option>
+                                      <option value='disabled'>Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="linter-vhdlls">
+                <div class="settings-group-title-label">
+                    Linter settings: VHDL-LS linter
+                </div>
+                <div class="settings-group-description">Fast VHDL language server and analysis library written in Rust.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Define the VHDL revision to use for parsing and analysis with the standard key. The expected value is the year associated the VHDL standard. Defining the standard feature is a relatively new feature (since april 2024). Anything but the 2008 standard will not change much at the moment.
+                            <span class="markConfig" id="mark_linter-vhdlls-standard"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="linter-vhdlls-standard">
+                                      <option value='v1993'>1993</option>
+                                      <option value='v2008'>2008</option>
+                                      <option value='v2019'>2019</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="linter-vhdlls-ignoreVunit">
+                            <label class="setting-checkbox-label" for="linter-vhdlls-ignoreVunit">
+                                It will ignore the VUnit library in vunit_lib.
+                                <span class="markConfig" id="mark_linter-vhdlls-ignoreVunit"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Path to the VUnit files. Example: '/home/myuser/.venvs/default/lib/python3.12/site-packages/vunit/vhdl/**/*.vhd'
+                            <span class="markConfig" id="mark_linter-vhdlls-vunitPath"></span>
+                        </div>
+                            <input class="setting-input-box" id="linter-vhdlls-vunitPath" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="linter-ghdl">
+                <div class="settings-group-title-label">
+                    Linter settings: GHDL linter
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Arguments.
+                            <span class="markConfig" id="mark_linter-ghdl-arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="linter-ghdl-arguments" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="linter-icarus">
+                <div class="settings-group-title-label">
+                    Linter settings: Icarus linter
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Arguments.
+                            <span class="markConfig" id="mark_linter-icarus-arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="linter-icarus-arguments" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="linter-modelsim">
+                <div class="settings-group-title-label">
+                    Linter settings: ModelSim linter
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VHDL linter arguments.
+                            <span class="markConfig" id="mark_linter-modelsim-vhdl_arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="linter-modelsim-vhdl_arguments" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Verilog/SV linter arguments.
+                            <span class="markConfig" id="mark_linter-modelsim-verilog_arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="linter-modelsim-verilog_arguments" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="linter-verible">
+                <div class="settings-group-title-label">
+                    Linter settings: Verible linter
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Arguments.
+                            <span class="markConfig" id="mark_linter-verible-arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="linter-verible-arguments" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="linter-verilator">
+                <div class="settings-group-title-label">
+                    Linter settings: Verilator linter
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Arguments.
+                            <span class="markConfig" id="mark_linter-verilator-arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="linter-verilator-arguments" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="linter-vivado">
+                <div class="settings-group-title-label">
+                    Linter settings: Vivado linter
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VHDL linter arguments.
+                            <span class="markConfig" id="mark_linter-vivado-vhdl_arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="linter-vivado-vhdl_arguments" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Verilog/SV linter arguments.
+                            <span class="markConfig" id="mark_linter-vivado-verilog_arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="linter-vivado-verilog_arguments" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="linter-vsg">
+                <div class="settings-group-title-label">
+                    Linter settings: VSG linter
+                </div>
+                <div class="settings-group-description">Configure VSG in the tool section: tools -> VSG</div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="schematic-general">
+                <div class="settings-group-title-label">
+                    Schematic viewer
+                    <i class="codicon codicon-question help-icon-button" onclick="window.open('https://terostechnology.github.io/terosHDLdoc/docs/guides/schematic_viewer/installation', '_blank')" title="Go To Documentation"></i>
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Select the backend:
+                            <span class="markConfig" id="mark_schematic-general-backend"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="schematic-general-backend">
+                                      <option value='yowasp'>YoWASP (Only Verilog/SV)</option>
+                                      <option value='yosys'>Yosys (Only Verilog/SV)</option>
+                                      <option value='yosys_ghdl'>GHDL + Yosys (VHDL+Verilog/SV)</option>
+                                      <option value='standalone'>Standalone (Verilog/SV)</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Extra options passed before to run yowasp-yosys or yosys. Eg: 'conda activate base & ' or 'C:/OSS-CAD-SUITE/oss-cad-suite/start.bat & '
+                            <span class="markConfig" id="mark_schematic-general-extra"></span>
+                        </div>
+                            <input class="setting-input-box" id="schematic-general-extra" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Arguments passed to Yosys
+                            <span class="markConfig" id="mark_schematic-general-args"></span>
+                        </div>
+                            <input class="setting-input-box" id="schematic-general-args" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Arguments passed to GHDL
+                            <span class="markConfig" id="mark_schematic-general-args_ghdl"></span>
+                        </div>
+                            <input class="setting-input-box" id="schematic-general-args_ghdl" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="templates-general">
+                <div class="settings-group-title-label">
+                    Templates
+                    <i class="codicon codicon-question help-icon-button" onclick="window.open('https://terostechnology.github.io/terosHDLdoc/docs/guides/templates', '_blank')" title="Go To Documentation"></i>
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            File path with your configurable header. E.g. your company license. It will be inserted at the beginning of the template
+                            <span class="markConfig" id="mark_templates-general-header_file_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="templates-general-header_file_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Indent
+                            <span class="markConfig" id="mark_templates-general-indent"></span>
+                        </div>
+                            <input class="setting-input-box" id="templates-general-indent" value="  ">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Clock generation style:
+                            <span class="markConfig" id="mark_templates-general-clock_generation_style"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="templates-general-clock_generation_style">
+                                      <option value='inline'>Inline</option>
+                                      <option value='ifelse'>if/else</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Instantiation style:
+                            <span class="markConfig" id="mark_templates-general-instance_style"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="templates-general-instance_style">
+                                      <option value='inline'>Inline</option>
+                                      <option value='separate'>Separate</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-general">
+                <div class="settings-group-title-label">
+                    Tools
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Select a tool, framework, simulator...
+                            <span class="markConfig" id="mark_tools-general-select_tool"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-general-select_tool">
+                                      <option value='osvvm'>OSVVM</option>
+                                      <option value='vunit'>VUnit</option>
+                                      <option value='ghdl'>GHDL</option>
+                                      <option value='cocotb'>cocotb</option>
+                                      <option value='icarus'>Icarus</option>
+                                      <option value='icestorm'>Icestorm</option>
+                                      <option value='ise'>ISE</option>
+                                      <option value='isim'>ISIM</option>
+                                      <option value='modelsim'>ModelSim</option>
+                                      <option value='openfpga'>OpenFPGA</option>
+                                      <option value='quartus'>Quartus</option>
+                                      <option value='rivierapro'>Riviera-PRO</option>
+                                      <option value='spyglass'>SpyGlass</option>
+                                      <option value='trellis'>Trellis</option>
+                                      <option value='vcs'>VCS</option>
+                                      <option value='verilator'>Verilator</option>
+                                      <option value='vivado'>Vivado</option>
+                                      <option value='xcelium'>Xcelium</option>
+                                      <option value='xsim'>XSIM</option>
+                                      <option value='raptor'>Raptor Design Suite</option>
+                                      <option value='radiant'>Radiant</option>
+                                      <option value='sandpiper'>SandPiper</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Path to the file with the manual compilation order.
+                            <span class="markConfig" id="mark_tools-general-manual_compilation_order"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-general-manual_compilation_order" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Select the execution mode.
+                            <span class="markConfig" id="mark_tools-general-execution_mode"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-general-execution_mode">
+                                      <option value='gui'>GUI</option>
+                                      <option value='cmd'>Command line</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Select the waveform viewer. For GTKWave you need to install it.
+                            <span class="markConfig" id="mark_tools-general-waveform_viewer"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-general-waveform_viewer">
+                                      <option value='tool'>Tool GUI</option>
+                                      <option value='gtkwave'>GTKWave</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            GTKWave installation directory.
+                            <span class="markConfig" id="mark_tools-general-gtkwave_installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-general-gtkwave_installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Extra arguments passed to GTKwave. E.g: --script=script.tcl
+                            <span class="markConfig" id="mark_tools-general-gtkwave_extra_arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-general-gtkwave_extra_arguments" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-quartus">
+                <div class="settings-group-title-label">
+                    Tools: Intel@ Quartus@ Prime
+                </div>
+                <div class="settings-group-description">The intuitive high-performance design environment. From design entry and synthesis to optimization, verification, and simulation, Intel® Quartus® Prime Design Software unlocks increased capabilities on devices with multi-million logic elements, providing designers with the ideal platform to meet next-generation design opportunities.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-quartus-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-quartus-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA family (e.g. Cyclone V).
+                            <span class="markConfig" id="mark_tools-quartus-family"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-quartus-family" value="" disabled>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA device (e.g. 5CSXFC6D6F31C8ES).
+                            <span class="markConfig" id="mark_tools-quartus-device"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-quartus-device" value="" disabled>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Specifies your overall optimization focus for implementation of your synthesized logic. By default, the Compiler uses a balanced mode respecting the design's timing constraints. Use alternate modes to specify a different optimization focus. High effort modes enable additional optimizations that increase compilation time. Aggressive modes may increase compilation time and may also be detrimental to other optimizations.
+                            <span class="markConfig" id="mark_tools-quartus-optimization_mode"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-quartus-optimization_mode">
+                                      <option value='BALANCED'>Balanced (normal flow)</option>
+                                      <option value='HIGH_PERFORMANCE_EFFORT'>High Performance Effort</option>
+                                      <option value='HIGH_PERFORMANCE_EFFORT_WITH_MAXIMUM_PLACEMENT_EFFORT'>High Performance with Maximum Placement Effort</option>
+                                      <option value='HIGH_PERFORMANCE_WITH_AGGRESSIVE_POWER_EFFORT'>High Performance with Aggressive Power Effort</option>
+                                      <option value='SUPERIOR_PERFORMANCE'>Superior Performance (adds synthesis optimization for speed)</option>
+                                      <option value='SUPERIOR_PERFORMANCE_WITH_MAXIMUM_PLACEMENT_EFFORT'>Superior Performance with Maximum Placement Effort</option>
+                                      <option value='AGGRESSIVE_AREA'>Aggressive Area (reduces performance)</option>
+                                      <option value='HIGH_PLACEMENT_ROUTABILITY_EFFORT'>High Placement Routability Effort</option>
+                                      <option value='HIGH_PACKING_ROUTABILITY_EFFORT'>High Packing Routability Effort</option>
+                                      <option value='OPTIMIZE_NETLIST_FOR_ROUTABILITY'>Optimize Netlist for Routability</option>
+                                      <option value='AGGRESSIVE_POWER'>Aggressive Power (reduces performance)</option>
+                                      <option value='AGGRESSIVE_COMPILE_TIME'>Agressive Compile Time (reduces performance)</option>
+                                      <option value='FAST_FUNCTIONAL_TEST'>Fast Functional Test (reduces performance)</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-quartus-allow_register_retiming">
+                            <label class="setting-checkbox-label" for="tools-quartus-allow_register_retiming">
+                                Allow Register Retiming.
+                                <span class="markConfig" id="mark_tools-quartus-allow_register_retiming"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Custom waves file path for simulations:
+                            <span class="markConfig" id="mark_tools-quartus-wave_file_questa"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-quartus-wave_file_questa" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-vsg">
+                <div class="settings-group-title-label">
+                    Tools: VSG
+                </div>
+                <div class="settings-group-description">VHDL Style Guide.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path. E.g. /home/myuser/.venvs/default/bin/
+                            <span class="markConfig" id="mark_tools-vsg-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-vsg-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Path JSON or YAML configuration file.
+                            <span class="markConfig" id="mark_tools-vsg-style_config"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-vsg-style_config" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Number of parallel jobs to use, default is the number of cpu cores.
+                            <span class="markConfig" id="mark_tools-vsg-core_number"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="tools-vsg-core_number">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional arguments to pass to the VSG command.
+                            <span class="markConfig" id="mark_tools-vsg-aditional_arguments"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-vsg-aditional_arguments" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-osvvm">
+                <div class="settings-group-title-label">
+                    Tools: OSVVM
+                </div>
+                <div class="settings-group-description">OSVVM is an advanced verification methodology that defines a VHDL verification framework, verification utility library, verification component library, and a scripting flow that simplifies your FPGA or ASIC verification project from start to finish. Using these libraries you can create a simple, readable, and powerful testbench that is suitable for either a simple FPGA block or a complex ASIC.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-osvvm-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-osvvm-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            tclsh binary path. E.g: /usr/bin/tclsh8.6
+                            <span class="markConfig" id="mark_tools-osvvm-tclsh_binary"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-osvvm-tclsh_binary" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Selects which simulator to use.
+                            <span class="markConfig" id="mark_tools-osvvm-simulator_name"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-osvvm-simulator_name">
+                                      <option value='activehdl'>Aldec Active-HDL</option>
+                                      <option value='ghdl'>GHDL</option>
+                                      <option value='nvc'>NVC</option>
+                                      <option value='rivierapro'>Aldec Riviera-PRO</option>
+                                      <option value='questa'>Mentor/Siemens EDA Questa</option>
+                                      <option value='modelsim'>Mentor/Siemens EDA ModelSim</option>
+                                      <option value='vcs'>VCS</option>
+                                      <option value='xsim'>XSIM</option>
+                                      <option value='xcelium'>Xcelium</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-ascenlint">
+                <div class="settings-group-title-label">
+                    Tools: Ascenlint
+                </div>
+                <div class="settings-group-description">Ascent Lint performs static source code analysis on HDL code and checks for common coding errors or coding style violations.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-ascenlint-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ascenlint-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional run options for ascentlint.
+                            <span class="markConfig" id="mark_tools-ascenlint-ascentlint_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ascenlint-ascentlint_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-cocotb">
+                <div class="settings-group-title-label">
+                    Tools: Cocotb
+                </div>
+                <div class="settings-group-description"></div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-cocotb-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-cocotb-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Selects which simulator Makefile to use. Attempts to include a simulator specific makefile from cocotb/share/makefiles/simulators/makefile.$(SIM)
+                            <span class="markConfig" id="mark_tools-cocotb-simulator_name"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-cocotb-simulator_name">
+                                      <option value='icarus'>icarus</option>
+                                      <option value='verilator'>Verilator</option>
+                                      <option value='vcs'>Synopsys VCS</option>
+                                      <option value='riviera'>Aldec Riviera-PRO</option>
+                                      <option value='activehdl'>Aldec Active-HDL</option>
+                                      <option value='questa'>Mentor/Siemens EDA Questa</option>
+                                      <option value='modelsim'>Mentor/Siemens EDA ModelSim</option>
+                                      <option value='ius'>Cadence Incisive</option>
+                                      <option value='xcelium'>Cadence Xcelium</option>
+                                      <option value='ghdl'>GHDL</option>
+                                      <option value='cvc'>Tachyon DA CVC</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Any arguments or flags to pass to the compile stage of the simulation.
+                            <span class="markConfig" id="mark_tools-cocotb-compile_args"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-cocotb-compile_args" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Any argument to be passed to the “first” invocation of a simulator that runs via a TCL script. One motivating usage is to pass -noautoldlibpath to Questa to prevent it from loading the out-of-date libraries it ships with. Used by Aldec Riviera-PRO and Mentor Graphics Questa simulator.
+                            <span class="markConfig" id="mark_tools-cocotb-run_args"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-cocotb-run_args" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            They are options that are starting with a plus (+) sign. They are passed to the simulator and are also available within cocotb as cocotb.plusargs. In the simulator, they can be read by the Verilog/SystemVerilog system functions $test$plusargs and $value$plusargs. The special plusargs +ntb_random_seed and +seed, if present, are evaluated to set the random seed value if RANDOM_SEED is not set. If both +ntb_random_seed and +seed are set, +ntb_random_seed is used.
+                            <span class="markConfig" id="mark_tools-cocotb-plusargs"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-cocotb-plusargs" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-diamond">
+                <div class="settings-group-title-label">
+                    Tools: Diamond
+                </div>
+                <div class="settings-group-description">Backend for Lattice Diamond.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-diamond-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-diamond-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA part number (e.g. LFE5U-45F-6BG381C).
+                            <span class="markConfig" id="mark_tools-diamond-part"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-diamond-part" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-ghdl">
+                <div class="settings-group-title-label">
+                    Tools: GHDL
+                </div>
+                <div class="settings-group-description">GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE 1076-2002 and partially the 1076-2008 version of VHDL.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-ghdl-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Waveform output format:
+                            <span class="markConfig" id="mark_tools-ghdl-waveform"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-ghdl-waveform">
+                                      <option value='vcd'>VCD</option>
+                                      <option value='ghw'>GHW</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            analyze options. Extra options used for the GHDL analyze stage (ghdl -a).
+                            <span class="markConfig" id="mark_tools-ghdl-analyze_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-analyze_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Run options. Extra options used when running GHDL simulations (ghdl -r).
+                            <span class="markConfig" id="mark_tools-ghdl-run_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-run_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-icarus">
+                <div class="settings-group-title-label">
+                    Tools: Icarus
+                </div>
+                <div class="settings-group-description">Icarus Verilog is a Verilog simulation and synthesis tool. It operates as a compiler, compiling source code written in Verilog (IEEE-1364) into some target format.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-icarus-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-icarus-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Default timescale.
+                            <span class="markConfig" id="mark_tools-icarus-timescale"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-icarus-timescale" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for iverilog.
+                            <span class="markConfig" id="mark_tools-icarus-iverilog_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-icarus-iverilog_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-icestorm">
+                <div class="settings-group-title-label">
+                    Tools: Icestorm
+                </div>
+                <div class="settings-group-description">Open source toolchain for Lattice iCE40 FPGAs. Uses yosys for synthesis and arachne-pnr or nextpnr for Place & Route.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-icestorm-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-icestorm-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Select P&R tool. Valid values are arachne and next. Default is arachne.
+                            <span class="markConfig" id="mark_tools-icestorm-pnr"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-icestorm-pnr">
+                                      <option value='arachne'>Arachne-pnr</option>
+                                      <option value='next'>nextpnr</option>
+                                      <option value='none'>Only perform synthesis</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Target architecture.
+                            <span class="markConfig" id="mark_tools-icestorm-arch"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-icestorm-arch">
+                                      <option value='xilinx'>Xilinx</option>
+                                      <option value='ice40'>ICE40</option>
+                                      <option value='ecp5'>ECP5</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Output file format.
+                            <span class="markConfig" id="mark_tools-icestorm-output_format"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-icestorm-output_format">
+                                      <option value='json'>JSON</option>
+                                      <option value='edif'>EDIF</option>
+                                      <option value='blif'>BLIF</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-icestorm-yosys_as_subtool">
+                            <label class="setting-checkbox-label" for="tools-icestorm-yosys_as_subtool">
+                                Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.
+                                <span class="markConfig" id="mark_tools-icestorm-yosys_as_subtool"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Generated makefile name, defaults to $name.mk
+                            <span class="markConfig" id="mark_tools-icestorm-makefile_name"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-icestorm-makefile_name" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for ArachnePNR Place & Route.
+                            <span class="markConfig" id="mark_tools-icestorm-arachne_pnr_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-icestorm-arachne_pnr_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for NextPNR Place & Route.
+                            <span class="markConfig" id="mark_tools-icestorm-nextpnr_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-icestorm-nextpnr_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for the synth_ice40 command.
+                            <span class="markConfig" id="mark_tools-icestorm-yosys_synth_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-icestorm-yosys_synth_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-ise">
+                <div class="settings-group-title-label">
+                    Tools: ISE
+                </div>
+                <div class="settings-group-description">Xilinx ISE Design Suite.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-ise-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ise-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA family (e.g. spartan6).
+                            <span class="markConfig" id="mark_tools-ise-family"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ise-family" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA device (e.g. xc6slx45).
+                            <span class="markConfig" id="mark_tools-ise-device"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ise-device" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA package (e.g. csg324).
+                            <span class="markConfig" id="mark_tools-ise-package"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ise-package" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA speed grade (e.g. -2).
+                            <span class="markConfig" id="mark_tools-ise-speed"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ise-speed" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-isem">
+                <div class="settings-group-title-label">
+                    Tools: ISIM
+                </div>
+                <div class="settings-group-description">Xilinx ISim simulator from ISE design suite.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-isem-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-isem-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for compilation with FUSE.
+                            <span class="markConfig" id="mark_tools-isem-fuse_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-isem-fuse_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional run options for ISim.
+                            <span class="markConfig" id="mark_tools-isem-isim_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-isem-isim_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-modelsim">
+                <div class="settings-group-title-label">
+                    Tools: ModelSim
+                </div>
+                <div class="settings-group-description">ModelSim simulator from Mentor Graphics.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-modelsim-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-modelsim-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for compilation with vcom.
+                            <span class="markConfig" id="mark_tools-modelsim-vcom_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-modelsim-vcom_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for compilation with vlog.
+                            <span class="markConfig" id="mark_tools-modelsim-vlog_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-modelsim-vlog_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional run options for vsim.
+                            <span class="markConfig" id="mark_tools-modelsim-vsim_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-modelsim-vsim_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-morty">
+                <div class="settings-group-title-label">
+                    Tools: Morty
+                </div>
+                <div class="settings-group-description">Run the (System-) Verilog pickle tool called morty.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-morty-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-morty-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Run-time options passed to morty..
+                            <span class="markConfig" id="mark_tools-morty-morty_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-morty-morty_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-radiant">
+                <div class="settings-group-title-label">
+                    Tools: Radiant
+                </div>
+                <div class="settings-group-description">Backend for Lattice Radiant.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-radiant-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-radiant-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA part number (e.g. LIFCL-40-9BG400C).
+                            <span class="markConfig" id="mark_tools-radiant-part"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-radiant-part" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-rivierapro">
+                <div class="settings-group-title-label">
+                    Tools: Rivierapro
+                </div>
+                <div class="settings-group-description">Riviera Pro simulator from Aldec.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-rivierapro-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-rivierapro-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Common or separate compilation, sep - for separate compilation, common - for common compilation.
+                            <span class="markConfig" id="mark_tools-rivierapro-compilation_mode"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-rivierapro-compilation_mode" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for compilation with vlog.
+                            <span class="markConfig" id="mark_tools-rivierapro-vlog_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-rivierapro-vlog_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional run options for vsim.
+                            <span class="markConfig" id="mark_tools-rivierapro-vsim_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-rivierapro-vsim_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-siliconcompiler">
+                <div class="settings-group-title-label">
+                    Tools: SiliconCompiler
+                </div>
+                <div class="settings-group-description">SiliconCompiler is an open source compiler framework that automates translation from source code to silicon. Check the project documentation: <a href="https://docs.siliconcompiler.com/en/latest/">https://docs.siliconcompiler.com/en/latest/</a></div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            
+                            <span class="markConfig" id="mark_tools-siliconcompiler-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-siliconcompiler-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Compilation target separated by a single underscore, specified as '<process>_<edaflow>' for ASIC compilation and '<partname>_<edaflow>'' for FPGA compilation. The process, edaflow, partname fields must be alphanumeric and cannot contain underscores. E.g: asicflow_freepdk45
+                            <span class="markConfig" id="mark_tools-siliconcompiler-target"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-siliconcompiler-target" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-siliconcompiler-server_enable">
+                            <label class="setting-checkbox-label" for="tools-siliconcompiler-server_enable">
+                                Enable remote server.
+                                <span class="markConfig" id="mark_tools-siliconcompiler-server_enable"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Remote server address (e.g: https://server.siliconcompiler.com):
+                            <span class="markConfig" id="mark_tools-siliconcompiler-server_address"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-siliconcompiler-server_address" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Remote server user:
+                            <span class="markConfig" id="mark_tools-siliconcompiler-server_username"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-siliconcompiler-server_username" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Remote server password:
+                            <span class="markConfig" id="mark_tools-siliconcompiler-server_password"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-siliconcompiler-server_password" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-spyglass">
+                <div class="settings-group-title-label">
+                    Tools: Spyglass
+                </div>
+                <div class="settings-group-description">Synopsys (formerly Atrenta) Spyglass Backend. Spyglass performs static source code analysis on HDL code and checks for common coding errors or coding style violations.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-spyglass-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-spyglass-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Methodology
+                            <span class="markConfig" id="mark_tools-spyglass-methodology"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-spyglass-methodology" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Goals
+                            <span class="markConfig" id="mark_tools-spyglass-goals"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-spyglass-goals">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Spyglass Options
+                            <span class="markConfig" id="mark_tools-spyglass-spyglass_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-spyglass-spyglass_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Rule Parameters
+                            <span class="markConfig" id="mark_tools-spyglass-rule_parameters"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-spyglass-rule_parameters">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-symbiyosys">
+                <div class="settings-group-title-label">
+                    Tools: SymbiYosys
+                </div>
+                <div class="settings-group-description">SymbiYosys formal verification wrapper for Yosys.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-symbiyosys-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-symbiyosys-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            A list of the .sby file’s tasks to run. Passed on the sby command line..
+                            <span class="markConfig" id="mark_tools-symbiyosys-tasknames"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-symbiyosys-tasknames">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-symbiflow">
+                <div class="settings-group-title-label">
+                    Tools: Symbiflow
+                </div>
+                <div class="settings-group-description">VHDL Style Guide. Analyzes VHDL files for style guide violations.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-symbiflow-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-symbiflow-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA chip package (e.g. clg400-1).
+                            <span class="markConfig" id="mark_tools-symbiflow-package"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-symbiflow-package" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA part type (e.g. xc7a50t).
+                            <span class="markConfig" id="mark_tools-symbiflow-part"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-symbiflow-part" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Target architecture. Currently only “xilinx” is supported.
+                            <span class="markConfig" id="mark_tools-symbiflow-vendor"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-symbiflow-vendor" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Place and Route tool. Currently only “vpr” is supported.
+                            <span class="markConfig" id="mark_tools-symbiflow-pnr"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-symbiflow-pnr">
+                                      <option value='vpr'>VPR</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional vpr tool options. If not used, default options for the tool will be used.
+                            <span class="markConfig" id="mark_tools-symbiflow-vpr_options"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-symbiflow-vpr_options" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Optional bash script that will be sourced before each build step..
+                            <span class="markConfig" id="mark_tools-symbiflow-environment_script"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-symbiflow-environment_script" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-trellis">
+                <div class="settings-group-title-label">
+                    Tools: Trellis
+                </div>
+                <div class="settings-group-description">Project Trellis enables a fully open-source flow for ECP5 FPGAs using Yosys for Verilog synthesis and nextpnr for place and route.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-trellis-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-trellis-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Target architecture.
+                            <span class="markConfig" id="mark_tools-trellis-arch"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-trellis-arch">
+                                      <option value='xilinx'>Xilinx</option>
+                                      <option value='ice40'>ICE40</option>
+                                      <option value='ecp5'>ECP5</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Output file format.
+                            <span class="markConfig" id="mark_tools-trellis-output_format"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-trellis-output_format">
+                                      <option value='json'>JSON</option>
+                                      <option value='edif'>EDIF</option>
+                                      <option value='blif'>BLIF</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-trellis-yosys_as_subtool">
+                            <label class="setting-checkbox-label" for="tools-trellis-yosys_as_subtool">
+                                Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.
+                                <span class="markConfig" id="mark_tools-trellis-yosys_as_subtool"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Generated makefile name, defaults to $name.mk
+                            <span class="markConfig" id="mark_tools-trellis-makefile_name"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-trellis-makefile_name" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Generated tcl script filename, defaults to $name.mk
+                            <span class="markConfig" id="mark_tools-trellis-script_name"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-trellis-script_name" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for NextPNR Place & Route.
+                            <span class="markConfig" id="mark_tools-trellis-nextpnr_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-trellis-nextpnr_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for the synth_ice40 command.
+                            <span class="markConfig" id="mark_tools-trellis-yosys_synth_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-trellis-yosys_synth_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-vcs">
+                <div class="settings-group-title-label">
+                    Tools: VCS
+                </div>
+                <div class="settings-group-description">Synopsys VCS Backend</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-vcs-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-vcs-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Compile time options passed to vcs
+                            <span class="markConfig" id="mark_tools-vcs-vcs_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-vcs-vcs_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Runtime options passed to the simulation
+                            <span class="markConfig" id="mark_tools-vcs-run_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-vcs-run_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-verible">
+                <div class="settings-group-title-label">
+                    Tools: Verible
+                </div>
+                <div class="settings-group-description">Verible.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-verible-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-verible-installation_path" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-verilator">
+                <div class="settings-group-title-label">
+                    Tools: Verilator
+                </div>
+                <div class="settings-group-description">Verilator is the fastest free Verilog HDL simulator, and beats many commercial simulators.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-verilator-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-verilator-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Select compilation mode. Legal values are cc for C++ testbenches, sc for SystemC testbenches or lint-only to only perform linting on the Verilog code.
+                            <span class="markConfig" id="mark_tools-verilator-mode"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-verilator-mode">
+                                      <option value='cc'>cc</option>
+                                      <option value='sc'>sc</option>
+                                      <option value='lint-only'>lint-only</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Extra libraries for the verilated model to link against.
+                            <span class="markConfig" id="mark_tools-verilator-libs"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-verilator-libs">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for verilator.
+                            <span class="markConfig" id="mark_tools-verilator-verilator_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-verilator-verilator_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional arguments passed to make when compiling the simulation. This is commonly used to set OPT/OPT_FAST/OPT_SLOW.
+                            <span class="markConfig" id="mark_tools-verilator-make_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-verilator-make_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional arguments directly passed to the verilated model.
+                            <span class="markConfig" id="mark_tools-verilator-run_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-verilator-run_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-vivado">
+                <div class="settings-group-title-label">
+                    Tools: Vivado
+                </div>
+                <div class="settings-group-description">The Vivado backend executes Xilinx Vivado to build systems and program the FPGA.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-vivado-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-vivado-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Part. Device identifier. e.g. xc7a35tcsg324-1.
+                            <span class="markConfig" id="mark_tools-vivado-part"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-vivado-part" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Synthesis tool. Allowed values are vivado (default) and yosys..
+                            <span class="markConfig" id="mark_tools-vivado-synth"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-vivado-synth" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Choose only synthesis or place and route and bitstream generation:
+                            <span class="markConfig" id="mark_tools-vivado-pnr"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-vivado-pnr">
+                                      <option value='vivado'>Place and route</option>
+                                      <option value='none'>Only synthesis</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            The frequency for jtag communication.
+                            <span class="markConfig" id="mark_tools-vivado-jtag_freq"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="tools-vivado-jtag_freq">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Board identifier (e.g. */xilinx_tcf/Digilent/123456789123A.
+                            <span class="markConfig" id="mark_tools-vivado-hw_target"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-vivado-hw_target" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-vunit">
+                <div class="settings-group-title-label">
+                    Tools: VUnit
+                </div>
+                <div class="settings-group-description">VUnit testing framework.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-vunit-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-vunit-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VUnit simulator:
+                            <span class="markConfig" id="mark_tools-vunit-simulator_name"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-vunit-simulator_name">
+                                      <option value='rivierapro'>Aldec Riviera-PRO</option>
+                                      <option value='activehdl'>Aldec Active-HDL</option>
+                                      <option value='ghdl'>GHDL</option>
+                                      <option value='modelsim'>Mentor Graphics ModelSim/Questa</option>
+                                      <option value='xsim'>XSIM (Not supported in official VUnit)</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            runpy mode:
+                            <span class="markConfig" id="mark_tools-vunit-runpy_mode"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-vunit-runpy_mode">
+                                      <option value='standalone'>Standalone</option>
+                                      <option value='creation'>Creation</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VUnit options. Extra options for the VUnit test runner.
+                            <span class="markConfig" id="mark_tools-vunit-extra_options"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-vunit-extra_options" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-vunit-enable_array_util_lib">
+                            <label class="setting-checkbox-label" for="tools-vunit-enable_array_util_lib">
+                                Enable array util library in non standalone mode.
+                                <span class="markConfig" id="mark_tools-vunit-enable_array_util_lib"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-vunit-enable_com_lib">
+                            <label class="setting-checkbox-label" for="tools-vunit-enable_com_lib">
+                                Enable com library in non standalone mode.
+                                <span class="markConfig" id="mark_tools-vunit-enable_com_lib"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-vunit-enable_json4vhdl_lib">
+                            <label class="setting-checkbox-label" for="tools-vunit-enable_json4vhdl_lib">
+                                Enable json4vhdl library in non standalone mode.
+                                <span class="markConfig" id="mark_tools-vunit-enable_json4vhdl_lib"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-vunit-enable_osvvm_lib">
+                            <label class="setting-checkbox-label" for="tools-vunit-enable_osvvm_lib">
+                                Enable OSVVM library in non standalone mode.
+                                <span class="markConfig" id="mark_tools-vunit-enable_osvvm_lib"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-vunit-enable_random_lib">
+                            <label class="setting-checkbox-label" for="tools-vunit-enable_random_lib">
+                                Enable random library in non standalone mode.
+                                <span class="markConfig" id="mark_tools-vunit-enable_random_lib"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-vunit-enable_verification_components_lib">
+                            <label class="setting-checkbox-label" for="tools-vunit-enable_verification_components_lib">
+                                Enable verification components library in non standalone mode.
+                                <span class="markConfig" id="mark_tools-vunit-enable_verification_components_lib"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-xcelium">
+                <div class="settings-group-title-label">
+                    Tools: Xcelium
+                </div>
+                <div class="settings-group-description">Xcelium simulator from Cadence Design Systems.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-xcelium-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-xcelium-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for compilation with xmvhdl.
+                            <span class="markConfig" id="mark_tools-xcelium-xmvhdl_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-xcelium-xmvhdl_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for compilation with xmvlog.
+                            <span class="markConfig" id="mark_tools-xcelium-xmvlog_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-xcelium-xmvlog_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional run options for xmsim.
+                            <span class="markConfig" id="mark_tools-xcelium-xmsim_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-xcelium-xmsim_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional run options for xrun.
+                            <span class="markConfig" id="mark_tools-xcelium-xrun_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-xcelium-xrun_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-xsim">
+                <div class="settings-group-title-label">
+                    Tools: XSIM
+                </div>
+                <div class="settings-group-description">XSim simulator from the Xilinx Vivado suite.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-xsim-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-xsim-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for compilation with xelab.
+                            <span class="markConfig" id="mark_tools-xsim-xelab_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-xsim-xelab_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional run options for XSim.
+                            <span class="markConfig" id="mark_tools-xsim-xsim_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-xsim-xsim_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-yosys">
+                <div class="settings-group-title-label">
+                    Tools: Yosys
+                </div>
+                <div class="settings-group-description">Open source synthesis tool targeting many different FPGAs.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-yosys-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Target architecture.
+                            <span class="markConfig" id="mark_tools-yosys-arch"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-yosys-arch">
+                                      <option value='xilinx'>Xilinx</option>
+                                      <option value='ice40'>ICE40</option>
+                                      <option value='ecp5'>ECP5</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Output file format.
+                            <span class="markConfig" id="mark_tools-yosys-output_format"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-yosys-output_format">
+                                      <option value='json'>JSON</option>
+                                      <option value='edif'>EDIF</option>
+                                      <option value='blif'>BLIF</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-yosys_as_subtool">
+                            <label class="setting-checkbox-label" for="tools-yosys-yosys_as_subtool">
+                                Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.
+                                <span class="markConfig" id="mark_tools-yosys-yosys_as_subtool"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Generated makefile name, defaults to $name.mk
+                            <span class="markConfig" id="mark_tools-yosys-makefile_name"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-makefile_name" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Generated tcl script filename, defaults to $name.mk
+                            <span class="markConfig" id="mark_tools-yosys-script_name"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-script_name" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional options for the synth_ice40 command.
+                            <span class="markConfig" id="mark_tools-yosys-yosys_synth_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-yosys_synth_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-openfpga">
+                <div class="settings-group-title-label">
+                    Tools: OpenFPGA
+                </div>
+                <div class="settings-group-description">The award-winning OpenFPGA framework is the first open-source FPGA IP generator with silicon proofs supporting highly-customizable FPGA architectures.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-openfpga-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-openfpga-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FPGA architecture e.g. sofa-hd, sofa-chd, sofa-qlhd and sofa-plus-hd
+                            <span class="markConfig" id="mark_tools-openfpga-arch"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-openfpga-arch" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Extra options for running the task simulation with OpenFPGA framework (see the OpenFPGA documentation).
+                            <span class="markConfig" id="mark_tools-openfpga-task_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-openfpga-task_options">
+                    </div>
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-activehdl">
+                <div class="settings-group-title-label">
+                    Tools: Active-HDL
+                </div>
+                <div class="settings-group-description">Active-HDL™ is a Windows based, integrated FPGA Design Creation and Simulation solution for team-based environments.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-activehdl-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-activehdl-installation_path" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-questa">
+                <div class="settings-group-title-label">
+                    Tools: Questa Advanced Simulator
+                </div>
+                <div class="settings-group-description">The Questa advanced simulator is the core simulation and debug engine of the Questa verification solution.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-questa-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-questa-installation_path" value="">
+                    </div>
+                  
+                  
+                  
+            </div>
+            <div class="settings-section" id="tools-raptor">
+                <div class="settings-group-title-label">
+                    Tools: Raptor Design Suite
+                </div>
+                <div class="settings-group-description">Raptor Design Suite.</div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Installation path:
+                            <span class="markConfig" id="mark_tools-raptor-installation_path"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-raptor-installation_path" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Target device
+                            <span class="markConfig" id="mark_tools-raptor-target_device"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-raptor-target_device" value="1GE100">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VHDL version
+                            <span class="markConfig" id="mark_tools-raptor-vhdl_version"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-vhdl_version">
+                                      <option value='VHDL_1987'>1987</option>
+                                      <option value='VHDL_1993'>1993</option>
+                                      <option value='VHDL_2000'>2000</option>
+                                      <option value='VHDL_2008'>2008</option>
+                                      <option value='VHDL_2019'>2019</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Verilog version
+                            <span class="markConfig" id="mark_tools-raptor-verilog_version"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-verilog_version">
+                                      <option value='V_1995'>1995</option>
+                                      <option value='V_2001'>2001</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            SV version
+                            <span class="markConfig" id="mark_tools-raptor-sv_version"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-sv_version">
+                                      <option value='SV_2005'>2005</option>
+                                      <option value='SV_2009'>2009</option>
+                                      <option value='SV_2012'>2012</option>
+                                      <option value='SV_2017'>2017</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Synthesis</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Optimization
+                            <span class="markConfig" id="mark_tools-raptor-optimization"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-optimization">
+                                      <option value='area'>Area</option>
+                                      <option value='delay'>Delay</option>
+                                      <option value='mixed'>Mixed</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Effort
+                            <span class="markConfig" id="mark_tools-raptor-effort"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-effort">
+                                      <option value='high'>High</option>
+                                      <option value='medium'>Medium</option>
+                                      <option value='low'>Low</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            FSM encoding
+                            <span class="markConfig" id="mark_tools-raptor-fsm_encoding"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-fsm_encoding">
+                                      <option value='binary'>Binary</option>
+                                      <option value='onehot'>One Hot</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Carry
+                            <span class="markConfig" id="mark_tools-raptor-carry"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-carry">
+                                      <option value='auto'>Auto</option>
+                                      <option value='all'>All</option>
+                                      <option value='none'>None</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Pnr netlist language
+                            <span class="markConfig" id="mark_tools-raptor-pnr_netlist_language"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-pnr_netlist_language">
+                                      <option value='blif'>Blif</option>
+                                      <option value='edif'>edif</option>
+                                      <option value='verilog'>Verilog</option>
+                                      <option value='vhdl'>VHDL</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            DSP limit
+                            <span class="markConfig" id="mark_tools-raptor-dsp_limit"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="tools-raptor-dsp_limit">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Block RAM limit
+                            <span class="markConfig" id="mark_tools-raptor-block_ram_limit"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="tools-raptor-block_ram_limit">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-raptor-fast_synthesis">
+                            <label class="setting-checkbox-label" for="tools-raptor-fast_synthesis">
+                                Fast Synthesis
+                                <span class="markConfig" id="mark_tools-raptor-fast_synthesis"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Simulation</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Simulation top level path:
+                            <span class="markConfig" id="mark_tools-raptor-top_level"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-raptor-top_level" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Other simulation sources (comma separed):
+                            <span class="markConfig" id="mark_tools-raptor-sim_source_list"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-raptor-sim_source_list">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-raptor-simulate_rtl">
+                            <label class="setting-checkbox-label" for="tools-raptor-simulate_rtl">
+                                Simulate RTL
+                                <span class="markConfig" id="mark_tools-raptor-simulate_rtl"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            RTL waveform simulation
+                            <span class="markConfig" id="mark_tools-raptor-waveform_rtl"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-raptor-waveform_rtl" value="syn_tb_rtl.fst">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            RTL Simulator
+                            <span class="markConfig" id="mark_tools-raptor-simulator_rtl"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-simulator_rtl">
+                                      <option value='verilator'>Verilator</option>
+                                      <option value='ghdl'>GHDL</option>
+                                      <option value='icarus'>Icarus</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Simulation options
+                            <span class="markConfig" id="mark_tools-raptor-simulation_options_rtl"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-raptor-simulation_options_rtl" value="--stop-time=1000ns">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-raptor-simulate_gate">
+                            <label class="setting-checkbox-label" for="tools-raptor-simulate_gate">
+                                Simulate Gate
+                                <span class="markConfig" id="mark_tools-raptor-simulate_gate"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Gate waveform simulation
+                            <span class="markConfig" id="mark_tools-raptor-waveform_gate"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-raptor-waveform_gate" value="syn_tb_gate.fst">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Gate Simulator
+                            <span class="markConfig" id="mark_tools-raptor-simulator_gate"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-simulator_gate">
+                                      <option value='verilator'>Verilator</option>
+                                      <option value='ghdl'>GHDL</option>
+                                      <option value='icarus'>Icarus</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Simulation options
+                            <span class="markConfig" id="mark_tools-raptor-simulation_options_gate"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-raptor-simulation_options_gate" value="--stop-time=1000ns">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-raptor-simulate_pnr">
+                            <label class="setting-checkbox-label" for="tools-raptor-simulate_pnr">
+                                Simulate PNR
+                                <span class="markConfig" id="mark_tools-raptor-simulate_pnr"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            PNR waveform simulation
+                            <span class="markConfig" id="mark_tools-raptor-waveform_pnr"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-raptor-waveform_pnr" value="sim_pnr.fst">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            PNR Simulator
+                            <span class="markConfig" id="mark_tools-raptor-simulator_pnr"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-raptor-simulator_pnr">
+                                      <option value='verilator'>Verilator</option>
+                                      <option value='ghdl'>GHDL</option>
+                                      <option value='icarus'>Icarus</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Simulation options
+                            <span class="markConfig" id="mark_tools-raptor-simulation_options_pnr"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-raptor-simulation_options_pnr" value="--stop-time=1000ns">
+                    </div>
+                  
+                  
+                  
+            </div>
+
+<div class="settings-buttons">
+    <button type="button" class="setting-button danger" onclick="close_panel(event)">
+        <i class="codicon codicon-close"></i>
+        Close
+    </button>
+    <button type="button" class="setting-button secondary" onclick="send_config(event)">
+        <i class="codicon codicon-check"></i>
+        Apply
+    </button>
+    <button type="button" class="setting-button primary" onclick="send_config_and_close(event)">
+        <i class="codicon codicon-check-all"></i>
+        Apply and Close
+    </button>
 </div>
-
+            </div>
         </div>
     </div>
 
-
 <script>
-    
+  // VSCode Settings Style JavaScript
+  
   function enable_tab(tp0, tp1){
-    const complete = tp0 + "-" + tp1;
-  if ("general" == tp0 && "general" == tp1){
-    document.getElementById("general-general").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("general-general").classList.remove('d-none');
-    document.getElementById("general-general").classList.add('d-none');
-  }
-  if ("documentation" == tp0 && "general" == tp1){
-    document.getElementById("documentation-general").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("documentation-general").classList.remove('d-none');
-    document.getElementById("documentation-general").classList.add('d-none');
-  }
-  if ("editor" == tp0 && "general" == tp1){
-    document.getElementById("editor-general").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("editor-general").classList.remove('d-none');
-    document.getElementById("editor-general").classList.add('d-none');
-  }
-  if ("formatter" == tp0 && "general" == tp1){
-    document.getElementById("formatter-general").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("formatter-general").classList.remove('d-none');
-    document.getElementById("formatter-general").classList.add('d-none');
-  }
-  if ("formatter" == tp0 && "istyle" == tp1){
-    document.getElementById("formatter-istyle").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("formatter-istyle").classList.remove('d-none');
-    document.getElementById("formatter-istyle").classList.add('d-none');
-  }
-  if ("formatter" == tp0 && "s3sv" == tp1){
-    document.getElementById("formatter-s3sv").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("formatter-s3sv").classList.remove('d-none');
-    document.getElementById("formatter-s3sv").classList.add('d-none');
-  }
-  if ("formatter" == tp0 && "verible" == tp1){
-    document.getElementById("formatter-verible").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("formatter-verible").classList.remove('d-none');
-    document.getElementById("formatter-verible").classList.add('d-none');
-  }
-  if ("formatter" == tp0 && "standalone" == tp1){
-    document.getElementById("formatter-standalone").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("formatter-standalone").classList.remove('d-none');
-    document.getElementById("formatter-standalone").classList.add('d-none');
-  }
-  if ("formatter" == tp0 && "vsg" == tp1){
-    document.getElementById("formatter-vsg").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("formatter-vsg").classList.remove('d-none');
-    document.getElementById("formatter-vsg").classList.add('d-none');
-  }
-  if ("linter" == tp0 && "general" == tp1){
-    document.getElementById("linter-general").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("linter-general").classList.remove('d-none');
-    document.getElementById("linter-general").classList.add('d-none');
-  }
-  if ("linter" == tp0 && "vhdlls" == tp1){
-    document.getElementById("linter-vhdlls").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("linter-vhdlls").classList.remove('d-none');
-    document.getElementById("linter-vhdlls").classList.add('d-none');
-  }
-  if ("linter" == tp0 && "ghdl" == tp1){
-    document.getElementById("linter-ghdl").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("linter-ghdl").classList.remove('d-none');
-    document.getElementById("linter-ghdl").classList.add('d-none');
-  }
-  if ("linter" == tp0 && "icarus" == tp1){
-    document.getElementById("linter-icarus").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("linter-icarus").classList.remove('d-none');
-    document.getElementById("linter-icarus").classList.add('d-none');
-  }
-  if ("linter" == tp0 && "modelsim" == tp1){
-    document.getElementById("linter-modelsim").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("linter-modelsim").classList.remove('d-none');
-    document.getElementById("linter-modelsim").classList.add('d-none');
-  }
-  if ("linter" == tp0 && "verible" == tp1){
-    document.getElementById("linter-verible").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("linter-verible").classList.remove('d-none');
-    document.getElementById("linter-verible").classList.add('d-none');
-  }
-  if ("linter" == tp0 && "verilator" == tp1){
-    document.getElementById("linter-verilator").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("linter-verilator").classList.remove('d-none');
-    document.getElementById("linter-verilator").classList.add('d-none');
-  }
-  if ("linter" == tp0 && "vivado" == tp1){
-    document.getElementById("linter-vivado").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("linter-vivado").classList.remove('d-none');
-    document.getElementById("linter-vivado").classList.add('d-none');
-  }
-  if ("linter" == tp0 && "vsg" == tp1){
-    document.getElementById("linter-vsg").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("linter-vsg").classList.remove('d-none');
-    document.getElementById("linter-vsg").classList.add('d-none');
-  }
-  if ("schematic" == tp0 && "general" == tp1){
-    document.getElementById("schematic-general").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("schematic-general").classList.remove('d-none');
-    document.getElementById("schematic-general").classList.add('d-none');
-  }
-  if ("templates" == tp0 && "general" == tp1){
-    document.getElementById("templates-general").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("templates-general").classList.remove('d-none');
-    document.getElementById("templates-general").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "general" == tp1){
-    document.getElementById("tools-general").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-general").classList.remove('d-none');
-    document.getElementById("tools-general").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "quartus" == tp1){
-    document.getElementById("tools-quartus").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-quartus").classList.remove('d-none');
-    document.getElementById("tools-quartus").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "vsg" == tp1){
-    document.getElementById("tools-vsg").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-vsg").classList.remove('d-none');
-    document.getElementById("tools-vsg").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "osvvm" == tp1){
-    document.getElementById("tools-osvvm").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-osvvm").classList.remove('d-none');
-    document.getElementById("tools-osvvm").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "ascenlint" == tp1){
-    document.getElementById("tools-ascenlint").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-ascenlint").classList.remove('d-none');
-    document.getElementById("tools-ascenlint").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "cocotb" == tp1){
-    document.getElementById("tools-cocotb").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-cocotb").classList.remove('d-none');
-    document.getElementById("tools-cocotb").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "diamond" == tp1){
-    document.getElementById("tools-diamond").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-diamond").classList.remove('d-none');
-    document.getElementById("tools-diamond").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "ghdl" == tp1){
-    document.getElementById("tools-ghdl").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-ghdl").classList.remove('d-none');
-    document.getElementById("tools-ghdl").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "icarus" == tp1){
-    document.getElementById("tools-icarus").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-icarus").classList.remove('d-none');
-    document.getElementById("tools-icarus").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "icestorm" == tp1){
-    document.getElementById("tools-icestorm").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-icestorm").classList.remove('d-none');
-    document.getElementById("tools-icestorm").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "ise" == tp1){
-    document.getElementById("tools-ise").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-ise").classList.remove('d-none');
-    document.getElementById("tools-ise").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "isem" == tp1){
-    document.getElementById("tools-isem").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-isem").classList.remove('d-none');
-    document.getElementById("tools-isem").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "modelsim" == tp1){
-    document.getElementById("tools-modelsim").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-modelsim").classList.remove('d-none');
-    document.getElementById("tools-modelsim").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "morty" == tp1){
-    document.getElementById("tools-morty").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-morty").classList.remove('d-none');
-    document.getElementById("tools-morty").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "radiant" == tp1){
-    document.getElementById("tools-radiant").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-radiant").classList.remove('d-none');
-    document.getElementById("tools-radiant").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "rivierapro" == tp1){
-    document.getElementById("tools-rivierapro").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-rivierapro").classList.remove('d-none');
-    document.getElementById("tools-rivierapro").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "spyglass" == tp1){
-    document.getElementById("tools-spyglass").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-spyglass").classList.remove('d-none');
-    document.getElementById("tools-spyglass").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "symbiyosys" == tp1){
-    document.getElementById("tools-symbiyosys").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-symbiyosys").classList.remove('d-none');
-    document.getElementById("tools-symbiyosys").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "symbiflow" == tp1){
-    document.getElementById("tools-symbiflow").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-symbiflow").classList.remove('d-none');
-    document.getElementById("tools-symbiflow").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "trellis" == tp1){
-    document.getElementById("tools-trellis").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-trellis").classList.remove('d-none');
-    document.getElementById("tools-trellis").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "vcs" == tp1){
-    document.getElementById("tools-vcs").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-vcs").classList.remove('d-none');
-    document.getElementById("tools-vcs").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "verible" == tp1){
-    document.getElementById("tools-verible").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-verible").classList.remove('d-none');
-    document.getElementById("tools-verible").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "verilator" == tp1){
-    document.getElementById("tools-verilator").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-verilator").classList.remove('d-none');
-    document.getElementById("tools-verilator").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "vivado" == tp1){
-    document.getElementById("tools-vivado").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-vivado").classList.remove('d-none');
-    document.getElementById("tools-vivado").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "vunit" == tp1){
-    document.getElementById("tools-vunit").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-vunit").classList.remove('d-none');
-    document.getElementById("tools-vunit").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "xcelium" == tp1){
-    document.getElementById("tools-xcelium").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-xcelium").classList.remove('d-none');
-    document.getElementById("tools-xcelium").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "xsim" == tp1){
-    document.getElementById("tools-xsim").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-xsim").classList.remove('d-none');
-    document.getElementById("tools-xsim").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "yosys" == tp1){
-    document.getElementById("tools-yosys").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-yosys").classList.remove('d-none');
-    document.getElementById("tools-yosys").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "openfpga" == tp1){
-    document.getElementById("tools-openfpga").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-openfpga").classList.remove('d-none');
-    document.getElementById("tools-openfpga").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "activehdl" == tp1){
-    document.getElementById("tools-activehdl").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-activehdl").classList.remove('d-none');
-    document.getElementById("tools-activehdl").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "questa" == tp1){
-    document.getElementById("tools-questa").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-questa").classList.remove('d-none');
-    document.getElementById("tools-questa").classList.add('d-none');
-  }
-  if ("tools" == tp0 && "raptor" == tp1){
-    document.getElementById("tools-raptor").classList.remove('d-none');
-  }
-  else{
-    document.getElementById("tools-raptor").classList.remove('d-none');
-    document.getElementById("tools-raptor").classList.add('d-none');
-  }
+    // Hide all sections
+    document.getElementById("general-general").classList.remove('active');
+    document.getElementById("documentation-general").classList.remove('active');
+    document.getElementById("editor-general").classList.remove('active');
+    document.getElementById("formatter-general").classList.remove('active');
+    document.getElementById("formatter-istyle").classList.remove('active');
+    document.getElementById("formatter-s3sv").classList.remove('active');
+    document.getElementById("formatter-verible").classList.remove('active');
+    document.getElementById("formatter-standalone").classList.remove('active');
+    document.getElementById("formatter-vsg").classList.remove('active');
+    document.getElementById("linter-general").classList.remove('active');
+    document.getElementById("linter-vhdlls").classList.remove('active');
+    document.getElementById("linter-ghdl").classList.remove('active');
+    document.getElementById("linter-icarus").classList.remove('active');
+    document.getElementById("linter-modelsim").classList.remove('active');
+    document.getElementById("linter-verible").classList.remove('active');
+    document.getElementById("linter-verilator").classList.remove('active');
+    document.getElementById("linter-vivado").classList.remove('active');
+    document.getElementById("linter-vsg").classList.remove('active');
+    document.getElementById("schematic-general").classList.remove('active');
+    document.getElementById("templates-general").classList.remove('active');
+    document.getElementById("tools-general").classList.remove('active');
+    document.getElementById("tools-quartus").classList.remove('active');
+    document.getElementById("tools-vsg").classList.remove('active');
+    document.getElementById("tools-osvvm").classList.remove('active');
+    document.getElementById("tools-ascenlint").classList.remove('active');
+    document.getElementById("tools-cocotb").classList.remove('active');
+    document.getElementById("tools-diamond").classList.remove('active');
+    document.getElementById("tools-ghdl").classList.remove('active');
+    document.getElementById("tools-icarus").classList.remove('active');
+    document.getElementById("tools-icestorm").classList.remove('active');
+    document.getElementById("tools-ise").classList.remove('active');
+    document.getElementById("tools-isem").classList.remove('active');
+    document.getElementById("tools-modelsim").classList.remove('active');
+    document.getElementById("tools-morty").classList.remove('active');
+    document.getElementById("tools-radiant").classList.remove('active');
+    document.getElementById("tools-rivierapro").classList.remove('active');
+    document.getElementById("tools-siliconcompiler").classList.remove('active');
+    document.getElementById("tools-spyglass").classList.remove('active');
+    document.getElementById("tools-symbiyosys").classList.remove('active');
+    document.getElementById("tools-symbiflow").classList.remove('active');
+    document.getElementById("tools-trellis").classList.remove('active');
+    document.getElementById("tools-vcs").classList.remove('active');
+    document.getElementById("tools-verible").classList.remove('active');
+    document.getElementById("tools-verilator").classList.remove('active');
+    document.getElementById("tools-vivado").classList.remove('active');
+    document.getElementById("tools-vunit").classList.remove('active');
+    document.getElementById("tools-xcelium").classList.remove('active');
+    document.getElementById("tools-xsim").classList.remove('active');
+    document.getElementById("tools-yosys").classList.remove('active');
+    document.getElementById("tools-openfpga").classList.remove('active');
+    document.getElementById("tools-activehdl").classList.remove('active');
+    document.getElementById("tools-questa").classList.remove('active');
+    document.getElementById("tools-raptor").classList.remove('active');
+    
+    // Show the selected section
+    document.getElementById(tp0 + "-" + tp1).classList.add('active');
+    
+    // Update sidebar selection
+    updateSidebarSelection(tp0, tp1);
   }
 
+  function updateSidebarSelection(tp0, tp1) {
+    // Remove all selections
+    document.getElementById("btn-general-general").classList.remove('selected');
+    document.getElementById("btn-documentation-general").classList.remove('selected');
+    document.getElementById("btn-editor-general").classList.remove('selected');
+    document.getElementById("btn-formatter-general").classList.remove('selected');
+    if (document.getElementById("btn-formatter-istyle")) {
+        document.getElementById("btn-formatter-istyle").classList.remove('selected');
+    }
+    if (document.getElementById("btn-formatter-s3sv")) {
+        document.getElementById("btn-formatter-s3sv").classList.remove('selected');
+    }
+    if (document.getElementById("btn-formatter-verible")) {
+        document.getElementById("btn-formatter-verible").classList.remove('selected');
+    }
+    if (document.getElementById("btn-formatter-standalone")) {
+        document.getElementById("btn-formatter-standalone").classList.remove('selected');
+    }
+    if (document.getElementById("btn-formatter-vsg")) {
+        document.getElementById("btn-formatter-vsg").classList.remove('selected');
+    }
+    document.getElementById("btn-linter-general").classList.remove('selected');
+    if (document.getElementById("btn-linter-vhdlls")) {
+        document.getElementById("btn-linter-vhdlls").classList.remove('selected');
+    }
+    if (document.getElementById("btn-linter-ghdl")) {
+        document.getElementById("btn-linter-ghdl").classList.remove('selected');
+    }
+    if (document.getElementById("btn-linter-icarus")) {
+        document.getElementById("btn-linter-icarus").classList.remove('selected');
+    }
+    if (document.getElementById("btn-linter-modelsim")) {
+        document.getElementById("btn-linter-modelsim").classList.remove('selected');
+    }
+    if (document.getElementById("btn-linter-verible")) {
+        document.getElementById("btn-linter-verible").classList.remove('selected');
+    }
+    if (document.getElementById("btn-linter-verilator")) {
+        document.getElementById("btn-linter-verilator").classList.remove('selected');
+    }
+    if (document.getElementById("btn-linter-vivado")) {
+        document.getElementById("btn-linter-vivado").classList.remove('selected');
+    }
+    if (document.getElementById("btn-linter-vsg")) {
+        document.getElementById("btn-linter-vsg").classList.remove('selected');
+    }
+    document.getElementById("btn-schematic-general").classList.remove('selected');
+    document.getElementById("btn-templates-general").classList.remove('selected');
+    document.getElementById("btn-tools-general").classList.remove('selected');
+    if (document.getElementById("btn-tools-quartus")) {
+        document.getElementById("btn-tools-quartus").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-vsg")) {
+        document.getElementById("btn-tools-vsg").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-osvvm")) {
+        document.getElementById("btn-tools-osvvm").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-ascenlint")) {
+        document.getElementById("btn-tools-ascenlint").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-cocotb")) {
+        document.getElementById("btn-tools-cocotb").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-diamond")) {
+        document.getElementById("btn-tools-diamond").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-ghdl")) {
+        document.getElementById("btn-tools-ghdl").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-icarus")) {
+        document.getElementById("btn-tools-icarus").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-icestorm")) {
+        document.getElementById("btn-tools-icestorm").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-ise")) {
+        document.getElementById("btn-tools-ise").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-isem")) {
+        document.getElementById("btn-tools-isem").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-modelsim")) {
+        document.getElementById("btn-tools-modelsim").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-morty")) {
+        document.getElementById("btn-tools-morty").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-radiant")) {
+        document.getElementById("btn-tools-radiant").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-rivierapro")) {
+        document.getElementById("btn-tools-rivierapro").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-siliconcompiler")) {
+        document.getElementById("btn-tools-siliconcompiler").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-spyglass")) {
+        document.getElementById("btn-tools-spyglass").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-symbiyosys")) {
+        document.getElementById("btn-tools-symbiyosys").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-symbiflow")) {
+        document.getElementById("btn-tools-symbiflow").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-trellis")) {
+        document.getElementById("btn-tools-trellis").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-vcs")) {
+        document.getElementById("btn-tools-vcs").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-verible")) {
+        document.getElementById("btn-tools-verible").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-verilator")) {
+        document.getElementById("btn-tools-verilator").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-vivado")) {
+        document.getElementById("btn-tools-vivado").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-vunit")) {
+        document.getElementById("btn-tools-vunit").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-xcelium")) {
+        document.getElementById("btn-tools-xcelium").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-xsim")) {
+        document.getElementById("btn-tools-xsim").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-yosys")) {
+        document.getElementById("btn-tools-yosys").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-openfpga")) {
+        document.getElementById("btn-tools-openfpga").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-activehdl")) {
+        document.getElementById("btn-tools-activehdl").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-questa")) {
+        document.getElementById("btn-tools-questa").classList.remove('selected');
+    }
+    if (document.getElementById("btn-tools-raptor")) {
+        document.getElementById("btn-tools-raptor").classList.remove('selected');
+    }
+    
+    // Add selection to current item
+    if (tp1 === "general") {
+        document.getElementById("btn-" + tp0 + "-general").classList.add('selected');
+    } else {
+        document.getElementById("btn-" + tp0 + "-" + tp1).classList.add('selected');
+    }
+  }
+
+  function toggleSidebarSection(tp0) {
+    // Functionality disabled - sections should always remain open
+    return;
+  }
+
+  // Initialize
   enable_tab('general', 'general');
 
-  document.getElementById("btn-general-general").addEventListener("click", function() {
-    enable_tab("general","general")
+  // Add event listeners for sidebar
+  document.getElementById("btn-general-general").addEventListener("click", function(e) {
+    e.preventDefault();
+    enable_tab("general", "general");
   });
-
-  document.getElementById("btn-documentation-general").addEventListener("click", function() {
-    enable_tab("documentation","general")
+  document.getElementById("btn-documentation-general").addEventListener("click", function(e) {
+    e.preventDefault();
+    enable_tab("documentation", "general");
   });
-
-  document.getElementById("btn-editor-general").addEventListener("click", function() {
-    enable_tab("editor","general")
+  document.getElementById("btn-editor-general").addEventListener("click", function(e) {
+    e.preventDefault();
+    enable_tab("editor", "general");
   });
-
-  document.getElementById("btn-formatter-general").addEventListener("click", function() {
-    enable_tab("formatter","general")
+  document.getElementById("btn-formatter-general").addEventListener("click", function(e) {
+    e.preventDefault();
+    enable_tab("formatter", "general");
   });
-
-  document.getElementById("btn-formatter-istyle").addEventListener("click", function() {
-    enable_tab("formatter","istyle")
+  if (document.getElementById("btn-formatter-istyle")) {
+    document.getElementById("btn-formatter-istyle").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("formatter", "istyle");
+    });
+  }
+  if (document.getElementById("btn-formatter-s3sv")) {
+    document.getElementById("btn-formatter-s3sv").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("formatter", "s3sv");
+    });
+  }
+  if (document.getElementById("btn-formatter-verible")) {
+    document.getElementById("btn-formatter-verible").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("formatter", "verible");
+    });
+  }
+  if (document.getElementById("btn-formatter-standalone")) {
+    document.getElementById("btn-formatter-standalone").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("formatter", "standalone");
+    });
+  }
+  if (document.getElementById("btn-formatter-vsg")) {
+    document.getElementById("btn-formatter-vsg").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("formatter", "vsg");
+    });
+  }
+  document.getElementById("btn-linter-general").addEventListener("click", function(e) {
+    e.preventDefault();
+    enable_tab("linter", "general");
   });
-
-  document.getElementById("btn-formatter-s3sv").addEventListener("click", function() {
-    enable_tab("formatter","s3sv")
+  if (document.getElementById("btn-linter-vhdlls")) {
+    document.getElementById("btn-linter-vhdlls").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("linter", "vhdlls");
+    });
+  }
+  if (document.getElementById("btn-linter-ghdl")) {
+    document.getElementById("btn-linter-ghdl").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("linter", "ghdl");
+    });
+  }
+  if (document.getElementById("btn-linter-icarus")) {
+    document.getElementById("btn-linter-icarus").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("linter", "icarus");
+    });
+  }
+  if (document.getElementById("btn-linter-modelsim")) {
+    document.getElementById("btn-linter-modelsim").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("linter", "modelsim");
+    });
+  }
+  if (document.getElementById("btn-linter-verible")) {
+    document.getElementById("btn-linter-verible").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("linter", "verible");
+    });
+  }
+  if (document.getElementById("btn-linter-verilator")) {
+    document.getElementById("btn-linter-verilator").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("linter", "verilator");
+    });
+  }
+  if (document.getElementById("btn-linter-vivado")) {
+    document.getElementById("btn-linter-vivado").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("linter", "vivado");
+    });
+  }
+  if (document.getElementById("btn-linter-vsg")) {
+    document.getElementById("btn-linter-vsg").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("linter", "vsg");
+    });
+  }
+  document.getElementById("btn-schematic-general").addEventListener("click", function(e) {
+    e.preventDefault();
+    enable_tab("schematic", "general");
   });
-
-  document.getElementById("btn-formatter-verible").addEventListener("click", function() {
-    enable_tab("formatter","verible")
+  document.getElementById("btn-templates-general").addEventListener("click", function(e) {
+    e.preventDefault();
+    enable_tab("templates", "general");
   });
-
-  document.getElementById("btn-formatter-standalone").addEventListener("click", function() {
-    enable_tab("formatter","standalone")
+  document.getElementById("btn-tools-general").addEventListener("click", function(e) {
+    e.preventDefault();
+    enable_tab("tools", "general");
   });
-
-  document.getElementById("btn-formatter-vsg").addEventListener("click", function() {
-    enable_tab("formatter","vsg")
-  });
-
-  document.getElementById("btn-linter-general").addEventListener("click", function() {
-    enable_tab("linter","general")
-  });
-
-  document.getElementById("btn-linter-vhdlls").addEventListener("click", function() {
-    enable_tab("linter","vhdlls")
-  });
-
-  document.getElementById("btn-linter-ghdl").addEventListener("click", function() {
-    enable_tab("linter","ghdl")
-  });
-
-  document.getElementById("btn-linter-icarus").addEventListener("click", function() {
-    enable_tab("linter","icarus")
-  });
-
-  document.getElementById("btn-linter-modelsim").addEventListener("click", function() {
-    enable_tab("linter","modelsim")
-  });
-
-  document.getElementById("btn-linter-verible").addEventListener("click", function() {
-    enable_tab("linter","verible")
-  });
-
-  document.getElementById("btn-linter-verilator").addEventListener("click", function() {
-    enable_tab("linter","verilator")
-  });
-
-  document.getElementById("btn-linter-vivado").addEventListener("click", function() {
-    enable_tab("linter","vivado")
-  });
-
-  document.getElementById("btn-linter-vsg").addEventListener("click", function() {
-    enable_tab("linter","vsg")
-  });
-
-  document.getElementById("btn-schematic-general").addEventListener("click", function() {
-    enable_tab("schematic","general")
-  });
-
-  document.getElementById("btn-templates-general").addEventListener("click", function() {
-    enable_tab("templates","general")
-  });
-
-  document.getElementById("btn-tools-general").addEventListener("click", function() {
-    enable_tab("tools","general")
-  });
-
-  document.getElementById("btn-tools-quartus").addEventListener("click", function() {
-    enable_tab("tools","quartus")
-  });
-
-  document.getElementById("btn-tools-vsg").addEventListener("click", function() {
-    enable_tab("tools","vsg")
-  });
-
-  document.getElementById("btn-tools-osvvm").addEventListener("click", function() {
-    enable_tab("tools","osvvm")
-  });
-
-  document.getElementById("btn-tools-ascenlint").addEventListener("click", function() {
-    enable_tab("tools","ascenlint")
-  });
-
-  document.getElementById("btn-tools-cocotb").addEventListener("click", function() {
-    enable_tab("tools","cocotb")
-  });
-
-  document.getElementById("btn-tools-diamond").addEventListener("click", function() {
-    enable_tab("tools","diamond")
-  });
-
-  document.getElementById("btn-tools-ghdl").addEventListener("click", function() {
-    enable_tab("tools","ghdl")
-  });
-
-  document.getElementById("btn-tools-icarus").addEventListener("click", function() {
-    enable_tab("tools","icarus")
-  });
-
-  document.getElementById("btn-tools-icestorm").addEventListener("click", function() {
-    enable_tab("tools","icestorm")
-  });
-
-  document.getElementById("btn-tools-ise").addEventListener("click", function() {
-    enable_tab("tools","ise")
-  });
-
-  document.getElementById("btn-tools-isem").addEventListener("click", function() {
-    enable_tab("tools","isem")
-  });
-
-  document.getElementById("btn-tools-modelsim").addEventListener("click", function() {
-    enable_tab("tools","modelsim")
-  });
-
-  document.getElementById("btn-tools-morty").addEventListener("click", function() {
-    enable_tab("tools","morty")
-  });
-
-  document.getElementById("btn-tools-radiant").addEventListener("click", function() {
-    enable_tab("tools","radiant")
-  });
-
-  document.getElementById("btn-tools-rivierapro").addEventListener("click", function() {
-    enable_tab("tools","rivierapro")
-  });
-
-  document.getElementById("btn-tools-spyglass").addEventListener("click", function() {
-    enable_tab("tools","spyglass")
-  });
-
-  document.getElementById("btn-tools-symbiyosys").addEventListener("click", function() {
-    enable_tab("tools","symbiyosys")
-  });
-
-  document.getElementById("btn-tools-symbiflow").addEventListener("click", function() {
-    enable_tab("tools","symbiflow")
-  });
-
-  document.getElementById("btn-tools-trellis").addEventListener("click", function() {
-    enable_tab("tools","trellis")
-  });
-
-  document.getElementById("btn-tools-vcs").addEventListener("click", function() {
-    enable_tab("tools","vcs")
-  });
-
-  document.getElementById("btn-tools-verible").addEventListener("click", function() {
-    enable_tab("tools","verible")
-  });
-
-  document.getElementById("btn-tools-verilator").addEventListener("click", function() {
-    enable_tab("tools","verilator")
-  });
-
-  document.getElementById("btn-tools-vivado").addEventListener("click", function() {
-    enable_tab("tools","vivado")
-  });
-
-  document.getElementById("btn-tools-vunit").addEventListener("click", function() {
-    enable_tab("tools","vunit")
-  });
-
-  document.getElementById("btn-tools-xcelium").addEventListener("click", function() {
-    enable_tab("tools","xcelium")
-  });
-
-  document.getElementById("btn-tools-xsim").addEventListener("click", function() {
-    enable_tab("tools","xsim")
-  });
-
-  document.getElementById("btn-tools-yosys").addEventListener("click", function() {
-    enable_tab("tools","yosys")
-  });
-
-  document.getElementById("btn-tools-openfpga").addEventListener("click", function() {
-    enable_tab("tools","openfpga")
-  });
-
-  document.getElementById("btn-tools-activehdl").addEventListener("click", function() {
-    enable_tab("tools","activehdl")
-  });
-
-  document.getElementById("btn-tools-questa").addEventListener("click", function() {
-    enable_tab("tools","questa")
-  });
-
-  document.getElementById("btn-tools-raptor").addEventListener("click", function() {
-    enable_tab("tools","raptor")
-  });
-
-  /* Loop through all dropdown buttons to toggle between hiding and showing its dropdown content - 
-  This allows the user to have multiple dropdowns without any conflict */
-  var dropdown = document.getElementsByClassName("dropdown-btn");
-  var i;
-
-  for (i = 0; i < dropdown.length; i++) {
-    dropdown[i].addEventListener("click", function() {
-      this.classList.toggle("active");
-      var dropdownContent = this.nextElementSibling;
-      if (dropdownContent.style.display === "block") {
-        dropdownContent.style.display = "none";
-      } else {
-        dropdownContent.style.display = "block";
-      }
+  if (document.getElementById("btn-tools-quartus")) {
+    document.getElementById("btn-tools-quartus").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "quartus");
+    });
+  }
+  if (document.getElementById("btn-tools-vsg")) {
+    document.getElementById("btn-tools-vsg").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "vsg");
+    });
+  }
+  if (document.getElementById("btn-tools-osvvm")) {
+    document.getElementById("btn-tools-osvvm").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "osvvm");
+    });
+  }
+  if (document.getElementById("btn-tools-ascenlint")) {
+    document.getElementById("btn-tools-ascenlint").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "ascenlint");
+    });
+  }
+  if (document.getElementById("btn-tools-cocotb")) {
+    document.getElementById("btn-tools-cocotb").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "cocotb");
+    });
+  }
+  if (document.getElementById("btn-tools-diamond")) {
+    document.getElementById("btn-tools-diamond").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "diamond");
+    });
+  }
+  if (document.getElementById("btn-tools-ghdl")) {
+    document.getElementById("btn-tools-ghdl").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "ghdl");
+    });
+  }
+  if (document.getElementById("btn-tools-icarus")) {
+    document.getElementById("btn-tools-icarus").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "icarus");
+    });
+  }
+  if (document.getElementById("btn-tools-icestorm")) {
+    document.getElementById("btn-tools-icestorm").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "icestorm");
+    });
+  }
+  if (document.getElementById("btn-tools-ise")) {
+    document.getElementById("btn-tools-ise").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "ise");
+    });
+  }
+  if (document.getElementById("btn-tools-isem")) {
+    document.getElementById("btn-tools-isem").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "isem");
+    });
+  }
+  if (document.getElementById("btn-tools-modelsim")) {
+    document.getElementById("btn-tools-modelsim").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "modelsim");
+    });
+  }
+  if (document.getElementById("btn-tools-morty")) {
+    document.getElementById("btn-tools-morty").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "morty");
+    });
+  }
+  if (document.getElementById("btn-tools-radiant")) {
+    document.getElementById("btn-tools-radiant").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "radiant");
+    });
+  }
+  if (document.getElementById("btn-tools-rivierapro")) {
+    document.getElementById("btn-tools-rivierapro").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "rivierapro");
+    });
+  }
+  if (document.getElementById("btn-tools-siliconcompiler")) {
+    document.getElementById("btn-tools-siliconcompiler").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "siliconcompiler");
+    });
+  }
+  if (document.getElementById("btn-tools-spyglass")) {
+    document.getElementById("btn-tools-spyglass").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "spyglass");
+    });
+  }
+  if (document.getElementById("btn-tools-symbiyosys")) {
+    document.getElementById("btn-tools-symbiyosys").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "symbiyosys");
+    });
+  }
+  if (document.getElementById("btn-tools-symbiflow")) {
+    document.getElementById("btn-tools-symbiflow").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "symbiflow");
+    });
+  }
+  if (document.getElementById("btn-tools-trellis")) {
+    document.getElementById("btn-tools-trellis").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "trellis");
+    });
+  }
+  if (document.getElementById("btn-tools-vcs")) {
+    document.getElementById("btn-tools-vcs").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "vcs");
+    });
+  }
+  if (document.getElementById("btn-tools-verible")) {
+    document.getElementById("btn-tools-verible").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "verible");
+    });
+  }
+  if (document.getElementById("btn-tools-verilator")) {
+    document.getElementById("btn-tools-verilator").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "verilator");
+    });
+  }
+  if (document.getElementById("btn-tools-vivado")) {
+    document.getElementById("btn-tools-vivado").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "vivado");
+    });
+  }
+  if (document.getElementById("btn-tools-vunit")) {
+    document.getElementById("btn-tools-vunit").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "vunit");
+    });
+  }
+  if (document.getElementById("btn-tools-xcelium")) {
+    document.getElementById("btn-tools-xcelium").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "xcelium");
+    });
+  }
+  if (document.getElementById("btn-tools-xsim")) {
+    document.getElementById("btn-tools-xsim").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "xsim");
+    });
+  }
+  if (document.getElementById("btn-tools-yosys")) {
+    document.getElementById("btn-tools-yosys").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "yosys");
+    });
+  }
+  if (document.getElementById("btn-tools-openfpga")) {
+    document.getElementById("btn-tools-openfpga").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "openfpga");
+    });
+  }
+  if (document.getElementById("btn-tools-activehdl")) {
+    document.getElementById("btn-tools-activehdl").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "activehdl");
+    });
+  }
+  if (document.getElementById("btn-tools-questa")) {
+    document.getElementById("btn-tools-questa").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "questa");
+    });
+  }
+  if (document.getElementById("btn-tools-raptor")) {
+    document.getElementById("btn-tools-raptor").addEventListener("click", function(e) {
+      e.preventDefault();
+      enable_tab("tools", "raptor");
     });
   }
   
@@ -5117,6 +4890,19 @@ export const WEB_CONFIG = `
       element_value = [];
     }
     config["tools"]["rivierapro"]["vsim_options"] = element_value
+    config["tools"]["siliconcompiler"] = {}
+    element_value = document.getElementById("tools-siliconcompiler-installation_path").value;
+    config["tools"]["siliconcompiler"]["installation_path"] = element_value
+    element_value = document.getElementById("tools-siliconcompiler-target").value;
+    config["tools"]["siliconcompiler"]["target"] = element_value
+    element_value = document.getElementById("tools-siliconcompiler-server_enable").checked;
+    config["tools"]["siliconcompiler"]["server_enable"] = element_value
+    element_value = document.getElementById("tools-siliconcompiler-server_address").value;
+    config["tools"]["siliconcompiler"]["server_address"] = element_value
+    element_value = document.getElementById("tools-siliconcompiler-server_username").value;
+    config["tools"]["siliconcompiler"]["server_username"] = element_value
+    element_value = document.getElementById("tools-siliconcompiler-server_password").value;
+    config["tools"]["siliconcompiler"]["server_password"] = element_value
     config["tools"]["spyglass"] = {}
     element_value = document.getElementById("tools-spyglass-installation_path").value;
     config["tools"]["spyglass"]["installation_path"] = element_value
@@ -5392,1388 +5178,1896 @@ export const WEB_CONFIG = `
   }
 
   function set_config(config){
-    document.getElementById("general-general-pypath").value = config["general"]["general"]["pypath"];
-    document.getElementById("general-general-makepath").value = config["general"]["general"]["makepath"];
-    document.getElementById("general-general-go_to_definition_vhdl").checked = config["general"]["general"]["go_to_definition_vhdl"];
-    document.getElementById("general-general-go_to_definition_verilog").checked = config["general"]["general"]["go_to_definition_verilog"];
-    document.getElementById("general-general-developer_mode").checked = config["general"]["general"]["developer_mode"];
-    document.getElementById("documentation-general-language").value = config["documentation"]["general"]["language"];
-    document.getElementById("documentation-general-symbol_vhdl").value = config["documentation"]["general"]["symbol_vhdl"];
-    document.getElementById("documentation-general-symbol_verilog").value = config["documentation"]["general"]["symbol_verilog"];
-    document.getElementById("documentation-general-dependency_graph").checked = config["documentation"]["general"]["dependency_graph"];
-    document.getElementById("documentation-general-self_contained").checked = config["documentation"]["general"]["self_contained"];
-    document.getElementById("documentation-general-fsm").checked = config["documentation"]["general"]["fsm"];
-    document.getElementById("documentation-general-ports").value = config["documentation"]["general"]["ports"];
-    document.getElementById("documentation-general-generics").value = config["documentation"]["general"]["generics"];
-    document.getElementById("documentation-general-instantiations").value = config["documentation"]["general"]["instantiations"];
-    document.getElementById("documentation-general-signals").value = config["documentation"]["general"]["signals"];
-    document.getElementById("documentation-general-constants").value = config["documentation"]["general"]["constants"];
-    document.getElementById("documentation-general-types").value = config["documentation"]["general"]["types"];
-    document.getElementById("documentation-general-process").value = config["documentation"]["general"]["process"];
-    document.getElementById("documentation-general-functions").value = config["documentation"]["general"]["functions"];
-    document.getElementById("documentation-general-tasks").value = config["documentation"]["general"]["tasks"];
-    document.getElementById("documentation-general-magic_config_path").value = config["documentation"]["general"]["magic_config_path"];
-    document.getElementById("editor-general-stutter_comment_shortcuts").checked = config["editor"]["general"]["stutter_comment_shortcuts"];
-    document.getElementById("editor-general-stutter_block_width").value = config["editor"]["general"]["stutter_block_width"];
-    document.getElementById("editor-general-stutter_max_width").value = config["editor"]["general"]["stutter_max_width"];
-    document.getElementById("editor-general-stutter_delimiters").checked = config["editor"]["general"]["stutter_delimiters"];
-    document.getElementById("editor-general-stutter_bracket_shortcuts").checked = config["editor"]["general"]["stutter_bracket_shortcuts"];
-    document.getElementById("formatter-general-formatter_verilog").value = config["formatter"]["general"]["formatter_verilog"];
-    document.getElementById("formatter-general-formatter_vhdl").value = config["formatter"]["general"]["formatter_vhdl"];
-    document.getElementById("formatter-istyle-style").value = config["formatter"]["istyle"]["style"];
-    document.getElementById("formatter-istyle-indentation_size").value = config["formatter"]["istyle"]["indentation_size"];
-    document.getElementById("formatter-s3sv-one_bind_per_line").checked = config["formatter"]["s3sv"]["one_bind_per_line"];
-    document.getElementById("formatter-s3sv-one_declaration_per_line").checked = config["formatter"]["s3sv"]["one_declaration_per_line"];
-    document.getElementById("formatter-s3sv-use_tabs").checked = config["formatter"]["s3sv"]["use_tabs"];
-    document.getElementById("formatter-s3sv-indentation_size").value = config["formatter"]["s3sv"]["indentation_size"];
-    document.getElementById("formatter-verible-format_args").value = config["formatter"]["verible"]["format_args"];
-    document.getElementById("formatter-standalone-keyword_case").value = config["formatter"]["standalone"]["keyword_case"];
-    document.getElementById("formatter-standalone-name_case").value = config["formatter"]["standalone"]["name_case"];
-    document.getElementById("formatter-standalone-indentation").value = config["formatter"]["standalone"]["indentation"];
-    document.getElementById("formatter-standalone-align_port_generic").checked = config["formatter"]["standalone"]["align_port_generic"];
-    document.getElementById("formatter-standalone-align_comment").checked = config["formatter"]["standalone"]["align_comment"];
-    document.getElementById("formatter-standalone-remove_comments").checked = config["formatter"]["standalone"]["remove_comments"];
-    document.getElementById("formatter-standalone-remove_reports").checked = config["formatter"]["standalone"]["remove_reports"];
-    document.getElementById("formatter-standalone-check_alias").checked = config["formatter"]["standalone"]["check_alias"];
-    document.getElementById("formatter-standalone-new_line_after_then").value = config["formatter"]["standalone"]["new_line_after_then"];
-    document.getElementById("formatter-standalone-new_line_after_semicolon").value = config["formatter"]["standalone"]["new_line_after_semicolon"];
-    document.getElementById("formatter-standalone-new_line_after_else").value = config["formatter"]["standalone"]["new_line_after_else"];
-    document.getElementById("formatter-standalone-new_line_after_port").value = config["formatter"]["standalone"]["new_line_after_port"];
-    document.getElementById("formatter-standalone-new_line_after_generic").value = config["formatter"]["standalone"]["new_line_after_generic"];
-    document.getElementById("linter-general-linter_vhdl").value = config["linter"]["general"]["linter_vhdl"];
-    document.getElementById("linter-general-linter_verilog").value = config["linter"]["general"]["linter_verilog"];
-    document.getElementById("linter-general-lstyle_verilog").value = config["linter"]["general"]["lstyle_verilog"];
-    document.getElementById("linter-general-lstyle_vhdl").value = config["linter"]["general"]["lstyle_vhdl"];
-    document.getElementById("linter-vhdlls-standard").value = config["linter"]["vhdlls"]["standard"];
-    document.getElementById("linter-vhdlls-ignoreVunit").checked = config["linter"]["vhdlls"]["ignoreVunit"];
-    document.getElementById("linter-vhdlls-vunitPath").value = config["linter"]["vhdlls"]["vunitPath"];
-    document.getElementById("linter-ghdl-arguments").value = config["linter"]["ghdl"]["arguments"];
-    document.getElementById("linter-icarus-arguments").value = config["linter"]["icarus"]["arguments"];
-    document.getElementById("linter-modelsim-vhdl_arguments").value = config["linter"]["modelsim"]["vhdl_arguments"];
-    document.getElementById("linter-modelsim-verilog_arguments").value = config["linter"]["modelsim"]["verilog_arguments"];
-    document.getElementById("linter-verible-arguments").value = config["linter"]["verible"]["arguments"];
-    document.getElementById("linter-verilator-arguments").value = config["linter"]["verilator"]["arguments"];
-    document.getElementById("linter-vivado-vhdl_arguments").value = config["linter"]["vivado"]["vhdl_arguments"];
-    document.getElementById("linter-vivado-verilog_arguments").value = config["linter"]["vivado"]["verilog_arguments"];
-    document.getElementById("schematic-general-backend").value = config["schematic"]["general"]["backend"];
-    document.getElementById("schematic-general-extra").value = config["schematic"]["general"]["extra"];
-    document.getElementById("schematic-general-args").value = config["schematic"]["general"]["args"];
-    document.getElementById("schematic-general-args_ghdl").value = config["schematic"]["general"]["args_ghdl"];
-    document.getElementById("templates-general-header_file_path").value = config["templates"]["general"]["header_file_path"];
-    document.getElementById("templates-general-indent").value = config["templates"]["general"]["indent"];
-    document.getElementById("templates-general-clock_generation_style").value = config["templates"]["general"]["clock_generation_style"];
-    document.getElementById("templates-general-instance_style").value = config["templates"]["general"]["instance_style"];
-    document.getElementById("tools-general-select_tool").value = config["tools"]["general"]["select_tool"];
-    document.getElementById("tools-general-manual_compilation_order").value = config["tools"]["general"]["manual_compilation_order"];
-    document.getElementById("tools-general-execution_mode").value = config["tools"]["general"]["execution_mode"];
-    document.getElementById("tools-general-waveform_viewer").value = config["tools"]["general"]["waveform_viewer"];
-    document.getElementById("tools-general-gtkwave_installation_path").value = config["tools"]["general"]["gtkwave_installation_path"];
-    document.getElementById("tools-general-gtkwave_extra_arguments").value = config["tools"]["general"]["gtkwave_extra_arguments"];
-    document.getElementById("tools-quartus-installation_path").value = config["tools"]["quartus"]["installation_path"];
-    document.getElementById("tools-quartus-family").value = config["tools"]["quartus"]["family"];
-    document.getElementById("tools-quartus-device").value = config["tools"]["quartus"]["device"];
-    document.getElementById("tools-quartus-optimization_mode").value = config["tools"]["quartus"]["optimization_mode"];
-    document.getElementById("tools-quartus-allow_register_retiming").checked = config["tools"]["quartus"]["allow_register_retiming"];
-    document.getElementById("tools-quartus-wave_file_questa").value = config["tools"]["quartus"]["wave_file_questa"];
-    document.getElementById("tools-vsg-installation_path").value = config["tools"]["vsg"]["installation_path"];
-    document.getElementById("tools-vsg-style_config").value = config["tools"]["vsg"]["style_config"];
-    document.getElementById("tools-vsg-core_number").value = config["tools"]["vsg"]["core_number"];
-    document.getElementById("tools-vsg-aditional_arguments").value = config["tools"]["vsg"]["aditional_arguments"];
-    document.getElementById("tools-osvvm-installation_path").value = config["tools"]["osvvm"]["installation_path"];
-    document.getElementById("tools-osvvm-tclsh_binary").value = config["tools"]["osvvm"]["tclsh_binary"];
-    document.getElementById("tools-osvvm-simulator_name").value = config["tools"]["osvvm"]["simulator_name"];
-    document.getElementById("tools-ascenlint-installation_path").value = config["tools"]["ascenlint"]["installation_path"];
-    element_value = document.getElementById("tools-ascenlint-ascentlint_options").value = String(config["tools"]["ascenlint"]["ascentlint_options"]);
-    document.getElementById("tools-cocotb-installation_path").value = config["tools"]["cocotb"]["installation_path"];
-    document.getElementById("tools-cocotb-simulator_name").value = config["tools"]["cocotb"]["simulator_name"];
-    document.getElementById("tools-cocotb-compile_args").value = config["tools"]["cocotb"]["compile_args"];
-    document.getElementById("tools-cocotb-run_args").value = config["tools"]["cocotb"]["run_args"];
-    document.getElementById("tools-cocotb-plusargs").value = config["tools"]["cocotb"]["plusargs"];
-    document.getElementById("tools-diamond-installation_path").value = config["tools"]["diamond"]["installation_path"];
-    document.getElementById("tools-diamond-part").value = config["tools"]["diamond"]["part"];
-    document.getElementById("tools-ghdl-installation_path").value = config["tools"]["ghdl"]["installation_path"];
-    document.getElementById("tools-ghdl-waveform").value = config["tools"]["ghdl"]["waveform"];
-    element_value = document.getElementById("tools-ghdl-analyze_options").value = String(config["tools"]["ghdl"]["analyze_options"]);
-    element_value = document.getElementById("tools-ghdl-run_options").value = String(config["tools"]["ghdl"]["run_options"]);
-    document.getElementById("tools-icarus-installation_path").value = config["tools"]["icarus"]["installation_path"];
-    document.getElementById("tools-icarus-timescale").value = config["tools"]["icarus"]["timescale"];
-    element_value = document.getElementById("tools-icarus-iverilog_options").value = String(config["tools"]["icarus"]["iverilog_options"]);
-    document.getElementById("tools-icestorm-installation_path").value = config["tools"]["icestorm"]["installation_path"];
-    document.getElementById("tools-icestorm-pnr").value = config["tools"]["icestorm"]["pnr"];
-    document.getElementById("tools-icestorm-arch").value = config["tools"]["icestorm"]["arch"];
-    document.getElementById("tools-icestorm-output_format").value = config["tools"]["icestorm"]["output_format"];
-    document.getElementById("tools-icestorm-yosys_as_subtool").checked = config["tools"]["icestorm"]["yosys_as_subtool"];
-    document.getElementById("tools-icestorm-makefile_name").value = config["tools"]["icestorm"]["makefile_name"];
-    element_value = document.getElementById("tools-icestorm-arachne_pnr_options").value = String(config["tools"]["icestorm"]["arachne_pnr_options"]);
-    element_value = document.getElementById("tools-icestorm-nextpnr_options").value = String(config["tools"]["icestorm"]["nextpnr_options"]);
-    element_value = document.getElementById("tools-icestorm-yosys_synth_options").value = String(config["tools"]["icestorm"]["yosys_synth_options"]);
-    document.getElementById("tools-ise-installation_path").value = config["tools"]["ise"]["installation_path"];
-    document.getElementById("tools-ise-family").value = config["tools"]["ise"]["family"];
-    document.getElementById("tools-ise-device").value = config["tools"]["ise"]["device"];
-    document.getElementById("tools-ise-package").value = config["tools"]["ise"]["package"];
-    document.getElementById("tools-ise-speed").value = config["tools"]["ise"]["speed"];
-    document.getElementById("tools-isem-installation_path").value = config["tools"]["isem"]["installation_path"];
-    element_value = document.getElementById("tools-isem-fuse_options").value = String(config["tools"]["isem"]["fuse_options"]);
-    element_value = document.getElementById("tools-isem-isim_options").value = String(config["tools"]["isem"]["isim_options"]);
-    document.getElementById("tools-modelsim-installation_path").value = config["tools"]["modelsim"]["installation_path"];
-    element_value = document.getElementById("tools-modelsim-vcom_options").value = String(config["tools"]["modelsim"]["vcom_options"]);
-    element_value = document.getElementById("tools-modelsim-vlog_options").value = String(config["tools"]["modelsim"]["vlog_options"]);
-    element_value = document.getElementById("tools-modelsim-vsim_options").value = String(config["tools"]["modelsim"]["vsim_options"]);
-    document.getElementById("tools-morty-installation_path").value = config["tools"]["morty"]["installation_path"];
-    element_value = document.getElementById("tools-morty-morty_options").value = String(config["tools"]["morty"]["morty_options"]);
-    document.getElementById("tools-radiant-installation_path").value = config["tools"]["radiant"]["installation_path"];
-    document.getElementById("tools-radiant-part").value = config["tools"]["radiant"]["part"];
-    document.getElementById("tools-rivierapro-installation_path").value = config["tools"]["rivierapro"]["installation_path"];
-    document.getElementById("tools-rivierapro-compilation_mode").value = config["tools"]["rivierapro"]["compilation_mode"];
-    element_value = document.getElementById("tools-rivierapro-vlog_options").value = String(config["tools"]["rivierapro"]["vlog_options"]);
-    element_value = document.getElementById("tools-rivierapro-vsim_options").value = String(config["tools"]["rivierapro"]["vsim_options"]);
-    document.getElementById("tools-spyglass-installation_path").value = config["tools"]["spyglass"]["installation_path"];
-    document.getElementById("tools-spyglass-methodology").value = config["tools"]["spyglass"]["methodology"];
-    element_value = document.getElementById("tools-spyglass-goals").value = String(config["tools"]["spyglass"]["goals"]);
-    element_value = document.getElementById("tools-spyglass-spyglass_options").value = String(config["tools"]["spyglass"]["spyglass_options"]);
-    element_value = document.getElementById("tools-spyglass-rule_parameters").value = String(config["tools"]["spyglass"]["rule_parameters"]);
-    document.getElementById("tools-symbiyosys-installation_path").value = config["tools"]["symbiyosys"]["installation_path"];
-    element_value = document.getElementById("tools-symbiyosys-tasknames").value = String(config["tools"]["symbiyosys"]["tasknames"]);
-    document.getElementById("tools-symbiflow-installation_path").value = config["tools"]["symbiflow"]["installation_path"];
-    document.getElementById("tools-symbiflow-package").value = config["tools"]["symbiflow"]["package"];
-    document.getElementById("tools-symbiflow-part").value = config["tools"]["symbiflow"]["part"];
-    document.getElementById("tools-symbiflow-vendor").value = config["tools"]["symbiflow"]["vendor"];
-    document.getElementById("tools-symbiflow-pnr").value = config["tools"]["symbiflow"]["pnr"];
-    document.getElementById("tools-symbiflow-vpr_options").value = config["tools"]["symbiflow"]["vpr_options"];
-    document.getElementById("tools-symbiflow-environment_script").value = config["tools"]["symbiflow"]["environment_script"];
-    document.getElementById("tools-trellis-installation_path").value = config["tools"]["trellis"]["installation_path"];
-    document.getElementById("tools-trellis-arch").value = config["tools"]["trellis"]["arch"];
-    document.getElementById("tools-trellis-output_format").value = config["tools"]["trellis"]["output_format"];
-    document.getElementById("tools-trellis-yosys_as_subtool").checked = config["tools"]["trellis"]["yosys_as_subtool"];
-    document.getElementById("tools-trellis-makefile_name").value = config["tools"]["trellis"]["makefile_name"];
-    document.getElementById("tools-trellis-script_name").value = config["tools"]["trellis"]["script_name"];
-    element_value = document.getElementById("tools-trellis-nextpnr_options").value = String(config["tools"]["trellis"]["nextpnr_options"]);
-    element_value = document.getElementById("tools-trellis-yosys_synth_options").value = String(config["tools"]["trellis"]["yosys_synth_options"]);
-    document.getElementById("tools-vcs-installation_path").value = config["tools"]["vcs"]["installation_path"];
-    element_value = document.getElementById("tools-vcs-vcs_options").value = String(config["tools"]["vcs"]["vcs_options"]);
-    element_value = document.getElementById("tools-vcs-run_options").value = String(config["tools"]["vcs"]["run_options"]);
-    document.getElementById("tools-verible-installation_path").value = config["tools"]["verible"]["installation_path"];
-    document.getElementById("tools-verilator-installation_path").value = config["tools"]["verilator"]["installation_path"];
-    document.getElementById("tools-verilator-mode").value = config["tools"]["verilator"]["mode"];
-    element_value = document.getElementById("tools-verilator-libs").value = String(config["tools"]["verilator"]["libs"]);
-    element_value = document.getElementById("tools-verilator-verilator_options").value = String(config["tools"]["verilator"]["verilator_options"]);
-    element_value = document.getElementById("tools-verilator-make_options").value = String(config["tools"]["verilator"]["make_options"]);
-    element_value = document.getElementById("tools-verilator-run_options").value = String(config["tools"]["verilator"]["run_options"]);
-    document.getElementById("tools-vivado-installation_path").value = config["tools"]["vivado"]["installation_path"];
-    document.getElementById("tools-vivado-part").value = config["tools"]["vivado"]["part"];
-    document.getElementById("tools-vivado-synth").value = config["tools"]["vivado"]["synth"];
-    document.getElementById("tools-vivado-pnr").value = config["tools"]["vivado"]["pnr"];
-    document.getElementById("tools-vivado-jtag_freq").value = config["tools"]["vivado"]["jtag_freq"];
-    document.getElementById("tools-vivado-hw_target").value = config["tools"]["vivado"]["hw_target"];
-    document.getElementById("tools-vunit-installation_path").value = config["tools"]["vunit"]["installation_path"];
-    document.getElementById("tools-vunit-simulator_name").value = config["tools"]["vunit"]["simulator_name"];
-    document.getElementById("tools-vunit-runpy_mode").value = config["tools"]["vunit"]["runpy_mode"];
-    document.getElementById("tools-vunit-extra_options").value = config["tools"]["vunit"]["extra_options"];
-    document.getElementById("tools-vunit-enable_array_util_lib").checked = config["tools"]["vunit"]["enable_array_util_lib"];
-    document.getElementById("tools-vunit-enable_com_lib").checked = config["tools"]["vunit"]["enable_com_lib"];
-    document.getElementById("tools-vunit-enable_json4vhdl_lib").checked = config["tools"]["vunit"]["enable_json4vhdl_lib"];
-    document.getElementById("tools-vunit-enable_osvvm_lib").checked = config["tools"]["vunit"]["enable_osvvm_lib"];
-    document.getElementById("tools-vunit-enable_random_lib").checked = config["tools"]["vunit"]["enable_random_lib"];
-    document.getElementById("tools-vunit-enable_verification_components_lib").checked = config["tools"]["vunit"]["enable_verification_components_lib"];
-    document.getElementById("tools-xcelium-installation_path").value = config["tools"]["xcelium"]["installation_path"];
-    element_value = document.getElementById("tools-xcelium-xmvhdl_options").value = String(config["tools"]["xcelium"]["xmvhdl_options"]);
-    element_value = document.getElementById("tools-xcelium-xmvlog_options").value = String(config["tools"]["xcelium"]["xmvlog_options"]);
-    element_value = document.getElementById("tools-xcelium-xmsim_options").value = String(config["tools"]["xcelium"]["xmsim_options"]);
-    element_value = document.getElementById("tools-xcelium-xrun_options").value = String(config["tools"]["xcelium"]["xrun_options"]);
-    document.getElementById("tools-xsim-installation_path").value = config["tools"]["xsim"]["installation_path"];
-    element_value = document.getElementById("tools-xsim-xelab_options").value = String(config["tools"]["xsim"]["xelab_options"]);
-    element_value = document.getElementById("tools-xsim-xsim_options").value = String(config["tools"]["xsim"]["xsim_options"]);
-    document.getElementById("tools-yosys-installation_path").value = config["tools"]["yosys"]["installation_path"];
-    document.getElementById("tools-yosys-arch").value = config["tools"]["yosys"]["arch"];
-    document.getElementById("tools-yosys-output_format").value = config["tools"]["yosys"]["output_format"];
-    document.getElementById("tools-yosys-yosys_as_subtool").checked = config["tools"]["yosys"]["yosys_as_subtool"];
-    document.getElementById("tools-yosys-makefile_name").value = config["tools"]["yosys"]["makefile_name"];
-    document.getElementById("tools-yosys-script_name").value = config["tools"]["yosys"]["script_name"];
-    element_value = document.getElementById("tools-yosys-yosys_synth_options").value = String(config["tools"]["yosys"]["yosys_synth_options"]);
-    document.getElementById("tools-openfpga-installation_path").value = config["tools"]["openfpga"]["installation_path"];
-    document.getElementById("tools-openfpga-arch").value = config["tools"]["openfpga"]["arch"];
-    element_value = document.getElementById("tools-openfpga-task_options").value = String(config["tools"]["openfpga"]["task_options"]);
-    document.getElementById("tools-activehdl-installation_path").value = config["tools"]["activehdl"]["installation_path"];
-    document.getElementById("tools-questa-installation_path").value = config["tools"]["questa"]["installation_path"];
-    document.getElementById("tools-raptor-installation_path").value = config["tools"]["raptor"]["installation_path"];
-    document.getElementById("tools-raptor-target_device").value = config["tools"]["raptor"]["target_device"];
-    document.getElementById("tools-raptor-vhdl_version").value = config["tools"]["raptor"]["vhdl_version"];
-    document.getElementById("tools-raptor-verilog_version").value = config["tools"]["raptor"]["verilog_version"];
-    document.getElementById("tools-raptor-sv_version").value = config["tools"]["raptor"]["sv_version"];
-    document.getElementById("tools-raptor-optimization").value = config["tools"]["raptor"]["optimization"];
-    document.getElementById("tools-raptor-effort").value = config["tools"]["raptor"]["effort"];
-    document.getElementById("tools-raptor-fsm_encoding").value = config["tools"]["raptor"]["fsm_encoding"];
-    document.getElementById("tools-raptor-carry").value = config["tools"]["raptor"]["carry"];
-    document.getElementById("tools-raptor-pnr_netlist_language").value = config["tools"]["raptor"]["pnr_netlist_language"];
-    document.getElementById("tools-raptor-dsp_limit").value = config["tools"]["raptor"]["dsp_limit"];
-    document.getElementById("tools-raptor-block_ram_limit").value = config["tools"]["raptor"]["block_ram_limit"];
-    document.getElementById("tools-raptor-fast_synthesis").checked = config["tools"]["raptor"]["fast_synthesis"];
-    document.getElementById("tools-raptor-top_level").value = config["tools"]["raptor"]["top_level"];
-    element_value = document.getElementById("tools-raptor-sim_source_list").value = String(config["tools"]["raptor"]["sim_source_list"]);
-    document.getElementById("tools-raptor-simulate_rtl").checked = config["tools"]["raptor"]["simulate_rtl"];
-    document.getElementById("tools-raptor-waveform_rtl").value = config["tools"]["raptor"]["waveform_rtl"];
-    document.getElementById("tools-raptor-simulator_rtl").value = config["tools"]["raptor"]["simulator_rtl"];
-    document.getElementById("tools-raptor-simulation_options_rtl").value = config["tools"]["raptor"]["simulation_options_rtl"];
-    document.getElementById("tools-raptor-simulate_gate").checked = config["tools"]["raptor"]["simulate_gate"];
-    document.getElementById("tools-raptor-waveform_gate").value = config["tools"]["raptor"]["waveform_gate"];
-    document.getElementById("tools-raptor-simulator_gate").value = config["tools"]["raptor"]["simulator_gate"];
-    document.getElementById("tools-raptor-simulation_options_gate").value = config["tools"]["raptor"]["simulation_options_gate"];
-    document.getElementById("tools-raptor-simulate_pnr").checked = config["tools"]["raptor"]["simulate_pnr"];
-    document.getElementById("tools-raptor-waveform_pnr").value = config["tools"]["raptor"]["waveform_pnr"];
-    document.getElementById("tools-raptor-simulator_pnr").value = config["tools"]["raptor"]["simulator_pnr"];
-    document.getElementById("tools-raptor-simulation_options_pnr").value = config["tools"]["raptor"]["simulation_options_pnr"];
+    if (config["general"] && config["general"]["general"] && config["general"]["general"]["pypath"] !== undefined) {
+        document.getElementById("general-general-pypath").value = config["general"]["general"]["pypath"];
+    }
+    if (config["general"] && config["general"]["general"] && config["general"]["general"]["makepath"] !== undefined) {
+        document.getElementById("general-general-makepath").value = config["general"]["general"]["makepath"];
+    }
+    if (config["general"] && config["general"]["general"] && config["general"]["general"]["go_to_definition_vhdl"] !== undefined) {
+        document.getElementById("general-general-go_to_definition_vhdl").checked = config["general"]["general"]["go_to_definition_vhdl"];
+    }
+    if (config["general"] && config["general"]["general"] && config["general"]["general"]["go_to_definition_verilog"] !== undefined) {
+        document.getElementById("general-general-go_to_definition_verilog").checked = config["general"]["general"]["go_to_definition_verilog"];
+    }
+    if (config["general"] && config["general"]["general"] && config["general"]["general"]["developer_mode"] !== undefined) {
+        document.getElementById("general-general-developer_mode").checked = config["general"]["general"]["developer_mode"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["language"] !== undefined) {
+        document.getElementById("documentation-general-language").value = config["documentation"]["general"]["language"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["symbol_vhdl"] !== undefined) {
+        document.getElementById("documentation-general-symbol_vhdl").value = config["documentation"]["general"]["symbol_vhdl"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["symbol_verilog"] !== undefined) {
+        document.getElementById("documentation-general-symbol_verilog").value = config["documentation"]["general"]["symbol_verilog"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["dependency_graph"] !== undefined) {
+        document.getElementById("documentation-general-dependency_graph").checked = config["documentation"]["general"]["dependency_graph"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["self_contained"] !== undefined) {
+        document.getElementById("documentation-general-self_contained").checked = config["documentation"]["general"]["self_contained"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["fsm"] !== undefined) {
+        document.getElementById("documentation-general-fsm").checked = config["documentation"]["general"]["fsm"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["ports"] !== undefined) {
+        document.getElementById("documentation-general-ports").value = config["documentation"]["general"]["ports"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["generics"] !== undefined) {
+        document.getElementById("documentation-general-generics").value = config["documentation"]["general"]["generics"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["instantiations"] !== undefined) {
+        document.getElementById("documentation-general-instantiations").value = config["documentation"]["general"]["instantiations"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["signals"] !== undefined) {
+        document.getElementById("documentation-general-signals").value = config["documentation"]["general"]["signals"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["constants"] !== undefined) {
+        document.getElementById("documentation-general-constants").value = config["documentation"]["general"]["constants"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["types"] !== undefined) {
+        document.getElementById("documentation-general-types").value = config["documentation"]["general"]["types"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["process"] !== undefined) {
+        document.getElementById("documentation-general-process").value = config["documentation"]["general"]["process"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["functions"] !== undefined) {
+        document.getElementById("documentation-general-functions").value = config["documentation"]["general"]["functions"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["tasks"] !== undefined) {
+        document.getElementById("documentation-general-tasks").value = config["documentation"]["general"]["tasks"];
+    }
+    if (config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["magic_config_path"] !== undefined) {
+        document.getElementById("documentation-general-magic_config_path").value = config["documentation"]["general"]["magic_config_path"];
+    }
+    if (config["editor"] && config["editor"]["general"] && config["editor"]["general"]["stutter_comment_shortcuts"] !== undefined) {
+        document.getElementById("editor-general-stutter_comment_shortcuts").checked = config["editor"]["general"]["stutter_comment_shortcuts"];
+    }
+    if (config["editor"] && config["editor"]["general"] && config["editor"]["general"]["stutter_block_width"] !== undefined) {
+        document.getElementById("editor-general-stutter_block_width").value = config["editor"]["general"]["stutter_block_width"];
+    }
+    if (config["editor"] && config["editor"]["general"] && config["editor"]["general"]["stutter_max_width"] !== undefined) {
+        document.getElementById("editor-general-stutter_max_width").value = config["editor"]["general"]["stutter_max_width"];
+    }
+    if (config["editor"] && config["editor"]["general"] && config["editor"]["general"]["stutter_delimiters"] !== undefined) {
+        document.getElementById("editor-general-stutter_delimiters").checked = config["editor"]["general"]["stutter_delimiters"];
+    }
+    if (config["editor"] && config["editor"]["general"] && config["editor"]["general"]["stutter_bracket_shortcuts"] !== undefined) {
+        document.getElementById("editor-general-stutter_bracket_shortcuts").checked = config["editor"]["general"]["stutter_bracket_shortcuts"];
+    }
+    if (config["formatter"] && config["formatter"]["general"] && config["formatter"]["general"]["formatter_verilog"] !== undefined) {
+        document.getElementById("formatter-general-formatter_verilog").value = config["formatter"]["general"]["formatter_verilog"];
+    }
+    if (config["formatter"] && config["formatter"]["general"] && config["formatter"]["general"]["formatter_vhdl"] !== undefined) {
+        document.getElementById("formatter-general-formatter_vhdl").value = config["formatter"]["general"]["formatter_vhdl"];
+    }
+    if (config["formatter"] && config["formatter"]["istyle"] && config["formatter"]["istyle"]["style"] !== undefined) {
+        document.getElementById("formatter-istyle-style").value = config["formatter"]["istyle"]["style"];
+    }
+    if (config["formatter"] && config["formatter"]["istyle"] && config["formatter"]["istyle"]["indentation_size"] !== undefined) {
+        document.getElementById("formatter-istyle-indentation_size").value = config["formatter"]["istyle"]["indentation_size"];
+    }
+    if (config["formatter"] && config["formatter"]["s3sv"] && config["formatter"]["s3sv"]["one_bind_per_line"] !== undefined) {
+        document.getElementById("formatter-s3sv-one_bind_per_line").checked = config["formatter"]["s3sv"]["one_bind_per_line"];
+    }
+    if (config["formatter"] && config["formatter"]["s3sv"] && config["formatter"]["s3sv"]["one_declaration_per_line"] !== undefined) {
+        document.getElementById("formatter-s3sv-one_declaration_per_line").checked = config["formatter"]["s3sv"]["one_declaration_per_line"];
+    }
+    if (config["formatter"] && config["formatter"]["s3sv"] && config["formatter"]["s3sv"]["use_tabs"] !== undefined) {
+        document.getElementById("formatter-s3sv-use_tabs").checked = config["formatter"]["s3sv"]["use_tabs"];
+    }
+    if (config["formatter"] && config["formatter"]["s3sv"] && config["formatter"]["s3sv"]["indentation_size"] !== undefined) {
+        document.getElementById("formatter-s3sv-indentation_size").value = config["formatter"]["s3sv"]["indentation_size"];
+    }
+    if (config["formatter"] && config["formatter"]["verible"] && config["formatter"]["verible"]["format_args"] !== undefined) {
+        document.getElementById("formatter-verible-format_args").value = config["formatter"]["verible"]["format_args"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["keyword_case"] !== undefined) {
+        document.getElementById("formatter-standalone-keyword_case").value = config["formatter"]["standalone"]["keyword_case"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["name_case"] !== undefined) {
+        document.getElementById("formatter-standalone-name_case").value = config["formatter"]["standalone"]["name_case"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["indentation"] !== undefined) {
+        document.getElementById("formatter-standalone-indentation").value = config["formatter"]["standalone"]["indentation"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["align_port_generic"] !== undefined) {
+        document.getElementById("formatter-standalone-align_port_generic").checked = config["formatter"]["standalone"]["align_port_generic"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["align_comment"] !== undefined) {
+        document.getElementById("formatter-standalone-align_comment").checked = config["formatter"]["standalone"]["align_comment"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["remove_comments"] !== undefined) {
+        document.getElementById("formatter-standalone-remove_comments").checked = config["formatter"]["standalone"]["remove_comments"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["remove_reports"] !== undefined) {
+        document.getElementById("formatter-standalone-remove_reports").checked = config["formatter"]["standalone"]["remove_reports"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["check_alias"] !== undefined) {
+        document.getElementById("formatter-standalone-check_alias").checked = config["formatter"]["standalone"]["check_alias"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["new_line_after_then"] !== undefined) {
+        document.getElementById("formatter-standalone-new_line_after_then").value = config["formatter"]["standalone"]["new_line_after_then"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["new_line_after_semicolon"] !== undefined) {
+        document.getElementById("formatter-standalone-new_line_after_semicolon").value = config["formatter"]["standalone"]["new_line_after_semicolon"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["new_line_after_else"] !== undefined) {
+        document.getElementById("formatter-standalone-new_line_after_else").value = config["formatter"]["standalone"]["new_line_after_else"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["new_line_after_port"] !== undefined) {
+        document.getElementById("formatter-standalone-new_line_after_port").value = config["formatter"]["standalone"]["new_line_after_port"];
+    }
+    if (config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["new_line_after_generic"] !== undefined) {
+        document.getElementById("formatter-standalone-new_line_after_generic").value = config["formatter"]["standalone"]["new_line_after_generic"];
+    }
+    if (config["linter"] && config["linter"]["general"] && config["linter"]["general"]["linter_vhdl"] !== undefined) {
+        document.getElementById("linter-general-linter_vhdl").value = config["linter"]["general"]["linter_vhdl"];
+    }
+    if (config["linter"] && config["linter"]["general"] && config["linter"]["general"]["linter_verilog"] !== undefined) {
+        document.getElementById("linter-general-linter_verilog").value = config["linter"]["general"]["linter_verilog"];
+    }
+    if (config["linter"] && config["linter"]["general"] && config["linter"]["general"]["lstyle_verilog"] !== undefined) {
+        document.getElementById("linter-general-lstyle_verilog").value = config["linter"]["general"]["lstyle_verilog"];
+    }
+    if (config["linter"] && config["linter"]["general"] && config["linter"]["general"]["lstyle_vhdl"] !== undefined) {
+        document.getElementById("linter-general-lstyle_vhdl").value = config["linter"]["general"]["lstyle_vhdl"];
+    }
+    if (config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["standard"] !== undefined) {
+        document.getElementById("linter-vhdlls-standard").value = config["linter"]["vhdlls"]["standard"];
+    }
+    if (config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["ignoreVunit"] !== undefined) {
+        document.getElementById("linter-vhdlls-ignoreVunit").checked = config["linter"]["vhdlls"]["ignoreVunit"];
+    }
+    if (config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["vunitPath"] !== undefined) {
+        document.getElementById("linter-vhdlls-vunitPath").value = config["linter"]["vhdlls"]["vunitPath"];
+    }
+    if (config["linter"] && config["linter"]["ghdl"] && config["linter"]["ghdl"]["arguments"] !== undefined) {
+        document.getElementById("linter-ghdl-arguments").value = config["linter"]["ghdl"]["arguments"];
+    }
+    if (config["linter"] && config["linter"]["icarus"] && config["linter"]["icarus"]["arguments"] !== undefined) {
+        document.getElementById("linter-icarus-arguments").value = config["linter"]["icarus"]["arguments"];
+    }
+    if (config["linter"] && config["linter"]["modelsim"] && config["linter"]["modelsim"]["vhdl_arguments"] !== undefined) {
+        document.getElementById("linter-modelsim-vhdl_arguments").value = config["linter"]["modelsim"]["vhdl_arguments"];
+    }
+    if (config["linter"] && config["linter"]["modelsim"] && config["linter"]["modelsim"]["verilog_arguments"] !== undefined) {
+        document.getElementById("linter-modelsim-verilog_arguments").value = config["linter"]["modelsim"]["verilog_arguments"];
+    }
+    if (config["linter"] && config["linter"]["verible"] && config["linter"]["verible"]["arguments"] !== undefined) {
+        document.getElementById("linter-verible-arguments").value = config["linter"]["verible"]["arguments"];
+    }
+    if (config["linter"] && config["linter"]["verilator"] && config["linter"]["verilator"]["arguments"] !== undefined) {
+        document.getElementById("linter-verilator-arguments").value = config["linter"]["verilator"]["arguments"];
+    }
+    if (config["linter"] && config["linter"]["vivado"] && config["linter"]["vivado"]["vhdl_arguments"] !== undefined) {
+        document.getElementById("linter-vivado-vhdl_arguments").value = config["linter"]["vivado"]["vhdl_arguments"];
+    }
+    if (config["linter"] && config["linter"]["vivado"] && config["linter"]["vivado"]["verilog_arguments"] !== undefined) {
+        document.getElementById("linter-vivado-verilog_arguments").value = config["linter"]["vivado"]["verilog_arguments"];
+    }
+    if (config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["backend"] !== undefined) {
+        document.getElementById("schematic-general-backend").value = config["schematic"]["general"]["backend"];
+    }
+    if (config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["extra"] !== undefined) {
+        document.getElementById("schematic-general-extra").value = config["schematic"]["general"]["extra"];
+    }
+    if (config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["args"] !== undefined) {
+        document.getElementById("schematic-general-args").value = config["schematic"]["general"]["args"];
+    }
+    if (config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["args_ghdl"] !== undefined) {
+        document.getElementById("schematic-general-args_ghdl").value = config["schematic"]["general"]["args_ghdl"];
+    }
+    if (config["templates"] && config["templates"]["general"] && config["templates"]["general"]["header_file_path"] !== undefined) {
+        document.getElementById("templates-general-header_file_path").value = config["templates"]["general"]["header_file_path"];
+    }
+    if (config["templates"] && config["templates"]["general"] && config["templates"]["general"]["indent"] !== undefined) {
+        document.getElementById("templates-general-indent").value = config["templates"]["general"]["indent"];
+    }
+    if (config["templates"] && config["templates"]["general"] && config["templates"]["general"]["clock_generation_style"] !== undefined) {
+        document.getElementById("templates-general-clock_generation_style").value = config["templates"]["general"]["clock_generation_style"];
+    }
+    if (config["templates"] && config["templates"]["general"] && config["templates"]["general"]["instance_style"] !== undefined) {
+        document.getElementById("templates-general-instance_style").value = config["templates"]["general"]["instance_style"];
+    }
+    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["select_tool"] !== undefined) {
+        document.getElementById("tools-general-select_tool").value = config["tools"]["general"]["select_tool"];
+    }
+    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["manual_compilation_order"] !== undefined) {
+        document.getElementById("tools-general-manual_compilation_order").value = config["tools"]["general"]["manual_compilation_order"];
+    }
+    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["execution_mode"] !== undefined) {
+        document.getElementById("tools-general-execution_mode").value = config["tools"]["general"]["execution_mode"];
+    }
+    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["waveform_viewer"] !== undefined) {
+        document.getElementById("tools-general-waveform_viewer").value = config["tools"]["general"]["waveform_viewer"];
+    }
+    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["gtkwave_installation_path"] !== undefined) {
+        document.getElementById("tools-general-gtkwave_installation_path").value = config["tools"]["general"]["gtkwave_installation_path"];
+    }
+    if (config["tools"] && config["tools"]["general"] && config["tools"]["general"]["gtkwave_extra_arguments"] !== undefined) {
+        document.getElementById("tools-general-gtkwave_extra_arguments").value = config["tools"]["general"]["gtkwave_extra_arguments"];
+    }
+    if (config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["installation_path"] !== undefined) {
+        document.getElementById("tools-quartus-installation_path").value = config["tools"]["quartus"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["family"] !== undefined) {
+        document.getElementById("tools-quartus-family").value = config["tools"]["quartus"]["family"];
+    }
+    if (config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["device"] !== undefined) {
+        document.getElementById("tools-quartus-device").value = config["tools"]["quartus"]["device"];
+    }
+    if (config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["optimization_mode"] !== undefined) {
+        document.getElementById("tools-quartus-optimization_mode").value = config["tools"]["quartus"]["optimization_mode"];
+    }
+    if (config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["allow_register_retiming"] !== undefined) {
+        document.getElementById("tools-quartus-allow_register_retiming").checked = config["tools"]["quartus"]["allow_register_retiming"];
+    }
+    if (config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["wave_file_questa"] !== undefined) {
+        document.getElementById("tools-quartus-wave_file_questa").value = config["tools"]["quartus"]["wave_file_questa"];
+    }
+    if (config["tools"] && config["tools"]["vsg"] && config["tools"]["vsg"]["installation_path"] !== undefined) {
+        document.getElementById("tools-vsg-installation_path").value = config["tools"]["vsg"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["vsg"] && config["tools"]["vsg"]["style_config"] !== undefined) {
+        document.getElementById("tools-vsg-style_config").value = config["tools"]["vsg"]["style_config"];
+    }
+    if (config["tools"] && config["tools"]["vsg"] && config["tools"]["vsg"]["core_number"] !== undefined) {
+        document.getElementById("tools-vsg-core_number").value = config["tools"]["vsg"]["core_number"];
+    }
+    if (config["tools"] && config["tools"]["vsg"] && config["tools"]["vsg"]["aditional_arguments"] !== undefined) {
+        document.getElementById("tools-vsg-aditional_arguments").value = config["tools"]["vsg"]["aditional_arguments"];
+    }
+    if (config["tools"] && config["tools"]["osvvm"] && config["tools"]["osvvm"]["installation_path"] !== undefined) {
+        document.getElementById("tools-osvvm-installation_path").value = config["tools"]["osvvm"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["osvvm"] && config["tools"]["osvvm"]["tclsh_binary"] !== undefined) {
+        document.getElementById("tools-osvvm-tclsh_binary").value = config["tools"]["osvvm"]["tclsh_binary"];
+    }
+    if (config["tools"] && config["tools"]["osvvm"] && config["tools"]["osvvm"]["simulator_name"] !== undefined) {
+        document.getElementById("tools-osvvm-simulator_name").value = config["tools"]["osvvm"]["simulator_name"];
+    }
+    if (config["tools"] && config["tools"]["ascenlint"] && config["tools"]["ascenlint"]["installation_path"] !== undefined) {
+        document.getElementById("tools-ascenlint-installation_path").value = config["tools"]["ascenlint"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["ascenlint"] && config["tools"]["ascenlint"]["ascentlint_options"] !== undefined) {
+        element_value = document.getElementById("tools-ascenlint-ascentlint_options").value = String(config["tools"]["ascenlint"]["ascentlint_options"]);
+    }
+    if (config["tools"] && config["tools"]["cocotb"] && config["tools"]["cocotb"]["installation_path"] !== undefined) {
+        document.getElementById("tools-cocotb-installation_path").value = config["tools"]["cocotb"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["cocotb"] && config["tools"]["cocotb"]["simulator_name"] !== undefined) {
+        document.getElementById("tools-cocotb-simulator_name").value = config["tools"]["cocotb"]["simulator_name"];
+    }
+    if (config["tools"] && config["tools"]["cocotb"] && config["tools"]["cocotb"]["compile_args"] !== undefined) {
+        document.getElementById("tools-cocotb-compile_args").value = config["tools"]["cocotb"]["compile_args"];
+    }
+    if (config["tools"] && config["tools"]["cocotb"] && config["tools"]["cocotb"]["run_args"] !== undefined) {
+        document.getElementById("tools-cocotb-run_args").value = config["tools"]["cocotb"]["run_args"];
+    }
+    if (config["tools"] && config["tools"]["cocotb"] && config["tools"]["cocotb"]["plusargs"] !== undefined) {
+        document.getElementById("tools-cocotb-plusargs").value = config["tools"]["cocotb"]["plusargs"];
+    }
+    if (config["tools"] && config["tools"]["diamond"] && config["tools"]["diamond"]["installation_path"] !== undefined) {
+        document.getElementById("tools-diamond-installation_path").value = config["tools"]["diamond"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["diamond"] && config["tools"]["diamond"]["part"] !== undefined) {
+        document.getElementById("tools-diamond-part").value = config["tools"]["diamond"]["part"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["installation_path"] !== undefined) {
+        document.getElementById("tools-ghdl-installation_path").value = config["tools"]["ghdl"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["waveform"] !== undefined) {
+        document.getElementById("tools-ghdl-waveform").value = config["tools"]["ghdl"]["waveform"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["analyze_options"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-analyze_options").value = String(config["tools"]["ghdl"]["analyze_options"]);
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["run_options"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-run_options").value = String(config["tools"]["ghdl"]["run_options"]);
+    }
+    if (config["tools"] && config["tools"]["icarus"] && config["tools"]["icarus"]["installation_path"] !== undefined) {
+        document.getElementById("tools-icarus-installation_path").value = config["tools"]["icarus"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["icarus"] && config["tools"]["icarus"]["timescale"] !== undefined) {
+        document.getElementById("tools-icarus-timescale").value = config["tools"]["icarus"]["timescale"];
+    }
+    if (config["tools"] && config["tools"]["icarus"] && config["tools"]["icarus"]["iverilog_options"] !== undefined) {
+        element_value = document.getElementById("tools-icarus-iverilog_options").value = String(config["tools"]["icarus"]["iverilog_options"]);
+    }
+    if (config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["installation_path"] !== undefined) {
+        document.getElementById("tools-icestorm-installation_path").value = config["tools"]["icestorm"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["pnr"] !== undefined) {
+        document.getElementById("tools-icestorm-pnr").value = config["tools"]["icestorm"]["pnr"];
+    }
+    if (config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["arch"] !== undefined) {
+        document.getElementById("tools-icestorm-arch").value = config["tools"]["icestorm"]["arch"];
+    }
+    if (config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["output_format"] !== undefined) {
+        document.getElementById("tools-icestorm-output_format").value = config["tools"]["icestorm"]["output_format"];
+    }
+    if (config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["yosys_as_subtool"] !== undefined) {
+        document.getElementById("tools-icestorm-yosys_as_subtool").checked = config["tools"]["icestorm"]["yosys_as_subtool"];
+    }
+    if (config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["makefile_name"] !== undefined) {
+        document.getElementById("tools-icestorm-makefile_name").value = config["tools"]["icestorm"]["makefile_name"];
+    }
+    if (config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["arachne_pnr_options"] !== undefined) {
+        element_value = document.getElementById("tools-icestorm-arachne_pnr_options").value = String(config["tools"]["icestorm"]["arachne_pnr_options"]);
+    }
+    if (config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["nextpnr_options"] !== undefined) {
+        element_value = document.getElementById("tools-icestorm-nextpnr_options").value = String(config["tools"]["icestorm"]["nextpnr_options"]);
+    }
+    if (config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["yosys_synth_options"] !== undefined) {
+        element_value = document.getElementById("tools-icestorm-yosys_synth_options").value = String(config["tools"]["icestorm"]["yosys_synth_options"]);
+    }
+    if (config["tools"] && config["tools"]["ise"] && config["tools"]["ise"]["installation_path"] !== undefined) {
+        document.getElementById("tools-ise-installation_path").value = config["tools"]["ise"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["ise"] && config["tools"]["ise"]["family"] !== undefined) {
+        document.getElementById("tools-ise-family").value = config["tools"]["ise"]["family"];
+    }
+    if (config["tools"] && config["tools"]["ise"] && config["tools"]["ise"]["device"] !== undefined) {
+        document.getElementById("tools-ise-device").value = config["tools"]["ise"]["device"];
+    }
+    if (config["tools"] && config["tools"]["ise"] && config["tools"]["ise"]["package"] !== undefined) {
+        document.getElementById("tools-ise-package").value = config["tools"]["ise"]["package"];
+    }
+    if (config["tools"] && config["tools"]["ise"] && config["tools"]["ise"]["speed"] !== undefined) {
+        document.getElementById("tools-ise-speed").value = config["tools"]["ise"]["speed"];
+    }
+    if (config["tools"] && config["tools"]["isem"] && config["tools"]["isem"]["installation_path"] !== undefined) {
+        document.getElementById("tools-isem-installation_path").value = config["tools"]["isem"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["isem"] && config["tools"]["isem"]["fuse_options"] !== undefined) {
+        element_value = document.getElementById("tools-isem-fuse_options").value = String(config["tools"]["isem"]["fuse_options"]);
+    }
+    if (config["tools"] && config["tools"]["isem"] && config["tools"]["isem"]["isim_options"] !== undefined) {
+        element_value = document.getElementById("tools-isem-isim_options").value = String(config["tools"]["isem"]["isim_options"]);
+    }
+    if (config["tools"] && config["tools"]["modelsim"] && config["tools"]["modelsim"]["installation_path"] !== undefined) {
+        document.getElementById("tools-modelsim-installation_path").value = config["tools"]["modelsim"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["modelsim"] && config["tools"]["modelsim"]["vcom_options"] !== undefined) {
+        element_value = document.getElementById("tools-modelsim-vcom_options").value = String(config["tools"]["modelsim"]["vcom_options"]);
+    }
+    if (config["tools"] && config["tools"]["modelsim"] && config["tools"]["modelsim"]["vlog_options"] !== undefined) {
+        element_value = document.getElementById("tools-modelsim-vlog_options").value = String(config["tools"]["modelsim"]["vlog_options"]);
+    }
+    if (config["tools"] && config["tools"]["modelsim"] && config["tools"]["modelsim"]["vsim_options"] !== undefined) {
+        element_value = document.getElementById("tools-modelsim-vsim_options").value = String(config["tools"]["modelsim"]["vsim_options"]);
+    }
+    if (config["tools"] && config["tools"]["morty"] && config["tools"]["morty"]["installation_path"] !== undefined) {
+        document.getElementById("tools-morty-installation_path").value = config["tools"]["morty"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["morty"] && config["tools"]["morty"]["morty_options"] !== undefined) {
+        element_value = document.getElementById("tools-morty-morty_options").value = String(config["tools"]["morty"]["morty_options"]);
+    }
+    if (config["tools"] && config["tools"]["radiant"] && config["tools"]["radiant"]["installation_path"] !== undefined) {
+        document.getElementById("tools-radiant-installation_path").value = config["tools"]["radiant"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["radiant"] && config["tools"]["radiant"]["part"] !== undefined) {
+        document.getElementById("tools-radiant-part").value = config["tools"]["radiant"]["part"];
+    }
+    if (config["tools"] && config["tools"]["rivierapro"] && config["tools"]["rivierapro"]["installation_path"] !== undefined) {
+        document.getElementById("tools-rivierapro-installation_path").value = config["tools"]["rivierapro"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["rivierapro"] && config["tools"]["rivierapro"]["compilation_mode"] !== undefined) {
+        document.getElementById("tools-rivierapro-compilation_mode").value = config["tools"]["rivierapro"]["compilation_mode"];
+    }
+    if (config["tools"] && config["tools"]["rivierapro"] && config["tools"]["rivierapro"]["vlog_options"] !== undefined) {
+        element_value = document.getElementById("tools-rivierapro-vlog_options").value = String(config["tools"]["rivierapro"]["vlog_options"]);
+    }
+    if (config["tools"] && config["tools"]["rivierapro"] && config["tools"]["rivierapro"]["vsim_options"] !== undefined) {
+        element_value = document.getElementById("tools-rivierapro-vsim_options").value = String(config["tools"]["rivierapro"]["vsim_options"]);
+    }
+    if (config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["installation_path"] !== undefined) {
+        document.getElementById("tools-siliconcompiler-installation_path").value = config["tools"]["siliconcompiler"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["target"] !== undefined) {
+        document.getElementById("tools-siliconcompiler-target").value = config["tools"]["siliconcompiler"]["target"];
+    }
+    if (config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["server_enable"] !== undefined) {
+        document.getElementById("tools-siliconcompiler-server_enable").checked = config["tools"]["siliconcompiler"]["server_enable"];
+    }
+    if (config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["server_address"] !== undefined) {
+        document.getElementById("tools-siliconcompiler-server_address").value = config["tools"]["siliconcompiler"]["server_address"];
+    }
+    if (config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["server_username"] !== undefined) {
+        document.getElementById("tools-siliconcompiler-server_username").value = config["tools"]["siliconcompiler"]["server_username"];
+    }
+    if (config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["server_password"] !== undefined) {
+        document.getElementById("tools-siliconcompiler-server_password").value = config["tools"]["siliconcompiler"]["server_password"];
+    }
+    if (config["tools"] && config["tools"]["spyglass"] && config["tools"]["spyglass"]["installation_path"] !== undefined) {
+        document.getElementById("tools-spyglass-installation_path").value = config["tools"]["spyglass"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["spyglass"] && config["tools"]["spyglass"]["methodology"] !== undefined) {
+        document.getElementById("tools-spyglass-methodology").value = config["tools"]["spyglass"]["methodology"];
+    }
+    if (config["tools"] && config["tools"]["spyglass"] && config["tools"]["spyglass"]["goals"] !== undefined) {
+        element_value = document.getElementById("tools-spyglass-goals").value = String(config["tools"]["spyglass"]["goals"]);
+    }
+    if (config["tools"] && config["tools"]["spyglass"] && config["tools"]["spyglass"]["spyglass_options"] !== undefined) {
+        element_value = document.getElementById("tools-spyglass-spyglass_options").value = String(config["tools"]["spyglass"]["spyglass_options"]);
+    }
+    if (config["tools"] && config["tools"]["spyglass"] && config["tools"]["spyglass"]["rule_parameters"] !== undefined) {
+        element_value = document.getElementById("tools-spyglass-rule_parameters").value = String(config["tools"]["spyglass"]["rule_parameters"]);
+    }
+    if (config["tools"] && config["tools"]["symbiyosys"] && config["tools"]["symbiyosys"]["installation_path"] !== undefined) {
+        document.getElementById("tools-symbiyosys-installation_path").value = config["tools"]["symbiyosys"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["symbiyosys"] && config["tools"]["symbiyosys"]["tasknames"] !== undefined) {
+        element_value = document.getElementById("tools-symbiyosys-tasknames").value = String(config["tools"]["symbiyosys"]["tasknames"]);
+    }
+    if (config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["installation_path"] !== undefined) {
+        document.getElementById("tools-symbiflow-installation_path").value = config["tools"]["symbiflow"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["package"] !== undefined) {
+        document.getElementById("tools-symbiflow-package").value = config["tools"]["symbiflow"]["package"];
+    }
+    if (config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["part"] !== undefined) {
+        document.getElementById("tools-symbiflow-part").value = config["tools"]["symbiflow"]["part"];
+    }
+    if (config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["vendor"] !== undefined) {
+        document.getElementById("tools-symbiflow-vendor").value = config["tools"]["symbiflow"]["vendor"];
+    }
+    if (config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["pnr"] !== undefined) {
+        document.getElementById("tools-symbiflow-pnr").value = config["tools"]["symbiflow"]["pnr"];
+    }
+    if (config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["vpr_options"] !== undefined) {
+        document.getElementById("tools-symbiflow-vpr_options").value = config["tools"]["symbiflow"]["vpr_options"];
+    }
+    if (config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["environment_script"] !== undefined) {
+        document.getElementById("tools-symbiflow-environment_script").value = config["tools"]["symbiflow"]["environment_script"];
+    }
+    if (config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["installation_path"] !== undefined) {
+        document.getElementById("tools-trellis-installation_path").value = config["tools"]["trellis"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["arch"] !== undefined) {
+        document.getElementById("tools-trellis-arch").value = config["tools"]["trellis"]["arch"];
+    }
+    if (config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["output_format"] !== undefined) {
+        document.getElementById("tools-trellis-output_format").value = config["tools"]["trellis"]["output_format"];
+    }
+    if (config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["yosys_as_subtool"] !== undefined) {
+        document.getElementById("tools-trellis-yosys_as_subtool").checked = config["tools"]["trellis"]["yosys_as_subtool"];
+    }
+    if (config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["makefile_name"] !== undefined) {
+        document.getElementById("tools-trellis-makefile_name").value = config["tools"]["trellis"]["makefile_name"];
+    }
+    if (config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["script_name"] !== undefined) {
+        document.getElementById("tools-trellis-script_name").value = config["tools"]["trellis"]["script_name"];
+    }
+    if (config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["nextpnr_options"] !== undefined) {
+        element_value = document.getElementById("tools-trellis-nextpnr_options").value = String(config["tools"]["trellis"]["nextpnr_options"]);
+    }
+    if (config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["yosys_synth_options"] !== undefined) {
+        element_value = document.getElementById("tools-trellis-yosys_synth_options").value = String(config["tools"]["trellis"]["yosys_synth_options"]);
+    }
+    if (config["tools"] && config["tools"]["vcs"] && config["tools"]["vcs"]["installation_path"] !== undefined) {
+        document.getElementById("tools-vcs-installation_path").value = config["tools"]["vcs"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["vcs"] && config["tools"]["vcs"]["vcs_options"] !== undefined) {
+        element_value = document.getElementById("tools-vcs-vcs_options").value = String(config["tools"]["vcs"]["vcs_options"]);
+    }
+    if (config["tools"] && config["tools"]["vcs"] && config["tools"]["vcs"]["run_options"] !== undefined) {
+        element_value = document.getElementById("tools-vcs-run_options").value = String(config["tools"]["vcs"]["run_options"]);
+    }
+    if (config["tools"] && config["tools"]["verible"] && config["tools"]["verible"]["installation_path"] !== undefined) {
+        document.getElementById("tools-verible-installation_path").value = config["tools"]["verible"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["installation_path"] !== undefined) {
+        document.getElementById("tools-verilator-installation_path").value = config["tools"]["verilator"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["mode"] !== undefined) {
+        document.getElementById("tools-verilator-mode").value = config["tools"]["verilator"]["mode"];
+    }
+    if (config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["libs"] !== undefined) {
+        element_value = document.getElementById("tools-verilator-libs").value = String(config["tools"]["verilator"]["libs"]);
+    }
+    if (config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["verilator_options"] !== undefined) {
+        element_value = document.getElementById("tools-verilator-verilator_options").value = String(config["tools"]["verilator"]["verilator_options"]);
+    }
+    if (config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["make_options"] !== undefined) {
+        element_value = document.getElementById("tools-verilator-make_options").value = String(config["tools"]["verilator"]["make_options"]);
+    }
+    if (config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["run_options"] !== undefined) {
+        element_value = document.getElementById("tools-verilator-run_options").value = String(config["tools"]["verilator"]["run_options"]);
+    }
+    if (config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["installation_path"] !== undefined) {
+        document.getElementById("tools-vivado-installation_path").value = config["tools"]["vivado"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["part"] !== undefined) {
+        document.getElementById("tools-vivado-part").value = config["tools"]["vivado"]["part"];
+    }
+    if (config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["synth"] !== undefined) {
+        document.getElementById("tools-vivado-synth").value = config["tools"]["vivado"]["synth"];
+    }
+    if (config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["pnr"] !== undefined) {
+        document.getElementById("tools-vivado-pnr").value = config["tools"]["vivado"]["pnr"];
+    }
+    if (config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["jtag_freq"] !== undefined) {
+        document.getElementById("tools-vivado-jtag_freq").value = config["tools"]["vivado"]["jtag_freq"];
+    }
+    if (config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["hw_target"] !== undefined) {
+        document.getElementById("tools-vivado-hw_target").value = config["tools"]["vivado"]["hw_target"];
+    }
+    if (config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["installation_path"] !== undefined) {
+        document.getElementById("tools-vunit-installation_path").value = config["tools"]["vunit"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["simulator_name"] !== undefined) {
+        document.getElementById("tools-vunit-simulator_name").value = config["tools"]["vunit"]["simulator_name"];
+    }
+    if (config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["runpy_mode"] !== undefined) {
+        document.getElementById("tools-vunit-runpy_mode").value = config["tools"]["vunit"]["runpy_mode"];
+    }
+    if (config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["extra_options"] !== undefined) {
+        document.getElementById("tools-vunit-extra_options").value = config["tools"]["vunit"]["extra_options"];
+    }
+    if (config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_array_util_lib"] !== undefined) {
+        document.getElementById("tools-vunit-enable_array_util_lib").checked = config["tools"]["vunit"]["enable_array_util_lib"];
+    }
+    if (config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_com_lib"] !== undefined) {
+        document.getElementById("tools-vunit-enable_com_lib").checked = config["tools"]["vunit"]["enable_com_lib"];
+    }
+    if (config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_json4vhdl_lib"] !== undefined) {
+        document.getElementById("tools-vunit-enable_json4vhdl_lib").checked = config["tools"]["vunit"]["enable_json4vhdl_lib"];
+    }
+    if (config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_osvvm_lib"] !== undefined) {
+        document.getElementById("tools-vunit-enable_osvvm_lib").checked = config["tools"]["vunit"]["enable_osvvm_lib"];
+    }
+    if (config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_random_lib"] !== undefined) {
+        document.getElementById("tools-vunit-enable_random_lib").checked = config["tools"]["vunit"]["enable_random_lib"];
+    }
+    if (config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_verification_components_lib"] !== undefined) {
+        document.getElementById("tools-vunit-enable_verification_components_lib").checked = config["tools"]["vunit"]["enable_verification_components_lib"];
+    }
+    if (config["tools"] && config["tools"]["xcelium"] && config["tools"]["xcelium"]["installation_path"] !== undefined) {
+        document.getElementById("tools-xcelium-installation_path").value = config["tools"]["xcelium"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["xcelium"] && config["tools"]["xcelium"]["xmvhdl_options"] !== undefined) {
+        element_value = document.getElementById("tools-xcelium-xmvhdl_options").value = String(config["tools"]["xcelium"]["xmvhdl_options"]);
+    }
+    if (config["tools"] && config["tools"]["xcelium"] && config["tools"]["xcelium"]["xmvlog_options"] !== undefined) {
+        element_value = document.getElementById("tools-xcelium-xmvlog_options").value = String(config["tools"]["xcelium"]["xmvlog_options"]);
+    }
+    if (config["tools"] && config["tools"]["xcelium"] && config["tools"]["xcelium"]["xmsim_options"] !== undefined) {
+        element_value = document.getElementById("tools-xcelium-xmsim_options").value = String(config["tools"]["xcelium"]["xmsim_options"]);
+    }
+    if (config["tools"] && config["tools"]["xcelium"] && config["tools"]["xcelium"]["xrun_options"] !== undefined) {
+        element_value = document.getElementById("tools-xcelium-xrun_options").value = String(config["tools"]["xcelium"]["xrun_options"]);
+    }
+    if (config["tools"] && config["tools"]["xsim"] && config["tools"]["xsim"]["installation_path"] !== undefined) {
+        document.getElementById("tools-xsim-installation_path").value = config["tools"]["xsim"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["xsim"] && config["tools"]["xsim"]["xelab_options"] !== undefined) {
+        element_value = document.getElementById("tools-xsim-xelab_options").value = String(config["tools"]["xsim"]["xelab_options"]);
+    }
+    if (config["tools"] && config["tools"]["xsim"] && config["tools"]["xsim"]["xsim_options"] !== undefined) {
+        element_value = document.getElementById("tools-xsim-xsim_options").value = String(config["tools"]["xsim"]["xsim_options"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["installation_path"] !== undefined) {
+        document.getElementById("tools-yosys-installation_path").value = config["tools"]["yosys"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["arch"] !== undefined) {
+        document.getElementById("tools-yosys-arch").value = config["tools"]["yosys"]["arch"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["output_format"] !== undefined) {
+        document.getElementById("tools-yosys-output_format").value = config["tools"]["yosys"]["output_format"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["yosys_as_subtool"] !== undefined) {
+        document.getElementById("tools-yosys-yosys_as_subtool").checked = config["tools"]["yosys"]["yosys_as_subtool"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["makefile_name"] !== undefined) {
+        document.getElementById("tools-yosys-makefile_name").value = config["tools"]["yosys"]["makefile_name"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["script_name"] !== undefined) {
+        document.getElementById("tools-yosys-script_name").value = config["tools"]["yosys"]["script_name"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["yosys_synth_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-yosys_synth_options").value = String(config["tools"]["yosys"]["yosys_synth_options"]);
+    }
+    if (config["tools"] && config["tools"]["openfpga"] && config["tools"]["openfpga"]["installation_path"] !== undefined) {
+        document.getElementById("tools-openfpga-installation_path").value = config["tools"]["openfpga"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["openfpga"] && config["tools"]["openfpga"]["arch"] !== undefined) {
+        document.getElementById("tools-openfpga-arch").value = config["tools"]["openfpga"]["arch"];
+    }
+    if (config["tools"] && config["tools"]["openfpga"] && config["tools"]["openfpga"]["task_options"] !== undefined) {
+        element_value = document.getElementById("tools-openfpga-task_options").value = String(config["tools"]["openfpga"]["task_options"]);
+    }
+    if (config["tools"] && config["tools"]["activehdl"] && config["tools"]["activehdl"]["installation_path"] !== undefined) {
+        document.getElementById("tools-activehdl-installation_path").value = config["tools"]["activehdl"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["questa"] && config["tools"]["questa"]["installation_path"] !== undefined) {
+        document.getElementById("tools-questa-installation_path").value = config["tools"]["questa"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["installation_path"] !== undefined) {
+        document.getElementById("tools-raptor-installation_path").value = config["tools"]["raptor"]["installation_path"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["target_device"] !== undefined) {
+        document.getElementById("tools-raptor-target_device").value = config["tools"]["raptor"]["target_device"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["vhdl_version"] !== undefined) {
+        document.getElementById("tools-raptor-vhdl_version").value = config["tools"]["raptor"]["vhdl_version"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["verilog_version"] !== undefined) {
+        document.getElementById("tools-raptor-verilog_version").value = config["tools"]["raptor"]["verilog_version"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["sv_version"] !== undefined) {
+        document.getElementById("tools-raptor-sv_version").value = config["tools"]["raptor"]["sv_version"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["optimization"] !== undefined) {
+        document.getElementById("tools-raptor-optimization").value = config["tools"]["raptor"]["optimization"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["effort"] !== undefined) {
+        document.getElementById("tools-raptor-effort").value = config["tools"]["raptor"]["effort"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["fsm_encoding"] !== undefined) {
+        document.getElementById("tools-raptor-fsm_encoding").value = config["tools"]["raptor"]["fsm_encoding"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["carry"] !== undefined) {
+        document.getElementById("tools-raptor-carry").value = config["tools"]["raptor"]["carry"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["pnr_netlist_language"] !== undefined) {
+        document.getElementById("tools-raptor-pnr_netlist_language").value = config["tools"]["raptor"]["pnr_netlist_language"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["dsp_limit"] !== undefined) {
+        document.getElementById("tools-raptor-dsp_limit").value = config["tools"]["raptor"]["dsp_limit"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["block_ram_limit"] !== undefined) {
+        document.getElementById("tools-raptor-block_ram_limit").value = config["tools"]["raptor"]["block_ram_limit"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["fast_synthesis"] !== undefined) {
+        document.getElementById("tools-raptor-fast_synthesis").checked = config["tools"]["raptor"]["fast_synthesis"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["top_level"] !== undefined) {
+        document.getElementById("tools-raptor-top_level").value = config["tools"]["raptor"]["top_level"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["sim_source_list"] !== undefined) {
+        element_value = document.getElementById("tools-raptor-sim_source_list").value = String(config["tools"]["raptor"]["sim_source_list"]);
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulate_rtl"] !== undefined) {
+        document.getElementById("tools-raptor-simulate_rtl").checked = config["tools"]["raptor"]["simulate_rtl"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["waveform_rtl"] !== undefined) {
+        document.getElementById("tools-raptor-waveform_rtl").value = config["tools"]["raptor"]["waveform_rtl"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulator_rtl"] !== undefined) {
+        document.getElementById("tools-raptor-simulator_rtl").value = config["tools"]["raptor"]["simulator_rtl"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulation_options_rtl"] !== undefined) {
+        document.getElementById("tools-raptor-simulation_options_rtl").value = config["tools"]["raptor"]["simulation_options_rtl"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulate_gate"] !== undefined) {
+        document.getElementById("tools-raptor-simulate_gate").checked = config["tools"]["raptor"]["simulate_gate"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["waveform_gate"] !== undefined) {
+        document.getElementById("tools-raptor-waveform_gate").value = config["tools"]["raptor"]["waveform_gate"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulator_gate"] !== undefined) {
+        document.getElementById("tools-raptor-simulator_gate").value = config["tools"]["raptor"]["simulator_gate"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulation_options_gate"] !== undefined) {
+        document.getElementById("tools-raptor-simulation_options_gate").value = config["tools"]["raptor"]["simulation_options_gate"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulate_pnr"] !== undefined) {
+        document.getElementById("tools-raptor-simulate_pnr").checked = config["tools"]["raptor"]["simulate_pnr"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["waveform_pnr"] !== undefined) {
+        document.getElementById("tools-raptor-waveform_pnr").value = config["tools"]["raptor"]["waveform_pnr"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulator_pnr"] !== undefined) {
+        document.getElementById("tools-raptor-simulator_pnr").value = config["tools"]["raptor"]["simulator_pnr"];
+    }
+    if (config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulation_options_pnr"] !== undefined) {
+        document.getElementById("tools-raptor-simulation_options_pnr").value = config["tools"]["raptor"]["simulation_options_pnr"];
+    }
   }
 
   function set_mark(config, projectName){
     const MODIFIEDMSG = "Modified in project";
     let mark = "";
     mark = "";
-    if (projectName !== undefined && config["general"]["general"]["pypath"] != undefined) {
+    if (projectName !== undefined && config["general"] && config["general"]["general"] && config["general"]["general"]["pypath"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-pypath").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["general"]["general"]["makepath"] != undefined) {
+    if (projectName !== undefined && config["general"] && config["general"]["general"] && config["general"]["general"]["makepath"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-makepath").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["general"]["general"]["go_to_definition_vhdl"] != undefined) {
+    if (projectName !== undefined && config["general"] && config["general"]["general"] && config["general"]["general"]["go_to_definition_vhdl"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-go_to_definition_vhdl").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["general"]["general"]["go_to_definition_verilog"] != undefined) {
+    if (projectName !== undefined && config["general"] && config["general"]["general"] && config["general"]["general"]["go_to_definition_verilog"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-go_to_definition_verilog").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["general"]["general"]["developer_mode"] != undefined) {
+    if (projectName !== undefined && config["general"] && config["general"]["general"] && config["general"]["general"]["developer_mode"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_general-general-developer_mode").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["language"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["language"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-language").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["symbol_vhdl"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["symbol_vhdl"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-symbol_vhdl").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["symbol_verilog"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["symbol_verilog"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-symbol_verilog").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["dependency_graph"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["dependency_graph"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-dependency_graph").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["self_contained"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["self_contained"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-self_contained").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["fsm"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["fsm"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-fsm").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["ports"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["ports"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-ports").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["generics"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["generics"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-generics").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["instantiations"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["instantiations"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-instantiations").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["signals"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["signals"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-signals").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["constants"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["constants"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-constants").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["types"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["types"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-types").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["process"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["process"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-process").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["functions"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["functions"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-functions").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["tasks"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["tasks"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-tasks").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["documentation"]["general"]["magic_config_path"] != undefined) {
+    if (projectName !== undefined && config["documentation"] && config["documentation"]["general"] && config["documentation"]["general"]["magic_config_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_documentation-general-magic_config_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["editor"]["general"]["stutter_comment_shortcuts"] != undefined) {
+    if (projectName !== undefined && config["editor"] && config["editor"]["general"] && config["editor"]["general"]["stutter_comment_shortcuts"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_comment_shortcuts").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["editor"]["general"]["stutter_block_width"] != undefined) {
+    if (projectName !== undefined && config["editor"] && config["editor"]["general"] && config["editor"]["general"]["stutter_block_width"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_block_width").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["editor"]["general"]["stutter_max_width"] != undefined) {
+    if (projectName !== undefined && config["editor"] && config["editor"]["general"] && config["editor"]["general"]["stutter_max_width"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_max_width").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["editor"]["general"]["stutter_delimiters"] != undefined) {
+    if (projectName !== undefined && config["editor"] && config["editor"]["general"] && config["editor"]["general"]["stutter_delimiters"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_delimiters").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["editor"]["general"]["stutter_bracket_shortcuts"] != undefined) {
+    if (projectName !== undefined && config["editor"] && config["editor"]["general"] && config["editor"]["general"]["stutter_bracket_shortcuts"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_editor-general-stutter_bracket_shortcuts").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["general"]["formatter_verilog"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["general"] && config["formatter"]["general"]["formatter_verilog"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-general-formatter_verilog").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["general"]["formatter_vhdl"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["general"] && config["formatter"]["general"]["formatter_vhdl"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-general-formatter_vhdl").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["istyle"]["style"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["istyle"] && config["formatter"]["istyle"]["style"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-istyle-style").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["istyle"]["indentation_size"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["istyle"] && config["formatter"]["istyle"]["indentation_size"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-istyle-indentation_size").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["s3sv"]["one_bind_per_line"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["s3sv"] && config["formatter"]["s3sv"]["one_bind_per_line"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-s3sv-one_bind_per_line").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["s3sv"]["one_declaration_per_line"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["s3sv"] && config["formatter"]["s3sv"]["one_declaration_per_line"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-s3sv-one_declaration_per_line").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["s3sv"]["use_tabs"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["s3sv"] && config["formatter"]["s3sv"]["use_tabs"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-s3sv-use_tabs").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["s3sv"]["indentation_size"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["s3sv"] && config["formatter"]["s3sv"]["indentation_size"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-s3sv-indentation_size").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["verible"]["format_args"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["verible"] && config["formatter"]["verible"]["format_args"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-verible-format_args").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["keyword_case"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["keyword_case"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-keyword_case").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["name_case"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["name_case"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-name_case").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["indentation"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["indentation"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-indentation").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["align_port_generic"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["align_port_generic"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-align_port_generic").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["align_comment"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["align_comment"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-align_comment").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["remove_comments"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["remove_comments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-remove_comments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["remove_reports"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["remove_reports"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-remove_reports").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["check_alias"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["check_alias"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-check_alias").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["new_line_after_then"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["new_line_after_then"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-new_line_after_then").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["new_line_after_semicolon"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["new_line_after_semicolon"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-new_line_after_semicolon").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["new_line_after_else"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["new_line_after_else"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-new_line_after_else").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["new_line_after_port"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["new_line_after_port"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-new_line_after_port").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["formatter"]["standalone"]["new_line_after_generic"] != undefined) {
+    if (projectName !== undefined && config["formatter"] && config["formatter"]["standalone"] && config["formatter"]["standalone"]["new_line_after_generic"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_formatter-standalone-new_line_after_generic").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["general"]["linter_vhdl"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["general"] && config["linter"]["general"]["linter_vhdl"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-general-linter_vhdl").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["general"]["linter_verilog"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["general"] && config["linter"]["general"]["linter_verilog"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-general-linter_verilog").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["general"]["lstyle_verilog"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["general"] && config["linter"]["general"]["lstyle_verilog"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-general-lstyle_verilog").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["general"]["lstyle_vhdl"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["general"] && config["linter"]["general"]["lstyle_vhdl"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-general-lstyle_vhdl").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["vhdlls"]["standard"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["standard"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-vhdlls-standard").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["vhdlls"]["ignoreVunit"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["ignoreVunit"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-vhdlls-ignoreVunit").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["vhdlls"]["vunitPath"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["vhdlls"] && config["linter"]["vhdlls"]["vunitPath"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-vhdlls-vunitPath").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["ghdl"]["arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["ghdl"] && config["linter"]["ghdl"]["arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-ghdl-arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["icarus"]["arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["icarus"] && config["linter"]["icarus"]["arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-icarus-arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["modelsim"]["vhdl_arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["modelsim"] && config["linter"]["modelsim"]["vhdl_arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-modelsim-vhdl_arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["modelsim"]["verilog_arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["modelsim"] && config["linter"]["modelsim"]["verilog_arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-modelsim-verilog_arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["verible"]["arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["verible"] && config["linter"]["verible"]["arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-verible-arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["verilator"]["arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["verilator"] && config["linter"]["verilator"]["arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-verilator-arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["vivado"]["vhdl_arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["vivado"] && config["linter"]["vivado"]["vhdl_arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-vivado-vhdl_arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["linter"]["vivado"]["verilog_arguments"] != undefined) {
+    if (projectName !== undefined && config["linter"] && config["linter"]["vivado"] && config["linter"]["vivado"]["verilog_arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_linter-vivado-verilog_arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["schematic"]["general"]["backend"] != undefined) {
+    if (projectName !== undefined && config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["backend"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_schematic-general-backend").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["schematic"]["general"]["extra"] != undefined) {
+    if (projectName !== undefined && config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["extra"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_schematic-general-extra").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["schematic"]["general"]["args"] != undefined) {
+    if (projectName !== undefined && config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["args"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_schematic-general-args").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["schematic"]["general"]["args_ghdl"] != undefined) {
+    if (projectName !== undefined && config["schematic"] && config["schematic"]["general"] && config["schematic"]["general"]["args_ghdl"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_schematic-general-args_ghdl").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["templates"]["general"]["header_file_path"] != undefined) {
+    if (projectName !== undefined && config["templates"] && config["templates"]["general"] && config["templates"]["general"]["header_file_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_templates-general-header_file_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["templates"]["general"]["indent"] != undefined) {
+    if (projectName !== undefined && config["templates"] && config["templates"]["general"] && config["templates"]["general"]["indent"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_templates-general-indent").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["templates"]["general"]["clock_generation_style"] != undefined) {
+    if (projectName !== undefined && config["templates"] && config["templates"]["general"] && config["templates"]["general"]["clock_generation_style"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_templates-general-clock_generation_style").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["templates"]["general"]["instance_style"] != undefined) {
+    if (projectName !== undefined && config["templates"] && config["templates"]["general"] && config["templates"]["general"]["instance_style"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_templates-general-instance_style").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["general"]["select_tool"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["select_tool"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-select_tool").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["general"]["manual_compilation_order"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["manual_compilation_order"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-manual_compilation_order").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["general"]["execution_mode"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["execution_mode"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-execution_mode").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["general"]["waveform_viewer"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["waveform_viewer"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-waveform_viewer").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["general"]["gtkwave_installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["gtkwave_installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-gtkwave_installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["general"]["gtkwave_extra_arguments"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["general"] && config["tools"]["general"]["gtkwave_extra_arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-general-gtkwave_extra_arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["family"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["family"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-family").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["device"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["device"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-device").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["optimization_mode"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["optimization_mode"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-optimization_mode").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["allow_register_retiming"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["allow_register_retiming"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-allow_register_retiming").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["quartus"]["wave_file_questa"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["quartus"] && config["tools"]["quartus"]["wave_file_questa"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-quartus-wave_file_questa").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vsg"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vsg"] && config["tools"]["vsg"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vsg-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vsg"]["style_config"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vsg"] && config["tools"]["vsg"]["style_config"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vsg-style_config").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vsg"]["core_number"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vsg"] && config["tools"]["vsg"]["core_number"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vsg-core_number").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vsg"]["aditional_arguments"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vsg"] && config["tools"]["vsg"]["aditional_arguments"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vsg-aditional_arguments").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["osvvm"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["osvvm"] && config["tools"]["osvvm"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-osvvm-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["osvvm"]["tclsh_binary"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["osvvm"] && config["tools"]["osvvm"]["tclsh_binary"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-osvvm-tclsh_binary").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["osvvm"]["simulator_name"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["osvvm"] && config["tools"]["osvvm"]["simulator_name"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-osvvm-simulator_name").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ascenlint"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ascenlint"] && config["tools"]["ascenlint"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ascenlint-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ascenlint"]["ascentlint_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ascenlint"] && config["tools"]["ascenlint"]["ascentlint_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ascenlint-ascentlint_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["cocotb"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["cocotb"] && config["tools"]["cocotb"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-cocotb-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["cocotb"]["simulator_name"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["cocotb"] && config["tools"]["cocotb"]["simulator_name"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-cocotb-simulator_name").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["cocotb"]["compile_args"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["cocotb"] && config["tools"]["cocotb"]["compile_args"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-cocotb-compile_args").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["cocotb"]["run_args"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["cocotb"] && config["tools"]["cocotb"]["run_args"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-cocotb-run_args").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["cocotb"]["plusargs"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["cocotb"] && config["tools"]["cocotb"]["plusargs"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-cocotb-plusargs").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["diamond"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["diamond"] && config["tools"]["diamond"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-diamond-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["diamond"]["part"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["diamond"] && config["tools"]["diamond"]["part"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-diamond-part").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ghdl"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ghdl-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ghdl"]["waveform"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["waveform"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ghdl-waveform").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ghdl"]["analyze_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["analyze_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ghdl-analyze_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ghdl"]["run_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["run_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ghdl-run_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icarus"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icarus"] && config["tools"]["icarus"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icarus-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icarus"]["timescale"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icarus"] && config["tools"]["icarus"]["timescale"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icarus-timescale").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icarus"]["iverilog_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icarus"] && config["tools"]["icarus"]["iverilog_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icarus-iverilog_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icestorm"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icestorm"]["pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["pnr"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-pnr").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icestorm"]["arch"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["arch"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-arch").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icestorm"]["output_format"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["output_format"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-output_format").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icestorm"]["yosys_as_subtool"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["yosys_as_subtool"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-yosys_as_subtool").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icestorm"]["makefile_name"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["makefile_name"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-makefile_name").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icestorm"]["arachne_pnr_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["arachne_pnr_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-arachne_pnr_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icestorm"]["nextpnr_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["nextpnr_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-nextpnr_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["icestorm"]["yosys_synth_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["icestorm"] && config["tools"]["icestorm"]["yosys_synth_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-icestorm-yosys_synth_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ise"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ise"] && config["tools"]["ise"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ise-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ise"]["family"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ise"] && config["tools"]["ise"]["family"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ise-family").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ise"]["device"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ise"] && config["tools"]["ise"]["device"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ise-device").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ise"]["package"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ise"] && config["tools"]["ise"]["package"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ise-package").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["ise"]["speed"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ise"] && config["tools"]["ise"]["speed"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ise-speed").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["isem"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["isem"] && config["tools"]["isem"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-isem-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["isem"]["fuse_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["isem"] && config["tools"]["isem"]["fuse_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-isem-fuse_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["isem"]["isim_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["isem"] && config["tools"]["isem"]["isim_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-isem-isim_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["modelsim"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["modelsim"] && config["tools"]["modelsim"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-modelsim-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["modelsim"]["vcom_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["modelsim"] && config["tools"]["modelsim"]["vcom_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-modelsim-vcom_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["modelsim"]["vlog_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["modelsim"] && config["tools"]["modelsim"]["vlog_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-modelsim-vlog_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["modelsim"]["vsim_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["modelsim"] && config["tools"]["modelsim"]["vsim_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-modelsim-vsim_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["morty"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["morty"] && config["tools"]["morty"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-morty-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["morty"]["morty_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["morty"] && config["tools"]["morty"]["morty_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-morty-morty_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["radiant"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["radiant"] && config["tools"]["radiant"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-radiant-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["radiant"]["part"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["radiant"] && config["tools"]["radiant"]["part"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-radiant-part").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["rivierapro"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["rivierapro"] && config["tools"]["rivierapro"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-rivierapro-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["rivierapro"]["compilation_mode"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["rivierapro"] && config["tools"]["rivierapro"]["compilation_mode"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-rivierapro-compilation_mode").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["rivierapro"]["vlog_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["rivierapro"] && config["tools"]["rivierapro"]["vlog_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-rivierapro-vlog_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["rivierapro"]["vsim_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["rivierapro"] && config["tools"]["rivierapro"]["vsim_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-rivierapro-vsim_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["spyglass"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["installation_path"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-siliconcompiler-installation_path").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["target"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-siliconcompiler-target").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["server_enable"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-siliconcompiler-server_enable").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["server_address"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-siliconcompiler-server_address").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["server_username"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-siliconcompiler-server_username").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["siliconcompiler"] && config["tools"]["siliconcompiler"]["server_password"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-siliconcompiler-server_password").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["spyglass"] && config["tools"]["spyglass"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-spyglass-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["spyglass"]["methodology"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["spyglass"] && config["tools"]["spyglass"]["methodology"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-spyglass-methodology").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["spyglass"]["goals"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["spyglass"] && config["tools"]["spyglass"]["goals"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-spyglass-goals").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["spyglass"]["spyglass_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["spyglass"] && config["tools"]["spyglass"]["spyglass_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-spyglass-spyglass_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["spyglass"]["rule_parameters"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["spyglass"] && config["tools"]["spyglass"]["rule_parameters"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-spyglass-rule_parameters").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["symbiyosys"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["symbiyosys"] && config["tools"]["symbiyosys"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiyosys-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["symbiyosys"]["tasknames"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["symbiyosys"] && config["tools"]["symbiyosys"]["tasknames"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiyosys-tasknames").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["symbiflow"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["symbiflow"]["package"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["package"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-package").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["symbiflow"]["part"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["part"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-part").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["symbiflow"]["vendor"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["vendor"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-vendor").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["symbiflow"]["pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["pnr"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-pnr").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["symbiflow"]["vpr_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["vpr_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-vpr_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["symbiflow"]["environment_script"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["symbiflow"] && config["tools"]["symbiflow"]["environment_script"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-symbiflow-environment_script").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["trellis"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["trellis"]["arch"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["arch"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-arch").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["trellis"]["output_format"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["output_format"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-output_format").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["trellis"]["yosys_as_subtool"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["yosys_as_subtool"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-yosys_as_subtool").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["trellis"]["makefile_name"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["makefile_name"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-makefile_name").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["trellis"]["script_name"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["script_name"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-script_name").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["trellis"]["nextpnr_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["nextpnr_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-nextpnr_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["trellis"]["yosys_synth_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["trellis"] && config["tools"]["trellis"]["yosys_synth_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-trellis-yosys_synth_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vcs"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vcs"] && config["tools"]["vcs"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vcs-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vcs"]["vcs_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vcs"] && config["tools"]["vcs"]["vcs_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vcs-vcs_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vcs"]["run_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vcs"] && config["tools"]["vcs"]["run_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vcs-run_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["verible"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["verible"] && config["tools"]["verible"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verible-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["verilator"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["verilator"]["mode"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["mode"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-mode").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["verilator"]["libs"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["libs"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-libs").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["verilator"]["verilator_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["verilator_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-verilator_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["verilator"]["make_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["make_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-make_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["verilator"]["run_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["verilator"] && config["tools"]["verilator"]["run_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-verilator-run_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vivado"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vivado"]["part"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["part"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-part").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vivado"]["synth"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["synth"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-synth").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vivado"]["pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["pnr"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-pnr").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vivado"]["jtag_freq"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["jtag_freq"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-jtag_freq").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vivado"]["hw_target"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vivado"] && config["tools"]["vivado"]["hw_target"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vivado-hw_target").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vunit"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vunit"]["simulator_name"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["simulator_name"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-simulator_name").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vunit"]["runpy_mode"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["runpy_mode"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-runpy_mode").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vunit"]["extra_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["extra_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-extra_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vunit"]["enable_array_util_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_array_util_lib"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_array_util_lib").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vunit"]["enable_com_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_com_lib"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_com_lib").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vunit"]["enable_json4vhdl_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_json4vhdl_lib"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_json4vhdl_lib").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vunit"]["enable_osvvm_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_osvvm_lib"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_osvvm_lib").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vunit"]["enable_random_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_random_lib"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_random_lib").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["vunit"]["enable_verification_components_lib"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["vunit"] && config["tools"]["vunit"]["enable_verification_components_lib"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-vunit-enable_verification_components_lib").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["xcelium"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["xcelium"] && config["tools"]["xcelium"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xcelium-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["xcelium"]["xmvhdl_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["xcelium"] && config["tools"]["xcelium"]["xmvhdl_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xcelium-xmvhdl_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["xcelium"]["xmvlog_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["xcelium"] && config["tools"]["xcelium"]["xmvlog_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xcelium-xmvlog_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["xcelium"]["xmsim_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["xcelium"] && config["tools"]["xcelium"]["xmsim_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xcelium-xmsim_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["xcelium"]["xrun_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["xcelium"] && config["tools"]["xcelium"]["xrun_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xcelium-xrun_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["xsim"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["xsim"] && config["tools"]["xsim"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xsim-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["xsim"]["xelab_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["xsim"] && config["tools"]["xsim"]["xelab_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xsim-xelab_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["xsim"]["xsim_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["xsim"] && config["tools"]["xsim"]["xsim_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-xsim-xsim_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["yosys"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["yosys"]["arch"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["arch"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-arch").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["yosys"]["output_format"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["output_format"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-output_format").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["yosys"]["yosys_as_subtool"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["yosys_as_subtool"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-yosys_as_subtool").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["yosys"]["makefile_name"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["makefile_name"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-makefile_name").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["yosys"]["script_name"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["script_name"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-script_name").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["yosys"]["yosys_synth_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["yosys_synth_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-yosys_synth_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["openfpga"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["openfpga"] && config["tools"]["openfpga"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-openfpga-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["openfpga"]["arch"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["openfpga"] && config["tools"]["openfpga"]["arch"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-openfpga-arch").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["openfpga"]["task_options"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["openfpga"] && config["tools"]["openfpga"]["task_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-openfpga-task_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["activehdl"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["activehdl"] && config["tools"]["activehdl"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-activehdl-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["questa"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["questa"] && config["tools"]["questa"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-questa-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["installation_path"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["target_device"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["target_device"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-target_device").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["vhdl_version"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["vhdl_version"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-vhdl_version").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["verilog_version"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["verilog_version"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-verilog_version").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["sv_version"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["sv_version"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-sv_version").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["optimization"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["optimization"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-optimization").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["effort"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["effort"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-effort").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["fsm_encoding"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["fsm_encoding"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-fsm_encoding").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["carry"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["carry"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-carry").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["pnr_netlist_language"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["pnr_netlist_language"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-pnr_netlist_language").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["dsp_limit"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["dsp_limit"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-dsp_limit").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["block_ram_limit"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["block_ram_limit"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-block_ram_limit").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["fast_synthesis"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["fast_synthesis"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-fast_synthesis").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["top_level"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["top_level"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-top_level").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["sim_source_list"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["sim_source_list"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-sim_source_list").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["simulate_rtl"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulate_rtl"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulate_rtl").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["waveform_rtl"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["waveform_rtl"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-waveform_rtl").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["simulator_rtl"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulator_rtl"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulator_rtl").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["simulation_options_rtl"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulation_options_rtl"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulation_options_rtl").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["simulate_gate"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulate_gate"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulate_gate").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["waveform_gate"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["waveform_gate"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-waveform_gate").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["simulator_gate"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulator_gate"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulator_gate").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["simulation_options_gate"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulation_options_gate"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulation_options_gate").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["simulate_pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulate_pnr"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulate_pnr").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["waveform_pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["waveform_pnr"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-waveform_pnr").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["simulator_pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulator_pnr"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulator_pnr").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"]["raptor"]["simulation_options_pnr"] != undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["raptor"] && config["tools"]["raptor"]["simulation_options_pnr"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-raptor-simulation_options_pnr").innerHTML = mark;
