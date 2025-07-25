@@ -64,6 +64,7 @@ export function getLanguageEnumValue(value: string): LANGUAGE {
  */
 export enum VHDL_LANG_VERSION {
     v2008 = "2008",
+    v2019 = "2019",
     v93 = "93",
     v2000 = "2000",
 }

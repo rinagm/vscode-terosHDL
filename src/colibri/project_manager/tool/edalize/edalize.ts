@@ -22,7 +22,7 @@ import { Generic_tool_handler } from "../generic_handler";
 import { e_artifact_type, e_element_type, t_test_artifact, 
     t_test_declaration, t_test_result } from "../common";
 import { e_config, e_tools_general_execution_mode, 
-    e_tools_general_select_tool, e_tools_ghdl_waveform
+    e_tools_general_select_tool, e_tools_ghdl_waveform_format
     } from "../../../config/config_declaration";
 import { get_edam_json } from "../../utils/utils";
 import * as path_lib from "path";
@@ -163,14 +163,13 @@ export class Edalize extends Generic_tool_handler {
         const waveform_path = this.get_waveform_path(config);
         if (config.tools.general.execution_mode === e_tools_general_execution_mode.gui){
             if (config.tools.general.select_tool === e_tools_general_select_tool.ghdl){
-                let cmd = "--wave";
-                if (config.tools.ghdl.waveform === e_tools_ghdl_waveform.vcd){
-                    cmd = "--vcd";
+                if (config.tools.ghdl.waveform_enabled) {
+                    let cmd = `--${config.tools.ghdl.waveform_format}`;
+                    edam_json["tool_options"]["ghdl"]["config"]["run_options"].push(`${cmd}=${waveform_path}`);
+                    edam_json["tool_options"]["ghdl"]["config"]["run_options"] = 
+                    edam_json["tool_options"]["ghdl"]["config"]["run_options"].
+                        filter((element: string) => element !== "");
                 }
-                edam_json["tool_options"]["ghdl"]["config"]["run_options"].push(`${cmd}=${waveform_path}`);
-                edam_json["tool_options"]["ghdl"]["config"]["run_options"] = 
-                edam_json["tool_options"]["ghdl"]["config"]["run_options"].
-                    filter((element: string) => element !== "");
             }
         }
         return edam_json;
@@ -178,7 +177,7 @@ export class Edalize extends Generic_tool_handler {
 
     get_waveform_path(config: e_config): string{
         if (config.tools.general.select_tool === e_tools_general_select_tool.ghdl){
-            const extension = config.tools.ghdl.waveform;
+            const extension = config.tools.ghdl.waveform_format;
             const waveform_path = path_lib.join(this.working_directory, `wave.${extension}`);
             return waveform_path;
         }

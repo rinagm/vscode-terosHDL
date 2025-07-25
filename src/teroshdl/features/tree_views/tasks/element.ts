@@ -24,6 +24,7 @@ import * as path_lib from "path";
 import { ThemeColor } from "vscode";
 import { e_iconType, e_reportType, e_taskExecutionType, e_taskState, e_taskType, t_taskRep } from 'colibri/project_manager/tool/common';
 import { check_if_file, get_directory } from 'colibri/utils/file_utils';
+import * as fs from 'fs';
 
 export const VIEW_ID = "teroshdl-view-tasks";
 const URISTRINGINIT = "teroshdl:/";
@@ -62,7 +63,7 @@ export class Task extends vscode.TreeItem {
     // Element
     private name: string;
 
-    constructor(taskDefinition: t_taskRep, projectFolder: string, 
+    constructor(taskDefinition: t_taskRep, projectFolder: string, workingDirectory: string,
         children?: any[]) {
 
         super(
@@ -105,6 +106,15 @@ export class Task extends vscode.TreeItem {
                 title: 'Open folder',
                 command: 'revealFileInOS',
                 arguments: [vscode.Uri.file(projectFolder)]
+            };
+        }
+        if (taskDefinition.name === e_taskType.OPEN_WAVEFORM) {
+            this.iconPath = new vscode.ThemeIcon("pulse");
+            const waveformPath = getWaveformPath(workingDirectory);
+            this.command = {
+                title: 'Open Waveform (If available)',
+                command: 'teroshdl.waveform',
+                arguments: [waveformPath ? vscode.Uri.file(waveformPath) : undefined]
             };
         }
         if (taskDefinition.executionType === e_taskExecutionType.OPENSETTINGS) {
@@ -211,7 +221,8 @@ export class ProjectProvider extends BaseTreeDataProvider<TreeItem> {
                 const tasks: Task[] = [];
                 for (const child of children) {
                     const childTasks = child.children ? createTasks(child.children, depth + 1) : [];
-                    tasks.push(new Task(child, projectFolder,childTasks.length > 0 ? childTasks : undefined));
+                    tasks.push(new Task(child, projectFolder, selected_project.projectDiskPath,
+                        childTasks.length > 0 ? childTasks : undefined));
                 }
                 return tasks;
             }
@@ -263,5 +274,20 @@ export class TaskDecorator implements vscode.FileDecorationProvider {
                 badge: "X"
             };
         }
+    }
+}
+
+function getWaveformPath(workingDirectory: string): string | undefined {
+    try {
+        const basename = "wave";
+        const files = fs.readdirSync(workingDirectory);
+        for (const file of files) {
+            if (file.startsWith(basename) && file !== basename) {
+                return path_lib.join(workingDirectory, file);
+            }
+        }
+        return undefined;
+    } catch (error) {
+        return undefined;
     }
 }

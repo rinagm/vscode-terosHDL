@@ -1985,6 +1985,7 @@ body.vscode-high-contrast {
                         <div class="select-container">
                             <select class="setting-select-box" id="tools-general-waveform_viewer">
                                       <option value='tool'>Tool GUI</option>
+                                      <option value='vaporView'>VaporView</option>
                                       <option value='gtkwave'>GTKWave</option>
                             </select>
                         </div>
@@ -2307,6 +2308,11 @@ body.vscode-high-contrast {
                 </div>
                 <div class="settings-group-description">GHDL is an open source VHDL simulator, which fully supports IEEE 1076-1987, IEEE 1076-1993, IEE 1076-2002 and partially the 1076-2008 version of VHDL.</div>
                   
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Basic GHDL Configuration</div>
+                    <hr class="setting-divider">
+                  
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Installation path:
@@ -2316,15 +2322,24 @@ body.vscode-high-contrast {
                     </div>
                   
                   
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">VHDL Language Settings</div>
+                    <hr class="setting-divider">
+                  
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            Waveform output format:
-                            <span class="markConfig" id="mark_tools-ghdl-waveform"></span>
+                            Force specific VHDL standard version (overrides file-detected standard):
+                            <span class="markConfig" id="mark_tools-ghdl-vhdl_standard"></span>
                         </div>
                         <div class="select-container">
-                            <select class="setting-select-box" id="tools-ghdl-waveform">
-                                      <option value='vcd'>VCD</option>
-                                      <option value='ghw'>GHW</option>
+                            <select class="setting-select-box" id="tools-ghdl-vhdl_standard">
+                                      <option value='auto'>Auto-detect from file</option>
+                                      <option value='vhdl87'>Force VHDL-87</option>
+                                      <option value='vhdl93'>Force VHDL-93</option>
+                                      <option value='vhdl02'>Force VHDL-2002</option>
+                                      <option value='vhdl08'>Force VHDL-2008</option>
+                                      <option value='vhdl19'>Force VHDL-2019</option>
                             </select>
                         </div>
                     </div>
@@ -2332,11 +2347,104 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            analyze options. Extra options used for the GHDL analyze stage (ghdl -a).
+                            IEEE library to use:
+                            <span class="markConfig" id="mark_tools-ghdl-ieee_library"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-ghdl-ieee_library">
+                                      <option value='standard'>Standard IEEE</option>
+                                      <option value='synopsys'>Synopsys IEEE</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-relaxed_parsing">
+                            <label class="setting-checkbox-label" for="tools-ghdl-relaxed_parsing">
+                                Enable relaxed VHDL parsing rules:
+                                <span class="markConfig" id="mark_tools-ghdl-relaxed_parsing"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-unicode_support">
+                            <label class="setting-checkbox-label" for="tools-ghdl-unicode_support">
+                                Enable Unicode identifiers support:
+                                <span class="markConfig" id="mark_tools-ghdl-unicode_support"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-psl_enabled">
+                            <label class="setting-checkbox-label" for="tools-ghdl-psl_enabled">
+                                Enable PSL (Property Specification Language) support:
+                                <span class="markConfig" id="mark_tools-ghdl-psl_enabled"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Library Management</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Default work library name:
+                            <span class="markConfig" id="mark_tools-ghdl-work_library"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-work_library" value="work">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional library search paths:
+                            <span class="markConfig" id="mark_tools-ghdl-library_paths"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-library_paths">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Stage-Specific Options</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Check syntax options. Extra options used for GHDL syntax check (ghdl -s).
+                            <span class="markConfig" id="mark_tools-ghdl-check_syntax_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-check_syntax_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Analyze options. Extra options used for the GHDL analyze stage (ghdl -a).
                             <span class="markConfig" id="mark_tools-ghdl-analyze_options"></span>
                         </div>
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-ghdl-analyze_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Elaborate options. Extra options used for the GHDL elaborate stage (ghdl -e).
+                            <span class="markConfig" id="mark_tools-ghdl-elaborate_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-elaborate_options">
                     </div>
                   
                     <div class="setting-item">
@@ -2347,6 +2455,480 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-ghdl-run_options">
                     </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Synthesis options for GHDL synthesis (ghdl --synth):
+                            <span class="markConfig" id="mark_tools-ghdl-synthesis_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-synthesis_options">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Custom Configuration</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional custom flags for all GHDL commands:
+                            <span class="markConfig" id="mark_tools-ghdl-extra_flags"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-extra_flags">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Elaboration and Binding</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-relaxed_rules">
+                            <label class="setting-checkbox-label" for="tools-ghdl-relaxed_rules">
+                                Enable relaxed elaboration rules (--mb-comments):
+                                <span class="markConfig" id="mark_tools-ghdl-relaxed_rules"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-bind_checks">
+                            <label class="setting-checkbox-label" for="tools-ghdl-bind_checks">
+                                Enable binding checks during elaboration:
+                                <span class="markConfig" id="mark_tools-ghdl-bind_checks"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-vital_checks">
+                            <label class="setting-checkbox-label" for="tools-ghdl-vital_checks">
+                                Enable VITAL compliance checks:
+                                <span class="markConfig" id="mark_tools-ghdl-vital_checks"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Simulation Settings</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Simulation time limit (e.g., 1us, 100ns, 1ms). Leave empty for no limit.
+                            <span class="markConfig" id="mark_tools-ghdl-simulation_time"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-simulation_time" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Time resolution limit (e.g., 1ps, 1ns, 1us):
+                            <span class="markConfig" id="mark_tools-ghdl-resolution_limit"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-resolution_limit" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Stack size for simulation (e.g., 1MB, 16MB, 64MB). Leave empty for default.
+                            <span class="markConfig" id="mark_tools-ghdl-stack_size"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-stack_size" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Stop simulation after N delta cycles (--stop-delta):
+                            <span class="markConfig" id="mark_tools-ghdl-stop_delta_cycles"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="tools-ghdl-stop_delta_cycles">
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Waveform Output</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-waveform_enabled">
+                            <label class="setting-checkbox-label" for="tools-ghdl-waveform_enabled">
+                                Enable waveform generation during simulation:
+                                <span class="markConfig" id="mark_tools-ghdl-waveform_enabled"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Waveform output format:
+                            <span class="markConfig" id="mark_tools-ghdl-waveform_format"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-ghdl-waveform_format">
+                                      <option value='vcd'>VCD</option>
+                                      <option value='ghw'>GHW</option>
+                                      <option value='fst'>FST</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional waveform generation options (e.g., --vcd-4states, --wave-start-time=0ns):
+                            <span class="markConfig" id="mark_tools-ghdl-waveform_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-waveform_options">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Waveform Advanced Options</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Start time for waveform recording (e.g., 0ns, 10us):
+                            <span class="markConfig" id="mark_tools-ghdl-wave_start_time"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-wave_start_time" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-vcd_4states">
+                            <label class="setting-checkbox-label" for="tools-ghdl-vcd_4states">
+                                Use 4-state VCD format (--vcd-4states):
+                                <span class="markConfig" id="mark_tools-ghdl-vcd_4states"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-vcd_nodate">
+                            <label class="setting-checkbox-label" for="tools-ghdl-vcd_nodate">
+                                Do not write date in VCD file (--vcd-nodate):
+                                <span class="markConfig" id="mark_tools-ghdl-vcd_nodate"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Wave option file for signal filtering (--read-wave-opt):
+                            <span class="markConfig" id="mark_tools-ghdl-read_wave_opt"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-read_wave_opt" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Create wave option file with all signals (--write-wave-opt):
+                            <span class="markConfig" id="mark_tools-ghdl-write_wave_opt"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-write_wave_opt" value="">
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Debug and Analysis</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Debug information level:
+                            <span class="markConfig" id="mark_tools-ghdl-debug_level"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-ghdl-debug_level">
+                                      <option value='none'>No debug info</option>
+                                      <option value='minimal'>Minimal debug info</option>
+                                      <option value='full'>Full debug info</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-verbose">
+                            <label class="setting-checkbox-label" for="tools-ghdl-verbose">
+                                Enable verbose output for all GHDL commands:
+                                <span class="markConfig" id="mark_tools-ghdl-verbose"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Error and Warning Handling</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-warnings_as_errors">
+                            <label class="setting-checkbox-label" for="tools-ghdl-warnings_as_errors">
+                                Treat warnings as errors:
+                                <span class="markConfig" id="mark_tools-ghdl-warnings_as_errors"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Warning types to suppress (e.g., binding, elaboration, runtime):
+                            <span class="markConfig" id="mark_tools-ghdl-suppress_warnings"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-suppress_warnings">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Assertions and Verification</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Assertion severity level:
+                            <span class="markConfig" id="mark_tools-ghdl-assert_level"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-ghdl-assert_level">
+                                      <option value='note'>Note level</option>
+                                      <option value='warning'>Warning level</option>
+                                      <option value='error'>Error level</option>
+                                      <option value='failure'>Failure level</option>
+                                      <option value='none'>Disable assertions</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Time and Display Options</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-display_time">
+                            <label class="setting-checkbox-label" for="tools-ghdl-display_time">
+                                Display time and delta cycle number (--disp-time):
+                                <span class="markConfig" id="mark_tools-ghdl-display_time"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-unbuffered_output">
+                            <label class="setting-checkbox-label" for="tools-ghdl-unbuffered_output">
+                                Disable buffering on stdout (--unbuffered):
+                                <span class="markConfig" id="mark_tools-ghdl-unbuffered_output"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Maximum stack allocation size in KB (--max-stack-alloc, 0 to disable):
+                            <span class="markConfig" id="mark_tools-ghdl-max_stack_alloc"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="tools-ghdl-max_stack_alloc">
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Backtrace and Debugging</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Minimum severity level for backtrace on assert/report:
+                            <span class="markConfig" id="mark_tools-ghdl-backtrace_severity"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-ghdl-backtrace_severity">
+                                      <option value='note'>Note level</option>
+                                      <option value='warning'>Warning level</option>
+                                      <option value='error'>Error level</option>
+                                      <option value='failure'>Failure level</option>
+                                      <option value='none'>Disable backtrace</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">IEEE Standards Compliance</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Control IEEE assertion handling:
+                            <span class="markConfig" id="mark_tools-ghdl-ieee_asserts"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-ghdl-ieee_asserts">
+                                      <option value='enable'>Enable IEEE assertions</option>
+                                      <option value='disable'>Disable IEEE assertions</option>
+                                      <option value='disable-at-0'>Disable at time 0</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Policy for handling assertions:
+                            <span class="markConfig" id="mark_tools-ghdl-asserts_policy"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-ghdl-asserts_policy">
+                                      <option value='enable'>Enable assertions</option>
+                                      <option value='disable'>Disable assertions</option>
+                                      <option value='disable-at-0'>Disable at time 0</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">File I/O and External Interfaces</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            SDF file for timing annotation (--sdf):
+                            <span class="markConfig" id="mark_tools-ghdl-sdf_file"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-sdf_file" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VPI modules to load (--vpi):
+                            <span class="markConfig" id="mark_tools-ghdl-vpi_modules"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-vpi_modules">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VHPI modules to load (--vhpi):
+                            <span class="markConfig" id="mark_tools-ghdl-vhpi_modules"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-ghdl-vhpi_modules">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VPI trace output file (--vpi-trace):
+                            <span class="markConfig" id="mark_tools-ghdl-vpi_trace_file"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-vpi_trace_file" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            VHPI trace output file (--vhpi-trace):
+                            <span class="markConfig" id="mark_tools-ghdl-vhpi_trace_file"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-vhpi_trace_file" value="">
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">PSL and Hierarchy Display</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            PSL report output file (--psl-report):
+                            <span class="markConfig" id="mark_tools-ghdl-psl_report_file"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-ghdl-psl_report_file" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-psl_report_uncovered">
+                            <label class="setting-checkbox-label" for="tools-ghdl-psl_report_uncovered">
+                                Report uncovered PSL cover points (--psl-report-uncovered):
+                                <span class="markConfig" id="mark_tools-ghdl-psl_report_uncovered"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Display design hierarchy (--disp-tree):
+                            <span class="markConfig" id="mark_tools-ghdl-disp_tree"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-ghdl-disp_tree">
+                                      <option value='none'>No hierarchy display</option>
+                                      <option value='inst'>Display instances</option>
+                                      <option value='proc'>Display processes</option>
+                                      <option value='port'>Display ports and signals</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Execution Control</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-ghdl-no_run">
+                            <label class="setting-checkbox-label" for="tools-ghdl-no_run">
+                                Elaborate but do not run simulation:
+                                <span class="markConfig" id="mark_tools-ghdl-no_run"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
                   
                   
             </div>
@@ -4768,20 +5350,155 @@ body.vscode-high-contrast {
     element_value = document.getElementById("tools-diamond-part").value;
     config["tools"]["diamond"]["part"] = element_value
     config["tools"]["ghdl"] = {}
+    config["tools"]["ghdl"]["section_basic"] = element_value
     element_value = document.getElementById("tools-ghdl-installation_path").value;
     config["tools"]["ghdl"]["installation_path"] = element_value
-    element_value = document.getElementById("tools-ghdl-waveform").value;
-    config["tools"]["ghdl"]["waveform"] = element_value
+    config["tools"]["ghdl"]["section_language"] = element_value
+    element_value = document.getElementById("tools-ghdl-vhdl_standard").value;
+    config["tools"]["ghdl"]["vhdl_standard"] = element_value
+    element_value = document.getElementById("tools-ghdl-ieee_library").value;
+    config["tools"]["ghdl"]["ieee_library"] = element_value
+    element_value = document.getElementById("tools-ghdl-relaxed_parsing").checked;
+    config["tools"]["ghdl"]["relaxed_parsing"] = element_value
+    element_value = document.getElementById("tools-ghdl-unicode_support").checked;
+    config["tools"]["ghdl"]["unicode_support"] = element_value
+    element_value = document.getElementById("tools-ghdl-psl_enabled").checked;
+    config["tools"]["ghdl"]["psl_enabled"] = element_value
+    config["tools"]["ghdl"]["section_libraries"] = element_value
+    element_value = document.getElementById("tools-ghdl-work_library").value;
+    config["tools"]["ghdl"]["work_library"] = element_value
+    element_value = document.getElementById("tools-ghdl-library_paths").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["ghdl"]["library_paths"] = element_value
+    config["tools"]["ghdl"]["section_stage_options"] = element_value
+    element_value = document.getElementById("tools-ghdl-check_syntax_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["ghdl"]["check_syntax_options"] = element_value
     element_value = document.getElementById("tools-ghdl-analyze_options").value.split(',');
     if (element_value.length == 1 && element_value[0] == "") {
       element_value = [];
     }
     config["tools"]["ghdl"]["analyze_options"] = element_value
+    element_value = document.getElementById("tools-ghdl-elaborate_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["ghdl"]["elaborate_options"] = element_value
     element_value = document.getElementById("tools-ghdl-run_options").value.split(',');
     if (element_value.length == 1 && element_value[0] == "") {
       element_value = [];
     }
     config["tools"]["ghdl"]["run_options"] = element_value
+    element_value = document.getElementById("tools-ghdl-synthesis_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["ghdl"]["synthesis_options"] = element_value
+    config["tools"]["ghdl"]["section_custom"] = element_value
+    element_value = document.getElementById("tools-ghdl-extra_flags").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["ghdl"]["extra_flags"] = element_value
+    config["tools"]["ghdl"]["section_elaboration"] = element_value
+    element_value = document.getElementById("tools-ghdl-relaxed_rules").checked;
+    config["tools"]["ghdl"]["relaxed_rules"] = element_value
+    element_value = document.getElementById("tools-ghdl-bind_checks").checked;
+    config["tools"]["ghdl"]["bind_checks"] = element_value
+    element_value = document.getElementById("tools-ghdl-vital_checks").checked;
+    config["tools"]["ghdl"]["vital_checks"] = element_value
+    config["tools"]["ghdl"]["section_simulation"] = element_value
+    element_value = document.getElementById("tools-ghdl-simulation_time").value;
+    config["tools"]["ghdl"]["simulation_time"] = element_value
+    element_value = document.getElementById("tools-ghdl-resolution_limit").value;
+    config["tools"]["ghdl"]["resolution_limit"] = element_value
+    element_value = document.getElementById("tools-ghdl-stack_size").value;
+    config["tools"]["ghdl"]["stack_size"] = element_value
+    element_value = parseInt(document.getElementById("tools-ghdl-stop_delta_cycles").value, 10);
+    config["tools"]["ghdl"]["stop_delta_cycles"] = element_value
+    config["tools"]["ghdl"]["section_waveform"] = element_value
+    element_value = document.getElementById("tools-ghdl-waveform_enabled").checked;
+    config["tools"]["ghdl"]["waveform_enabled"] = element_value
+    element_value = document.getElementById("tools-ghdl-waveform_format").value;
+    config["tools"]["ghdl"]["waveform_format"] = element_value
+    element_value = document.getElementById("tools-ghdl-waveform_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["ghdl"]["waveform_options"] = element_value
+    config["tools"]["ghdl"]["section_waveform_advanced"] = element_value
+    element_value = document.getElementById("tools-ghdl-wave_start_time").value;
+    config["tools"]["ghdl"]["wave_start_time"] = element_value
+    element_value = document.getElementById("tools-ghdl-vcd_4states").checked;
+    config["tools"]["ghdl"]["vcd_4states"] = element_value
+    element_value = document.getElementById("tools-ghdl-vcd_nodate").checked;
+    config["tools"]["ghdl"]["vcd_nodate"] = element_value
+    element_value = document.getElementById("tools-ghdl-read_wave_opt").value;
+    config["tools"]["ghdl"]["read_wave_opt"] = element_value
+    element_value = document.getElementById("tools-ghdl-write_wave_opt").value;
+    config["tools"]["ghdl"]["write_wave_opt"] = element_value
+    config["tools"]["ghdl"]["section_debug"] = element_value
+    element_value = document.getElementById("tools-ghdl-debug_level").value;
+    config["tools"]["ghdl"]["debug_level"] = element_value
+    element_value = document.getElementById("tools-ghdl-verbose").checked;
+    config["tools"]["ghdl"]["verbose"] = element_value
+    config["tools"]["ghdl"]["section_warnings"] = element_value
+    element_value = document.getElementById("tools-ghdl-warnings_as_errors").checked;
+    config["tools"]["ghdl"]["warnings_as_errors"] = element_value
+    element_value = document.getElementById("tools-ghdl-suppress_warnings").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["ghdl"]["suppress_warnings"] = element_value
+    config["tools"]["ghdl"]["section_assertions"] = element_value
+    element_value = document.getElementById("tools-ghdl-assert_level").value;
+    config["tools"]["ghdl"]["assert_level"] = element_value
+    config["tools"]["ghdl"]["section_display"] = element_value
+    element_value = document.getElementById("tools-ghdl-display_time").checked;
+    config["tools"]["ghdl"]["display_time"] = element_value
+    element_value = document.getElementById("tools-ghdl-unbuffered_output").checked;
+    config["tools"]["ghdl"]["unbuffered_output"] = element_value
+    element_value = parseInt(document.getElementById("tools-ghdl-max_stack_alloc").value, 10);
+    config["tools"]["ghdl"]["max_stack_alloc"] = element_value
+    config["tools"]["ghdl"]["section_backtrace"] = element_value
+    element_value = document.getElementById("tools-ghdl-backtrace_severity").value;
+    config["tools"]["ghdl"]["backtrace_severity"] = element_value
+    config["tools"]["ghdl"]["section_ieee"] = element_value
+    element_value = document.getElementById("tools-ghdl-ieee_asserts").value;
+    config["tools"]["ghdl"]["ieee_asserts"] = element_value
+    element_value = document.getElementById("tools-ghdl-asserts_policy").value;
+    config["tools"]["ghdl"]["asserts_policy"] = element_value
+    config["tools"]["ghdl"]["section_external"] = element_value
+    element_value = document.getElementById("tools-ghdl-sdf_file").value;
+    config["tools"]["ghdl"]["sdf_file"] = element_value
+    element_value = document.getElementById("tools-ghdl-vpi_modules").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["ghdl"]["vpi_modules"] = element_value
+    element_value = document.getElementById("tools-ghdl-vhpi_modules").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["ghdl"]["vhpi_modules"] = element_value
+    element_value = document.getElementById("tools-ghdl-vpi_trace_file").value;
+    config["tools"]["ghdl"]["vpi_trace_file"] = element_value
+    element_value = document.getElementById("tools-ghdl-vhpi_trace_file").value;
+    config["tools"]["ghdl"]["vhpi_trace_file"] = element_value
+    config["tools"]["ghdl"]["section_tracing"] = element_value
+    element_value = document.getElementById("tools-ghdl-psl_report_file").value;
+    config["tools"]["ghdl"]["psl_report_file"] = element_value
+    element_value = document.getElementById("tools-ghdl-psl_report_uncovered").checked;
+    config["tools"]["ghdl"]["psl_report_uncovered"] = element_value
+    element_value = document.getElementById("tools-ghdl-disp_tree").value;
+    config["tools"]["ghdl"]["disp_tree"] = element_value
+    config["tools"]["ghdl"]["section_execution"] = element_value
+    element_value = document.getElementById("tools-ghdl-no_run").checked;
+    config["tools"]["ghdl"]["no_run"] = element_value
     config["tools"]["icarus"] = {}
     element_value = document.getElementById("tools-icarus-installation_path").value;
     config["tools"]["icarus"]["installation_path"] = element_value
@@ -5478,14 +6195,149 @@ body.vscode-high-contrast {
     if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["installation_path"] !== undefined) {
         document.getElementById("tools-ghdl-installation_path").value = config["tools"]["ghdl"]["installation_path"];
     }
-    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["waveform"] !== undefined) {
-        document.getElementById("tools-ghdl-waveform").value = config["tools"]["ghdl"]["waveform"];
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vhdl_standard"] !== undefined) {
+        document.getElementById("tools-ghdl-vhdl_standard").value = config["tools"]["ghdl"]["vhdl_standard"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["ieee_library"] !== undefined) {
+        document.getElementById("tools-ghdl-ieee_library").value = config["tools"]["ghdl"]["ieee_library"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["relaxed_parsing"] !== undefined) {
+        document.getElementById("tools-ghdl-relaxed_parsing").checked = config["tools"]["ghdl"]["relaxed_parsing"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["unicode_support"] !== undefined) {
+        document.getElementById("tools-ghdl-unicode_support").checked = config["tools"]["ghdl"]["unicode_support"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["psl_enabled"] !== undefined) {
+        document.getElementById("tools-ghdl-psl_enabled").checked = config["tools"]["ghdl"]["psl_enabled"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["work_library"] !== undefined) {
+        document.getElementById("tools-ghdl-work_library").value = config["tools"]["ghdl"]["work_library"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["library_paths"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-library_paths").value = String(config["tools"]["ghdl"]["library_paths"]);
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["check_syntax_options"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-check_syntax_options").value = String(config["tools"]["ghdl"]["check_syntax_options"]);
     }
     if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["analyze_options"] !== undefined) {
         element_value = document.getElementById("tools-ghdl-analyze_options").value = String(config["tools"]["ghdl"]["analyze_options"]);
     }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["elaborate_options"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-elaborate_options").value = String(config["tools"]["ghdl"]["elaborate_options"]);
+    }
     if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["run_options"] !== undefined) {
         element_value = document.getElementById("tools-ghdl-run_options").value = String(config["tools"]["ghdl"]["run_options"]);
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["synthesis_options"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-synthesis_options").value = String(config["tools"]["ghdl"]["synthesis_options"]);
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["extra_flags"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-extra_flags").value = String(config["tools"]["ghdl"]["extra_flags"]);
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["relaxed_rules"] !== undefined) {
+        document.getElementById("tools-ghdl-relaxed_rules").checked = config["tools"]["ghdl"]["relaxed_rules"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["bind_checks"] !== undefined) {
+        document.getElementById("tools-ghdl-bind_checks").checked = config["tools"]["ghdl"]["bind_checks"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vital_checks"] !== undefined) {
+        document.getElementById("tools-ghdl-vital_checks").checked = config["tools"]["ghdl"]["vital_checks"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["simulation_time"] !== undefined) {
+        document.getElementById("tools-ghdl-simulation_time").value = config["tools"]["ghdl"]["simulation_time"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["resolution_limit"] !== undefined) {
+        document.getElementById("tools-ghdl-resolution_limit").value = config["tools"]["ghdl"]["resolution_limit"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["stack_size"] !== undefined) {
+        document.getElementById("tools-ghdl-stack_size").value = config["tools"]["ghdl"]["stack_size"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["stop_delta_cycles"] !== undefined) {
+        document.getElementById("tools-ghdl-stop_delta_cycles").value = config["tools"]["ghdl"]["stop_delta_cycles"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["waveform_enabled"] !== undefined) {
+        document.getElementById("tools-ghdl-waveform_enabled").checked = config["tools"]["ghdl"]["waveform_enabled"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["waveform_format"] !== undefined) {
+        document.getElementById("tools-ghdl-waveform_format").value = config["tools"]["ghdl"]["waveform_format"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["waveform_options"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-waveform_options").value = String(config["tools"]["ghdl"]["waveform_options"]);
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["wave_start_time"] !== undefined) {
+        document.getElementById("tools-ghdl-wave_start_time").value = config["tools"]["ghdl"]["wave_start_time"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vcd_4states"] !== undefined) {
+        document.getElementById("tools-ghdl-vcd_4states").checked = config["tools"]["ghdl"]["vcd_4states"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vcd_nodate"] !== undefined) {
+        document.getElementById("tools-ghdl-vcd_nodate").checked = config["tools"]["ghdl"]["vcd_nodate"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["read_wave_opt"] !== undefined) {
+        document.getElementById("tools-ghdl-read_wave_opt").value = config["tools"]["ghdl"]["read_wave_opt"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["write_wave_opt"] !== undefined) {
+        document.getElementById("tools-ghdl-write_wave_opt").value = config["tools"]["ghdl"]["write_wave_opt"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["debug_level"] !== undefined) {
+        document.getElementById("tools-ghdl-debug_level").value = config["tools"]["ghdl"]["debug_level"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["verbose"] !== undefined) {
+        document.getElementById("tools-ghdl-verbose").checked = config["tools"]["ghdl"]["verbose"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["warnings_as_errors"] !== undefined) {
+        document.getElementById("tools-ghdl-warnings_as_errors").checked = config["tools"]["ghdl"]["warnings_as_errors"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["suppress_warnings"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-suppress_warnings").value = String(config["tools"]["ghdl"]["suppress_warnings"]);
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["assert_level"] !== undefined) {
+        document.getElementById("tools-ghdl-assert_level").value = config["tools"]["ghdl"]["assert_level"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["display_time"] !== undefined) {
+        document.getElementById("tools-ghdl-display_time").checked = config["tools"]["ghdl"]["display_time"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["unbuffered_output"] !== undefined) {
+        document.getElementById("tools-ghdl-unbuffered_output").checked = config["tools"]["ghdl"]["unbuffered_output"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["max_stack_alloc"] !== undefined) {
+        document.getElementById("tools-ghdl-max_stack_alloc").value = config["tools"]["ghdl"]["max_stack_alloc"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["backtrace_severity"] !== undefined) {
+        document.getElementById("tools-ghdl-backtrace_severity").value = config["tools"]["ghdl"]["backtrace_severity"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["ieee_asserts"] !== undefined) {
+        document.getElementById("tools-ghdl-ieee_asserts").value = config["tools"]["ghdl"]["ieee_asserts"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["asserts_policy"] !== undefined) {
+        document.getElementById("tools-ghdl-asserts_policy").value = config["tools"]["ghdl"]["asserts_policy"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["sdf_file"] !== undefined) {
+        document.getElementById("tools-ghdl-sdf_file").value = config["tools"]["ghdl"]["sdf_file"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vpi_modules"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-vpi_modules").value = String(config["tools"]["ghdl"]["vpi_modules"]);
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vhpi_modules"] !== undefined) {
+        element_value = document.getElementById("tools-ghdl-vhpi_modules").value = String(config["tools"]["ghdl"]["vhpi_modules"]);
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vpi_trace_file"] !== undefined) {
+        document.getElementById("tools-ghdl-vpi_trace_file").value = config["tools"]["ghdl"]["vpi_trace_file"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vhpi_trace_file"] !== undefined) {
+        document.getElementById("tools-ghdl-vhpi_trace_file").value = config["tools"]["ghdl"]["vhpi_trace_file"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["psl_report_file"] !== undefined) {
+        document.getElementById("tools-ghdl-psl_report_file").value = config["tools"]["ghdl"]["psl_report_file"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["psl_report_uncovered"] !== undefined) {
+        document.getElementById("tools-ghdl-psl_report_uncovered").checked = config["tools"]["ghdl"]["psl_report_uncovered"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["disp_tree"] !== undefined) {
+        document.getElementById("tools-ghdl-disp_tree").value = config["tools"]["ghdl"]["disp_tree"];
+    }
+    if (config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["no_run"] !== undefined) {
+        document.getElementById("tools-ghdl-no_run").checked = config["tools"]["ghdl"]["no_run"];
     }
     if (config["tools"] && config["tools"]["icarus"] && config["tools"]["icarus"]["installation_path"] !== undefined) {
         document.getElementById("tools-icarus-installation_path").value = config["tools"]["icarus"]["installation_path"];
@@ -6392,20 +7244,245 @@ body.vscode-high-contrast {
     }
     document.getElementById("mark_tools-ghdl-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["waveform"] !== undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vhdl_standard"] !== undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-ghdl-waveform").innerHTML = mark;
+    document.getElementById("mark_tools-ghdl-vhdl_standard").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["ieee_library"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-ieee_library").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["relaxed_parsing"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-relaxed_parsing").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["unicode_support"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-unicode_support").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["psl_enabled"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-psl_enabled").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["work_library"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-work_library").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["library_paths"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-library_paths").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["check_syntax_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-check_syntax_options").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["analyze_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ghdl-analyze_options").innerHTML = mark;
     mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["elaborate_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-elaborate_options").innerHTML = mark;
+    mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["run_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-ghdl-run_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["synthesis_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-synthesis_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["extra_flags"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-extra_flags").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["relaxed_rules"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-relaxed_rules").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["bind_checks"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-bind_checks").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vital_checks"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-vital_checks").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["simulation_time"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-simulation_time").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["resolution_limit"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-resolution_limit").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["stack_size"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-stack_size").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["stop_delta_cycles"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-stop_delta_cycles").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["waveform_enabled"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-waveform_enabled").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["waveform_format"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-waveform_format").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["waveform_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-waveform_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["wave_start_time"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-wave_start_time").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vcd_4states"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-vcd_4states").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vcd_nodate"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-vcd_nodate").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["read_wave_opt"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-read_wave_opt").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["write_wave_opt"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-write_wave_opt").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["debug_level"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-debug_level").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["verbose"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-verbose").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["warnings_as_errors"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-warnings_as_errors").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["suppress_warnings"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-suppress_warnings").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["assert_level"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-assert_level").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["display_time"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-display_time").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["unbuffered_output"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-unbuffered_output").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["max_stack_alloc"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-max_stack_alloc").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["backtrace_severity"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-backtrace_severity").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["ieee_asserts"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-ieee_asserts").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["asserts_policy"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-asserts_policy").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["sdf_file"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-sdf_file").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vpi_modules"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-vpi_modules").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vhpi_modules"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-vhpi_modules").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vpi_trace_file"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-vpi_trace_file").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["vhpi_trace_file"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-vhpi_trace_file").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["psl_report_file"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-psl_report_file").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["psl_report_uncovered"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-psl_report_uncovered").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["disp_tree"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-disp_tree").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["ghdl"] && config["tools"]["ghdl"]["no_run"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-ghdl-no_run").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["icarus"] && config["tools"]["icarus"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;

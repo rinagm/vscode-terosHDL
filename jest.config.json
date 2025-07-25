@@ -1,6 +1,9 @@
 {
     "preset": "ts-jest",
     "testEnvironment": "node",
+    "moduleNameMapper": {
+        "^colibri/(.*)$": "<rootDir>/src/colibri/$1"
+    },
     "transform": {
         "^.+\\.ts$": ["ts-jest", {
             "tsconfig": {
