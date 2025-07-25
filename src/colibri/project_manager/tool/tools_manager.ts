@@ -34,7 +34,6 @@ export class Tool_manager {
     private cocotb: Cocotb;
     private osvvm: Osvvm;
     private raptor: Raptor;
-    private working_directory = "";
 
     constructor(working_directory: string | undefined) {
         this.edalize = new Edalize();
@@ -42,17 +41,6 @@ export class Tool_manager {
         this.cocotb = new Cocotb();
         this.osvvm = new Osvvm();
         this.raptor = new Raptor();
-        this.set_working_directory(working_directory);
-    }
-
-    public set_working_directory(working_directory: string | undefined) {
-        if (working_directory === undefined) {
-            const homedir = os.homedir();
-            this.working_directory = path_lib.join(homedir, '.teroshdl', 'build');
-        }
-        else {
-            this.working_directory = working_directory;
-        }
     }
 
     public async get_test_list(prj: t_project_definition): Promise<t_test_declaration[]> {
@@ -61,19 +49,21 @@ export class Tool_manager {
         return await tool_handler.get_test_list(prj);
     }
 
-    public run(prj: t_project_definition, test_list: t_test_declaration[],
+    public run(prj: t_project_definition, test_list: t_test_declaration[], workingDirectory: string,
         callback: (result: t_test_result[]) => void,
         callback_stream: (stream_c: any) => void) {
 
         const tool_name = prj.config.tools.general.select_tool;
         const tool_handler = this.get_tool_handler(tool_name);
-        return tool_handler.run(prj, test_list, this.working_directory, callback, callback_stream);
+        return tool_handler.run(prj, test_list, workingDirectory, callback, callback_stream);
     }
 
-    public clean(prj: t_project_definition, clean_mode: e_clean_step, callback_stream: (stream_c: any) => void) {
+    public clean(prj: t_project_definition, clean_mode: e_clean_step, workingDirectory: string,
+        callback_stream: (stream_c: any) => void) {
+
         const tool_name = prj.config.tools.general.select_tool;
         const tool_handler = this.get_tool_handler(tool_name);
-        return tool_handler.clean(prj, this.working_directory, clean_mode, callback_stream);
+        return tool_handler.clean(prj, workingDirectory, clean_mode, callback_stream);
     }
 
     private get_tool_handler(tool_name: e_tools_general_select_tool): Edalize | Vunit | Cocotb | Osvvm | Raptor{

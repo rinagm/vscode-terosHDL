@@ -85,9 +85,10 @@ export class Project_manager extends ConfigManager {
     private linter = new Linter();
     private _taskStateManager: TaskStateManager = new TaskStateManager([]);
 
-    constructor(name: string, emitterProject: ProjectEmitter) {
+    constructor(name: string, projectDiskPath: string, emitterProject: ProjectEmitter) {
         super(get_undefined_config());
         this.name = name;
+        this._projectDiskPath = projectDiskPath;
         this.emitterProject = emitterProject;
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const selfm = this;
@@ -200,8 +201,13 @@ export class Project_manager extends ConfigManager {
     ////////////////////////////////////////////////////////////////////////////
     // Project
     ////////////////////////////////////////////////////////////////////////////
-    static async fromJson(jsonContent: any, reference_path: string, emitterProject: ProjectEmitter): Promise<Project_manager> {
-        const prj = new Project_manager(jsonContent.name, emitterProject);
+    static async fromJson(jsonContent: any, reference_path: string, emitterProject: ProjectEmitter,
+        buildBasePath: string): Promise<Project_manager> {
+
+        const buildPath = jsonContent.projectDiskPath ?
+            jsonContent.projectDiskPath : utils.createRandomFolderFromBasePath(jsonContent.name, buildBasePath);
+
+        const prj = new Project_manager(jsonContent.name, buildPath, emitterProject);
         // Files
         jsonContent.files.forEach((file: any) => {
             const name = file_utils.get_absolute_path(file_utils.get_directory(reference_path), file.name);
@@ -649,11 +655,11 @@ export class Project_manager extends ConfigManager {
         await this.files.order(python_result.python_path, compileOrderPath);
         const prj_def = this.get_project_definition();
 
-        return this.tools_manager.run(prj_def, test_list, callback, callback_stream);
+        return this.tools_manager.run(prj_def, test_list, this.projectDiskPath, callback, callback_stream);
     }
 
     public clean(clean_mode: e_clean_step, callback_stream: (stream_c: any) => void): any {
-        return this.tools_manager.clean(this.get_project_definition(), clean_mode, callback_stream);
+        return this.tools_manager.clean(this.get_project_definition(), clean_mode, this.projectDiskPath, callback_stream);
     }
 
     public async get_test_list(): Promise<t_test_declaration[]> {

@@ -23,7 +23,7 @@ import * as path_lib from "path";
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import * as utils from "../utils";
 import { Run_output_manager } from "../run_output";
-import { t_message_level, showMessage, getConfig } from "../../utils/utils";
+import { t_message_level, showMessage, getConfig, getVSCodeWorkspaceStorage } from "../../utils/utils";
 import * as yaml from "js-yaml";
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
@@ -111,7 +111,7 @@ export class Project_manager extends BaseView {
             if (project_name !== undefined) {
                 try {
                     this.project_manager.add_project(
-                        new ProjectManager.Project_manager(project_name, this.emitterProject
+                        new ProjectManager.Project_manager(project_name, '', this.emitterProject
                         ));
                 } catch (error) {
                 }
@@ -202,7 +202,7 @@ export class Project_manager extends BaseView {
             if (project_name !== undefined) {
                 try {
                     const prj = new ProjectManager.Project_manager(
-                        project_name, this.emitterProject
+                        project_name, '', this.emitterProject
                     );
                     this.project_manager.add_project(prj);
                     await utils.add_sources_from_vunit(prj, true);
@@ -272,7 +272,8 @@ export class Project_manager extends BaseView {
     async create_project_from_json(prj_path: string) {
         try {
             const prj = await ProjectManager.Project_manager.fromJson(
-                JSON.parse(read_file_sync(prj_path)), prj_path, this.emitterProject);
+                JSON.parse(read_file_sync(prj_path)), prj_path, this.emitterProject,
+                getVSCodeWorkspaceStorage(this.context));
             this.project_manager.add_project(prj);
         } catch (error) {
         }
@@ -283,7 +284,7 @@ export class Project_manager extends BaseView {
             const fileContent = read_file_sync(prj_path)
             const repJSON = yaml.load(fileContent, { json: true });
             const prj = await ProjectManager.Project_manager.fromJson(
-                repJSON, prj_path, this.emitterProject);
+                repJSON, prj_path, this.emitterProject, getVSCodeWorkspaceStorage(this.context));
             this.project_manager.add_project(prj);
         } catch (error) {
             console.log(error)
