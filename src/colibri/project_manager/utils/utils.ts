@@ -21,6 +21,8 @@ import { t_project_definition } from "../project_definition";
 import * as file_utils from "../../utils/file_utils";
 import * as general from "../../common/general";
 import * as jsYaml from 'js-yaml';
+import * as path from 'path';
+import { randomBytes } from 'crypto';
 const initSqlJs = require('sql.js');
 
 export function get_edam_json(prj: t_project_definition, top_level_list: undefined | string[],
@@ -184,4 +186,12 @@ export async function execQuery(db: any, query: string): Promise<any[]> {
     } catch (error) {
         return [];
     }
+}
+
+export function createRandomFolderFromBasePath(baseName: string, basePath: string): string {
+    const dateStr = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
+    const randomSuffix = baseName + '_' + dateStr + '_' + randomBytes(8).toString('hex');
+    const newFolderPath = path.join(basePath, randomSuffix);
+    file_utils.create_directory(newFolderPath);
+    return newFolderPath;
 }

@@ -95,7 +95,7 @@ export class Multi_project_manager {
     ////////////////////////////////////////////////////////////////////////////
     // Load / Save in a file
     ////////////////////////////////////////////////////////////////////////////
-    public async load(emitterProject: ProjectEmitter): Promise<void> {
+    public async load(emitterProject: ProjectEmitter, buildBasePath: string): Promise<void> {
         let failed = false;
 
         // Initialize
@@ -123,7 +123,9 @@ export class Multi_project_manager {
                     } 
                     else {
                         this.add_project(
-                            await Project_manager.fromJson(prj_info, this.sync_file_path, emitterProject)
+                            await Project_manager.fromJson(prj_info, this.sync_file_path, emitterProject,
+                                buildBasePath
+                            )
                         );
                     }
                 } catch (error) {

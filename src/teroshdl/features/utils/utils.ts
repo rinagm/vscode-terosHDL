@@ -204,3 +204,13 @@ export function getConfig(multiProjectManager: Multi_project_manager)
         return GlobalConfigManager.getInstance().get_config();
     }
 }
+
+export function getVSCodeWorkspaceStorage(context: vscode.ExtensionContext): string {
+    const folderPath = context.storageUri.fsPath;
+    const terosHdlPath = path_lib.join(folderPath, 'teroshdl');
+
+    if (!fs.existsSync(terosHdlPath)) {
+        fs.mkdirSync(terosHdlPath, { recursive: true });
+    }
+    return terosHdlPath;
+}
