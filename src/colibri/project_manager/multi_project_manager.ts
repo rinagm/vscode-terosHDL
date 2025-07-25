@@ -23,6 +23,7 @@ import * as file_utils from "../utils/file_utils";
 import { QuartusProjectManager } from "./tool/quartus/quartusProjectManager";
 import { SandpiperProjectManager } from "./tool/sandpiper/sandpiperProjectManager";
 import { ProjectEmitter, e_event } from "./projectEmitter";
+import { e_clean_step } from "./tool/common";
 
 class ProjectNotFoundError extends Error {
     constructor(message: string) {
@@ -224,7 +225,9 @@ export class Multi_project_manager {
     public delete_project(prj: Project_manager): void {
 
         // Check if project is in the list. Error if not.
-        this.get_project_by_name(prj.get_name());
+        const prjToDelete = this.get_project_by_name(prj.get_name());
+        prjToDelete.clean(e_clean_step.Synthesize, (_stream_c: any) => {
+        });
 
         // If it's selected, put selected empty
         try {
