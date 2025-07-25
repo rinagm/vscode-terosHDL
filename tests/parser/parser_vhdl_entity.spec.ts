@@ -20,6 +20,10 @@ import { Factory } from "../../src/colibri/parser/factory";
 import { LANGUAGE } from "../../src/colibri/common/general";
 import { equal } from "assert";
 import * as common from "../../src/colibri/parser/common";
+import { jest } from '@jest/globals';
+
+const TIMEOUT_SEC = 20;
+jest.setTimeout(TIMEOUT_SEC * 1000);
 
 const code_hdl = `
 library ieee;
@@ -84,7 +88,7 @@ if (parser_common === undefined) {
     console.log("Error parser.");
 }
 
-async function parse() {
+async function parse(): Promise<common.Hdl_element> {
     const parser = await parser_common.get_parser(LANGUAGE.VHDL);
     const result = await parser.get_all(code_hdl, '!');
     return result;
@@ -109,7 +113,7 @@ describe('Check entity VHDL', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Generic
     ////////////////////////////////////////////////////////////////////////////////
-    function check_generic(actual: common.Port_hdl, expected: common.Port_hdl) {
+    function check_generic(actual: common.Port_hdl, expected: common.Port_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.direction, expected.direction);
         equal(actual.type, expected.type);
@@ -213,7 +217,7 @@ describe('Check entity VHDL', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Port
     ////////////////////////////////////////////////////////////////////////////////
-    function check_port(actual: common.Port_hdl, expected: common.Port_hdl) {
+    function check_port(actual: common.Port_hdl, expected: common.Port_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.direction, expected.direction);
         equal(actual.type, expected.type);

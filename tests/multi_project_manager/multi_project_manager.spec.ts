@@ -64,11 +64,12 @@ describe('MultiProjectManager', () => {
     let multiProjectManager: Multi_project_manager;
 
     beforeEach(() => {
+        GlobalConfigManager.newInstance("");
         multiProjectManager = new Multi_project_manager(emitter, sync_file_path);
     });
 
     function create_project_with_name_and_add(prj_name: string): Project_manager {
-        const prj = new Project_manager(prj_name, emitter);
+        const prj = new Project_manager(prj_name, "", emitter);
         multiProjectManager.add_project(prj);
         return prj;
     }
@@ -165,7 +166,7 @@ describe('MultiProjectManager', () => {
 
         test('should throw an error when adding a project multiple times', () => {
             const projectName = 'DuplicateProject';
-            const prj = new Project_manager(projectName, emitter);
+            const prj = new Project_manager(projectName, "", emitter);
             multiProjectManager.add_project(prj);
 
             for (let i = 0; i < 5; i++) {
@@ -206,7 +207,7 @@ describe('MultiProjectManager', () => {
 
         test('should throw an error when trying to rename a project object created outside the multi project manager', () => {
             expect(() => {
-                multiProjectManager.rename_project(new Project_manager("OldName", emitter), 'NewName');
+                multiProjectManager.rename_project(new Project_manager("OldName",  "", emitter), 'NewName');
             }).toThrow();
         });
 
@@ -373,10 +374,10 @@ describe('MultiProjectManager', () => {
 
         test('should throw an error when trying to delete a project object created outside the multi project manager', () => {
             expect(() => {
-                multiProjectManager.delete_project(new Project_manager("OldName", emitter));
+                multiProjectManager.delete_project(new Project_manager("OldName", "", emitter));
             }).toThrow();
             expect(() => {
-                multiProjectManager.delete_project(new Project_manager("", emitter));
+                multiProjectManager.delete_project(new Project_manager("", "", emitter));
             }).toThrow();
         });
     });
@@ -399,10 +400,10 @@ describe('MultiProjectManager', () => {
 
         test('should throw an error when trying to select a project object created outside the multi project manager', () => {
             expect(() => {
-                multiProjectManager.set_selected_project(new Project_manager("OldName", emitter));
+                multiProjectManager.set_selected_project(new Project_manager("OldName", "", emitter));
             }).toThrow();
             expect(() => {
-                multiProjectManager.set_selected_project(new Project_manager("", emitter));
+                multiProjectManager.set_selected_project(new Project_manager("", "", emitter));
             }).toThrow();
         });
 
@@ -486,7 +487,6 @@ describe('MultiProjectManager', () => {
     describe('save', () => {
 
         beforeEach(() => {
-            GlobalConfigManager.newInstance("");
             jest.clearAllMocks();
         });
 
@@ -597,7 +597,7 @@ describe('MultiProjectManager', () => {
                 project_list: [],
             }));
 
-            await multiProjectManager.load(emitter);
+            await multiProjectManager.load(emitter, "");
 
             expect(() => {
                 multiProjectManager.get_selected_project();
@@ -613,7 +613,7 @@ describe('MultiProjectManager', () => {
                     project_list: Array.from({ length: num_projects }, (_, i) => ({ name: `Project${i + 1}` })),
                 }));
 
-                await multiProjectManager.load(emitter);
+                await multiProjectManager.load(emitter, "");
 
                 expect(multiProjectManager.get_selected_project().get_name()).toBe("Project1");
                 for (let i = 1; i <= num_projects; i++) {
@@ -630,7 +630,7 @@ describe('MultiProjectManager', () => {
                     project_list: Array.from({ length: num_projects }, (_, i) => ({ name: `Project${i + 1}` })),
                 }));
 
-                await multiProjectManager.load(emitter);
+                await multiProjectManager.load(emitter, "");
 
                 expect(() => {
                     multiProjectManager.get_selected_project();
@@ -648,7 +648,7 @@ describe('MultiProjectManager', () => {
                 project_list: [],
             }));
 
-            await expect(multiProjectManager.load(emitter)).rejects.toThrow();
+            await expect(multiProjectManager.load(emitter, "")).rejects.toThrow();
 
             expect(() => {
                 multiProjectManager.get_selected_project();
@@ -667,7 +667,7 @@ describe('MultiProjectManager', () => {
                     ],
                 }));
 
-                await expect(multiProjectManager.load(emitter)).rejects.toThrow();
+                await expect(multiProjectManager.load(emitter, "")).rejects.toThrow();
 
                 expect(multiProjectManager.get_selected_project().get_name()).toBe("Project3");
                 expect(multiProjectManager.get_projects().length).toBe(2);
@@ -690,7 +690,7 @@ describe('MultiProjectManager', () => {
                     ],
                 }));
 
-                await expect(multiProjectManager.load(emitter)).rejects.toThrow();
+                await expect(multiProjectManager.load(emitter, "")).rejects.toThrow();
 
                 expect(() => {
                     multiProjectManager.get_selected_project();
@@ -715,7 +715,7 @@ describe('MultiProjectManager', () => {
                 project_list: [{ name: "Project1" }, { name: "Project2" }],
             }));
 
-            await expect(multiProjectManager.load(emitter)).rejects.toThrow();
+            await expect(multiProjectManager.load(emitter, "")).rejects.toThrow();
 
             expect(() => {
                 multiProjectManager.get_selected_project();
@@ -732,7 +732,7 @@ describe('MultiProjectManager', () => {
                 project_list: { name: "Project1" },
             }));
 
-            await expect(multiProjectManager.load(emitter)).rejects.toThrow();
+            await expect(multiProjectManager.load(emitter, "")).rejects.toThrow();
 
             expect(() => {
                 multiProjectManager.get_selected_project();
@@ -747,7 +747,7 @@ describe('MultiProjectManager', () => {
                 project_list: [{ name: "Project1" }, { name: "Project2" }, { name: "Project1" }],
             }));
 
-            await expect(multiProjectManager.load(emitter)).rejects.toThrow();
+            await expect(multiProjectManager.load(emitter, "")).rejects.toThrow();
 
             expect(multiProjectManager.get_selected_project().get_name()).toBe("Project1");
             expect(multiProjectManager.get_projects().length).toBe(2);
@@ -765,7 +765,7 @@ describe('MultiProjectManager', () => {
                 }));
                 create_project_with_name_and_add("Project1");
 
-                await multiProjectManager.load(emitter);
+                await multiProjectManager.load(emitter, "");
 
                 expect(() => {
                     multiProjectManager.get_selected_project();
@@ -781,7 +781,7 @@ describe('MultiProjectManager', () => {
                 }));
                 create_project_with_name_and_add("Project1");
 
-                await multiProjectManager.load(emitter);
+                await multiProjectManager.load(emitter, "");
 
                 expect(multiProjectManager.get_selected_project().get_name()).toBe("Project2");
                 expect(multiProjectManager.get_projects().length).toBe(1);
@@ -799,7 +799,7 @@ describe('MultiProjectManager', () => {
                 }));
                 create_project_with_name_and_add("Project1");
 
-                await expect(multiProjectManager.load(emitter)).rejects.toThrow();
+                await expect(multiProjectManager.load(emitter, "")).rejects.toThrow();
 
                 expect(() => {
                     multiProjectManager.get_selected_project();
@@ -825,7 +825,7 @@ describe('MultiProjectManager', () => {
                 ],
             }));
 
-            await multiProjectManager.load(emitter);
+            await multiProjectManager.load(emitter, "");
 
             expect(QuartusProjectManager.fromJson).toHaveBeenCalledTimes(1);
             expect(Project_manager.fromJson).toHaveBeenCalledTimes(1);

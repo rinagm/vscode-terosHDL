@@ -116,7 +116,7 @@ endmodule
 `;
 const parser_common = new Factory();
 
-async function parse() {
+async function parse(): Promise<common.Hdl_element> {
     const parser = await parser_common.get_parser(LANGUAGE.VERILOG);
     const result = await parser.get_all(code_hdl, '!');
     return result;
@@ -141,7 +141,7 @@ describe('Check entity Verilog', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Generic
     ////////////////////////////////////////////////////////////////////////////////
-    function check_generic(actual: common.Port_hdl, expected: common.Port_hdl) {
+    function check_generic(actual: common.Port_hdl, expected: common.Port_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.direction, expected.direction);
         equal(actual.type, expected.type);
@@ -246,7 +246,7 @@ describe('Check entity Verilog', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Port
     ////////////////////////////////////////////////////////////////////////////////
-    function check_port(actual: common.Port_hdl, expected: common.Port_hdl) {
+    function check_port(actual: common.Port_hdl, expected: common.Port_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.direction, expected.direction);
         equal(actual.type, expected.type);
@@ -436,7 +436,7 @@ describe('Check entity Verilog', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Signal
     ////////////////////////////////////////////////////////////////////////////////
-    function check_signal(actual: common.Signal_hdl, expected: common.Signal_hdl) {
+    function check_signal(actual: common.Signal_hdl, expected: common.Signal_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.type, expected.type);
         equal(actual.info.description, expected.info.description);
@@ -519,7 +519,7 @@ describe('Check entity Verilog', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Constant
     ////////////////////////////////////////////////////////////////////////////////
-    function check_constant(actual: common.Constant_hdl, expected: common.Constant_hdl) {
+    function check_constant(actual: common.Constant_hdl, expected: common.Constant_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.type, expected.type);
         equal(actual.default_value, expected.default_value);
@@ -573,7 +573,7 @@ describe('Check entity Verilog', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Function
     ////////////////////////////////////////////////////////////////////////////////
-    function check_function(actual: common.Function_hdl, expected: common.Function_hdl) {
+    function check_function(actual: common.Function_hdl, expected: common.Function_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.type, expected.type);
         equal(actual.arguments, expected.arguments);
@@ -611,7 +611,7 @@ describe('Check entity Verilog', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Process
     ////////////////////////////////////////////////////////////////////////////////
-    function check_process(actual: common.Process_hdl, expected: common.Process_hdl) {
+    function check_process(actual: common.Process_hdl, expected: common.Process_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.sens_list, expected.sens_list);
         equal(actual.info.description, expected.info.description);
@@ -697,7 +697,7 @@ describe('Check entity Verilog', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Instantiation
     ////////////////////////////////////////////////////////////////////////////////
-    function check_instantiation(actual: common.Instantiation_hdl, expected: common.Instantiation_hdl) {
+    function check_instantiation(actual: common.Instantiation_hdl, expected: common.Instantiation_hdl): void {
         equal(actual.info.name, expected.info.name);
         equal(actual.type, expected.type);
         equal(actual.info.description.trim(), expected.info.description.trim());

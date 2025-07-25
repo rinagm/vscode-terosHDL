@@ -21,6 +21,10 @@ import { LANGUAGE } from "../../src/colibri/common/general";
 import { equal } from "assert";
 import * as common from "../../src/colibri/parser/common";
 import * as utils_test from "./utils_test";
+import { jest } from '@jest/globals';
+
+const TIMEOUT_SEC = 20;
+jest.setTimeout(TIMEOUT_SEC * 1000);
 
 const code_hdl = `
 \`ifndef SMC_IF 
@@ -78,7 +82,7 @@ if (parser_common === undefined) {
     console.log("Error parser.");
 }
 
-async function parse() {
+async function parse(): Promise<common.Hdl_element> {
     const parser = await parser_common.get_parser(LANGUAGE.VERILOG);
     const result = await parser.get_all(code_hdl, '!');
     return result;
@@ -223,7 +227,7 @@ describe('Check interface declaration Verilog', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Interface
     ////////////////////////////////////////////////////////////////////////////////
-    function check_interface(actual: common.Hdl_element, name_expected: string) {
+    function check_interface(actual: common.Hdl_element, name_expected: string): void {
         equal(actual.name, name_expected);
         // Generic
         const generic_array = actual.get_generic_array();
@@ -262,7 +266,7 @@ describe('Check interface declaration Verilog', function () {
     ////////////////////////////////////////////////////////////////////////////////
     // Type
     ////////////////////////////////////////////////////////////////////////////////
-    function check_type(actual: common.Type_hdl, expected: common.Type_hdl) {
+    function check_type(actual: common.Type_hdl, expected: common.Type_hdl): void {
         equal(actual.info.name, expected.info.name);
 
         for (let i = 0; i < actual.logic.length; i++) {

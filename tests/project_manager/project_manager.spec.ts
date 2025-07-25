@@ -33,7 +33,7 @@ describe('project_manager', () => {
 
     beforeEach(() => {
         const emitter = new ProjectEmitter();
-        project_manager = new Project_manager(DEFAULT_NAME, emitter);
+        project_manager = new Project_manager(DEFAULT_NAME, "", emitter);
     });
 
     test('rename', () => {
@@ -458,6 +458,263 @@ describe('project_manager', () => {
         });
 
 
+    });
+
+    // Additional comprehensive tests for project_manager
+    
+    describe('Project Configuration Tests', () => {
+        test('get_diff_config should return project-specific config', () => {
+            GlobalConfigManager.newInstance("");
+            
+            const new_config = get_default_config();
+            new_config.tools.ghdl.installation_path = "custom_ghdl_path";
+            
+            project_manager.set_config(new_config);
+            
+            const diff_config = project_manager.get_diff_config();
+            expect(diff_config.tools.ghdl.installation_path).toBe("custom_ghdl_path");
+        });
+
+        test('projectDiskPath setter and getter', () => {
+            const test_path = "/test/project/path";
+            project_manager.projectDiskPath = test_path;
+            expect(project_manager.projectDiskPath).toBe(test_path);
+        });
+
+        test('getProjectType should return GENERIC by default', () => {
+            expect(project_manager.getProjectType()).toBe("genericProject");
+        });
+    });
+
+    describe('File Management Extended Tests', () => {
+        test('clearFiles should remove all files', () => {
+            const file_0: t_file = {
+                name: 'file_0',
+                is_include_file: false,
+                include_path: '',
+                logical_name: 'logical_0',
+                is_manual: false,
+                file_type: LANGUAGE.VHDL,
+                file_version: VHDL_LANG_VERSION.v2008,
+                source_type: e_source_type.NONE,
+            };
+
+            project_manager.add_file(file_0);
+            expect(project_manager.get_file().length).toBe(1);
+
+            project_manager.clearFiles();
+            expect(project_manager.get_file().length).toBe(0);
+        });
+
+        test('add_logical should add a logical library', () => {
+            const logical_name = "test_library";
+            const result = project_manager.add_logical(logical_name);
+            expect(result.successful).toBe(true);
+        });
+
+        test('delete_file_by_logical_name should remove files by logical name', async () => {
+            const file_0: t_file = {
+                name: 'file_0',
+                is_include_file: false,
+                include_path: '',
+                logical_name: 'test_logical',
+                is_manual: false,
+                file_type: LANGUAGE.VHDL,
+                file_version: VHDL_LANG_VERSION.v2008,
+                source_type: e_source_type.NONE,
+            };
+
+            const file_1: t_file = {
+                name: 'file_1',
+                is_include_file: false,
+                include_path: '',
+                logical_name: 'other_logical',
+                is_manual: false,
+                file_type: LANGUAGE.VHDL,
+                file_version: VHDL_LANG_VERSION.v2008,
+                source_type: e_source_type.NONE,
+            };
+
+            project_manager.add_file(file_0);
+            project_manager.add_file(file_1);
+            expect(project_manager.get_file().length).toBe(2);
+
+            await project_manager.delete_file_by_logical_name('test_logical');
+            expect(project_manager.get_file().length).toBe(1);
+            expect(project_manager.get_file()[0].name).toBe('file_1');
+        });
+    });
+
+    describe('Project Definition and Utilities', () => {
+        test('get_edam_json should return valid EDAM JSON structure', () => {
+            GlobalConfigManager.newInstance("");
+            
+            const file_0: t_file = {
+                name: 'test_file.vhd',
+                is_include_file: false,
+                include_path: '',
+                logical_name: 'work',
+                is_manual: true,
+                file_type: LANGUAGE.VHDL,
+                file_version: VHDL_LANG_VERSION.v2008,
+                source_type: e_source_type.NONE,
+            };
+
+            project_manager.add_file(file_0);
+            project_manager.add_toplevel_path('test_file.vhd');
+
+            const edam_json = project_manager.get_edam_json();
+            
+            expect(edam_json.name).toBe(DEFAULT_NAME);
+            expect(edam_json.files).toBeDefined();
+            expect(edam_json.files.length).toBe(1);
+            expect(edam_json.files[0].name).toBe('test_file.vhd');
+            expect(edam_json.toplevel).toBe('test_file.vhd');
+        });
+
+        test('get_edam_yaml should return valid YAML string', () => {
+            GlobalConfigManager.newInstance("");
+            
+            const yaml_content = project_manager.get_edam_yaml();
+            expect(typeof yaml_content).toBe('string');
+            expect(yaml_content).toContain('name:');
+            expect(yaml_content).toContain(DEFAULT_NAME);
+        });
+
+        test('getRunTitle should return appropriate title based on tool', () => {
+            GlobalConfigManager.newInstance("");
+            
+            const title = project_manager.getRunTitle();
+            expect(typeof title).toBe('string');
+            expect(title.length).toBeGreaterThan(0);
+        });
+    });
+
+    describe('Task and State Management', () => {
+        test('taskStateManager setter and getter', () => {
+            const mockTaskStateManager = {
+                getTaskState: jest.fn(),
+                getTaskList: jest.fn().mockReturnValue([]),
+                getCurrentTask: jest.fn(),
+                setCurrentTask: jest.fn(),
+            };
+
+            project_manager.taskStateManager = mockTaskStateManager as any;
+            expect(project_manager.taskStateManager).toBe(mockTaskStateManager);
+        });
+
+        test('getTaskStatus should return task information', () => {
+            const taskStatus = project_manager.getTaskStatus();
+            expect(taskStatus).toHaveProperty('taskList');
+            expect(taskStatus).toHaveProperty('currentTask');
+            expect(Array.isArray(taskStatus.taskList)).toBe(true);
+        });
+
+        test('get_test_list should return empty array by default', async () => {
+            const testList = await project_manager.get_test_list();
+            expect(Array.isArray(testList)).toBe(true);
+        });
+
+        test('getIpCatalog should return empty array by default', async () => {
+            const ipCatalog = await project_manager.getIpCatalog();
+            expect(Array.isArray(ipCatalog)).toBe(true);
+            expect(ipCatalog.length).toBe(0);
+        });
+    });
+
+    describe('Advanced File Operations', () => {
+        test('get_toml with complex project structure', async () => {
+            const files: t_file[] = [
+                {
+                    name: 'file1.vhd',
+                    is_include_file: false,
+                    include_path: '',
+                    logical_name: 'lib1',
+                    is_manual: true,
+                    file_type: LANGUAGE.VHDL,
+                    file_version: VHDL_LANG_VERSION.v2008,
+                    source_type: e_source_type.NONE,
+                },
+                {
+                    name: 'file2.vhd',
+                    is_include_file: false,
+                    include_path: '',
+                    logical_name: 'lib2',
+                    is_manual: true,
+                    file_type: LANGUAGE.VHDL,
+                    file_version: VHDL_LANG_VERSION.v2008,
+                    source_type: e_source_type.NONE,
+                },
+                {
+                    name: 'file3.v',
+                    is_include_file: false,
+                    include_path: '',
+                    logical_name: 'lib1',
+                    is_manual: true,
+                    file_type: LANGUAGE.VERILOG,
+                    file_version: VERILOG_LANG_VERSION.v2005,
+                    source_type: e_source_type.NONE,
+                }
+            ];
+
+            for (const file of files) {
+                await project_manager.add_file(file);
+            }
+
+            const toml_content = project_manager.get_toml();
+            expect(toml_content).toContain('[libraries]');
+            expect(toml_content).toContain('lib1.files');
+            expect(toml_content).toContain('lib2.files');
+        });
+
+        test('save_edam_yaml should not throw errors', () => {
+            GlobalConfigManager.newInstance("");
+            const tempPath = '/tmp/test_edam.yaml';
+            
+            expect(() => {
+                project_manager.save_edam_yaml(tempPath);
+            }).not.toThrow();
+        });
+    });
+
+    describe('Error Handling and Edge Cases', () => {
+        test('delete_file with non-existent file should handle gracefully', async () => {
+            const result = await project_manager.delete_file('non_existent_file.vhd', 'work');
+            expect(result.successful).toBe(false);
+        });
+
+        test('delete_toplevel_path with non-existent path should handle gracefully', () => {
+            const result = project_manager.delete_toplevel_path('non_existent_path');
+            expect(result.successful).toBe(false);
+        });
+
+        test('check_if_file_in_project with empty project', () => {
+            const result = project_manager.check_if_file_in_project('any_file', 'any_logical');
+            expect(result).toBe(false);
+        });
+
+        test('check_if_path_in_project with empty project', () => {
+            const result = project_manager.check_if_path_in_project('any_path');
+            expect(result).toBe(false);
+        });
+    });
+
+    describe('Timing and Terminal Commands', () => {
+        test('getTimingReport should return empty array by default', async () => {
+            const timingReport = await project_manager.getTimingReport(10, 'setup' as any);
+            expect(Array.isArray(timingReport)).toBe(true);
+            expect(timingReport.length).toBe(0);
+        });
+
+        test('getTerminalCommand should return undefined by default', () => {
+            const terminalCommand = project_manager.getTerminalCommand('bash');
+            expect(terminalCommand).toBeUndefined();
+        });
+
+        test('getArtifact should return empty object by default', async () => {
+            const artifact = await project_manager.getArtifact('SYNTHESIS' as any, 'REPORT' as any);
+            expect(typeof artifact).toBe('object');
+        });
     });
 
 });
