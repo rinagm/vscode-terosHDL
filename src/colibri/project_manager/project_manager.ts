@@ -63,6 +63,7 @@ import { basename } from "path";
 import { get } from "lodash";
 import { getTaskList } from "./tool/utils";
 import { runTaskGHDL } from "./tool/ghdl/taskRunners";
+import { runTaskYosys } from "./tool/yosys/taskRunners";
 
 export const DEFAULT_LIBRARY = "teroshdlDefault";
 
@@ -88,10 +89,19 @@ export class Project_manager extends ConfigManager {
     private linter = new Linter();
     private _taskStateManager: TaskStateManager = new TaskStateManager([]);
 
-    constructor(name: string, projectDiskPath: string, emitterProject: ProjectEmitter) {
+    constructor(name: string, projectDiskPath: string, emitterProject: ProjectEmitter,
+        buildBasePath: string | undefined) {
+
         super(get_undefined_config());
         this.name = name;
-        this._projectDiskPath = projectDiskPath;
+
+        if (projectDiskPath) {
+            this._projectDiskPath = projectDiskPath;
+        }
+        else if (buildBasePath) {
+            this._projectDiskPath = utils.createRandomFolderFromBasePath(name, buildBasePath);
+        }
+
         this.emitterProject = emitterProject;
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const selfm = this;
@@ -210,7 +220,7 @@ export class Project_manager extends ConfigManager {
         const buildPath = jsonContent.project_disk_path ?
             jsonContent.project_disk_path : utils.createRandomFolderFromBasePath(jsonContent.name, buildBasePath);
 
-        const prj = new Project_manager(jsonContent.name, buildPath, emitterProject);
+        const prj = new Project_manager(jsonContent.name, buildPath, emitterProject, buildBasePath);
         // Files
         jsonContent.files.forEach((file: any) => {
             const name = file_utils.get_absolute_path(file_utils.get_directory(reference_path), file.name);
@@ -664,6 +674,12 @@ export class Project_manager extends ConfigManager {
     }
 
     public clean(clean_mode: e_clean_step, callback_stream: (stream_c: any) => void): any {
+        this._taskStateManager.getTaskList().forEach((task) => {
+            task.status = e_taskState.IDLE;
+            task.elapsed_time = undefined;
+            task.percent = undefined;
+        });
+        this.emitUpdateStatus();
         return this.tools_manager.clean(this.get_project_definition(), clean_mode, this.projectDiskPath, callback_stream);
     }
 
@@ -689,6 +705,16 @@ export class Project_manager extends ConfigManager {
         if (toolName === e_tools_general_select_tool.ghdl) {
             const startTime = Date.now();
             return runTaskGHDL(taskType, this.get_project_definition(), (result: p_result) => {
+                const taskStatus = result.successful ? e_taskState.FINISHED : e_taskState.FAILED;
+                const endTime = Date.now();
+                const elapsedTime = endTime - startTime; // ms
+                this.taskStateManager.updateTask(taskType, taskStatus, undefined, result.successful, elapsedTime);
+                this.emitUpdateStatus();
+                callback(result);
+            });
+        } else if (toolName === e_tools_general_select_tool.yosys) {
+            const startTime = Date.now();
+            return runTaskYosys(taskType, this.get_project_definition(), (result: p_result) => {
                 const taskStatus = result.successful ? e_taskState.FINISHED : e_taskState.FAILED;
                 const endTime = Date.now();
                 const elapsedTime = endTime - startTime; // ms

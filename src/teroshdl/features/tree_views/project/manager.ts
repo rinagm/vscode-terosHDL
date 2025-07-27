@@ -111,8 +111,8 @@ export class Project_manager extends BaseView {
             if (project_name !== undefined) {
                 try {
                     this.project_manager.add_project(
-                        new ProjectManager.Project_manager(project_name, '', this.emitterProject
-                        ));
+                        new ProjectManager.Project_manager(project_name, '', this.emitterProject,
+                        getVSCodeWorkspaceStorage(this.context)));
                 } catch (error) {
                 }
             }
@@ -202,7 +202,7 @@ export class Project_manager extends BaseView {
             if (project_name !== undefined) {
                 try {
                     const prj = new ProjectManager.Project_manager(
-                        project_name, '', this.emitterProject
+                        project_name, '', this.emitterProject, getVSCodeWorkspaceStorage(this.context)
                     );
                     this.project_manager.add_project(prj);
                     await utils.add_sources_from_vunit(prj, true);

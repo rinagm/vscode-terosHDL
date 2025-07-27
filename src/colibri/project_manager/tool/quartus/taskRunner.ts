@@ -128,7 +128,13 @@ const taskDependencies: Record<e_taskType, e_taskType[]> = {
     [e_taskType.GHDL_SIMULATE]: [],
     [e_taskType.GHDL_SYNTHESIZE]: [],
     [e_taskType.GHDL_CHECK_SYNTAX]: [],
-    [e_taskType.GHDL_MAKEFILE]: []
+    [e_taskType.GHDL_MAKEFILE]: [],
+    [e_taskType.YOSYS_COMPILE_ALL]: [],
+    [e_taskType.YOSYS_LOAD_FILES]: [],
+    [e_taskType.YOSYS_ANALYZE]: [],
+    [e_taskType.YOSYS_ELABORATE]: [],
+    [e_taskType.YOSYS_SYNTHESIS]: [],
+    [e_taskType.YOSYS_SHOW]: []
 };
 
 function executeCommandList(projectName: string, commands: string[], cwd: string, emitter: ProjectEmitter,
@@ -222,6 +228,12 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
         [e_taskType.GHDL_SYNTHESIZE]: "",
         [e_taskType.GHDL_CHECK_SYNTAX]: "",
         [e_taskType.GHDL_MAKEFILE]: "",
+        [e_taskType.YOSYS_COMPILE_ALL]: "",
+        [e_taskType.YOSYS_LOAD_FILES]: "",
+        [e_taskType.YOSYS_ANALYZE]: "",
+        [e_taskType.YOSYS_ELABORATE]: "",
+        [e_taskType.YOSYS_SYNTHESIS]: "",
+        [e_taskType.YOSYS_SHOW]: ""
     };
 
     const cmdList: string[] = [];

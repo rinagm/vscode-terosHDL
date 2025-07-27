@@ -19,6 +19,9 @@
 - id: "vcd"
   extensions: [".vcd"]
 
+- id: "logTerosHDL"
+  extensions: [".logTerosHDL"]
+
 - id: "gtkw_waveconfig"
   extensions: [".gtkw"]
 

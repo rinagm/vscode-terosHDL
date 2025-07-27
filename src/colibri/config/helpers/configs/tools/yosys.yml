@@ -1,42 +1,411 @@
+# Basic Configuration
+section_basic:
+  description: "Basic Yosys Configuration"
+  type: divider
+
 installation_path:
   description: "Installation path:"
   type: string
   value: ""
 
-arch:
-  description: "Target architecture."
-  type: select
-  options:
-    xilinx: "Xilinx"
-    ice40: "ICE40"
-    ecp5: "ECP5"
-  value: "xilinx"
+# File Settings
+section_files:
+  description: "File Settings"
+  type: divider
 
-output_format:
-  description: "Output file format."
-  type: select
-  options:
-    json: "JSON"
-    edif: "EDIF"
-    blif: "BLIF"
-  value: "json"
+read_verilog_options:
+  description: "Options for read_verilog command:"
+  type: array
+  value: []
 
-yosys_as_subtool:
-  description: "Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool."
+read_systemverilog_options:
+  description: "Options for read_verilog -sv command (SystemVerilog files):"
+  type: array
+  value: []
+
+read_liberty_options:
+  description: "Options for read_liberty command (technology library files):"
+  type: array
+  value: []
+
+# Top Module Settings
+section_hierarchy:
+  description: "Hierarchy Settings"
+  type: divider
+
+hierarchy_options:
+  description: "Options for hierarchy command:"
+  type: array
+  value: []
+
+# Elaborate: Optimizations
+section_synthesis:
+  description: "Elaborate: Optimizations"
+  type: divider
+
+proc_options:
+  description: "Options for proc command (process conversion):"
+  type: array
+  value: []
+
+opt_options:
+  description: "Options for opt command (optimization):"
+  type: array
+  value: []
+
+flatten_enabled:
+  description: "Enable flatten command during elaboration:"
+  type: boolean
+  value: true
+
+flatten_options:
+  description: "Options for flatten command:"
+  type: array
+  value: []
+
+# Elaborate: Memory and FSM Settings
+section_memory_fsm:
+  description: "Elaborate: Memory and FSM Settings"
+  type: divider
+
+memory_options:
+  description: "Options for memory command:"
+  type: array
+  value: []
+
+fsm_enabled:
+  description: "Enable FSM extraction and optimization:"
   type: boolean
   value: false
 
-makefile_name:
-  description: "Generated makefile name, defaults to $name.mk"
+fsm_options:
+  description: "Options for fsm command:"
+  type: array
+  value: []
+
+# Elaborate: Technology Mapping
+section_techmap:
+  description: "Elaborate: Technology Mapping"
+  type: divider
+
+techmap_enabled:
+  description: "Enable technology mapping:"
+  type: boolean
+  value: false
+
+techmap_options:
+  description: "Options for techmap command:"
+  type: array
+  value: []
+
+abc_enabled:
+  description: "Enable ABC optimization:"
+  type: boolean
+  value: false
+
+abc_options:
+  description: "Options for abc command:"
+  type: array
+  value: []
+
+# Synthesis: General
+section_synthesis_general:
+  description: "Synthesis: General"
+  type: divider
+
+synthesis_target:
+  description: "Synthesis target FPGA:"
+  type: select
+  options:
+    ice40: "iCE40 (Lattice)"
+    ecp5: "ECP5 (Lattice)"
+  value: ice40
+
+# Synthesis: iCE40
+section_synthesis_ice40:
+  description: "Synthesis: iCE40"
+  type: divider
+
+ice40_device:
+  description: "iCE40 device type:"
+  type: select
+  options:
+    hx: "HX series"
+    lp: "LP series" 
+    u: "Ultra series"
+  value: hx
+
+ice40_top_module:
+  description: "Top module (leave empty to auto-detect):"
   type: string
   value: ""
 
-script_name:
-  description: "Generated tcl script filename, defaults to $name.mk"
+ice40_output_blif:
+  description: "Output BLIF file path (leave empty to skip):"
   type: string
   value: ""
 
-yosys_synth_options:
-  description: "Additional options for the synth_ice40 command."
+ice40_output_edif:
+  description: "Output EDIF file path (leave empty to skip):"
+  type: string
+  value: ""
+
+ice40_output_json:
+  description: "Output JSON file path (leave empty to skip):"
+  type: string
+  value: ""
+
+ice40_noflatten:
+  description: "Do not flatten design before synthesis:"
+  type: boolean
+  value: false
+
+ice40_dff:
+  description: "Run ABC with -dff option:"
+  type: boolean
+  value: false
+
+ice40_retime:
+  description: "Run ABC with retiming (-dff -D 1):"
+  type: boolean
+  value: false
+
+ice40_nocarry:
+  description: "Do not use SB_CARRY cells:"
+  type: boolean
+  value: false
+
+ice40_nodffe:
+  description: "Do not use SB_DFFE* cells:"
+  type: boolean
+  value: false
+
+ice40_dffe_min_ce_use:
+  description: "Min CE use for SB_DFFE* cells (0 = disabled):"
+  type: number
+  value: 0
+
+ice40_nobram:
+  description: "Do not use SB_RAM40_4K* cells:"
+  type: boolean
+  value: false
+
+ice40_spram:
+  description: "Enable automatic inference of SB_SPRAM256KA:"
+  type: boolean
+  value: false
+
+ice40_dsp:
+  description: "Use iCE40 UltraPlus DSP cells:"
+  type: boolean
+  value: false
+
+ice40_noabc:
+  description: "Use built-in Yosys LUT techmapping instead of ABC:"
+  type: boolean
+  value: false
+
+ice40_abc2:
+  description: "Run two passes of ABC:"
+  type: boolean
+  value: false
+
+ice40_vpr:
+  description: "Generate VPR-suitable output (experimental):"
+  type: boolean
+  value: false
+
+ice40_noabc9:
+  description: "Disable use of new ABC9 flow:"
+  type: boolean
+  value: false
+
+ice40_flowmap:
+  description: "Use FlowMap LUT techmapping (experimental):"
+  type: boolean
+  value: false
+
+ice40_no_rw_check:
+  description: "Mark all read ports as return don't-care on collision:"
+  type: boolean
+  value: false
+
+# Synthesis: ECP5
+section_synthesis_ecp5:
+  description: "Synthesis: ECP5"
+  type: divider
+
+ecp5_top_module:
+  description: "Top module (leave empty to auto-detect):"
+  type: string
+  value: ""
+
+ecp5_output_blif:
+  description: "Output BLIF file path (leave empty to skip):"
+  type: string
+  value: ""
+
+ecp5_output_edif:
+  description: "Output EDIF file path (leave empty to skip):"
+  type: string
+  value: ""
+
+ecp5_output_json:
+  description: "Output JSON file path (leave empty to skip):"
+  type: string
+  value: ""
+
+ecp5_noflatten:
+  description: "Do not flatten design before synthesis:"
+  type: boolean
+  value: false
+
+ecp5_dff:
+  description: "Run ABC with -dff option:"
+  type: boolean
+  value: false
+
+ecp5_retime:
+  description: "Run ABC with retiming (-dff -D 1):"
+  type: boolean
+  value: false
+
+ecp5_noccu2:
+  description: "Do not use CCU2 cells:"
+  type: boolean
+  value: false
+
+ecp5_nodffe:
+  description: "Do not use flipflops with CE:"
+  type: boolean
+  value: false
+
+ecp5_nobram:
+  description: "Do not use block RAM cells:"
+  type: boolean
+  value: false
+
+ecp5_nolutram:
+  description: "Do not use LUT RAM cells:"
+  type: boolean
+  value: false
+
+ecp5_nowidelut:
+  description: "Do not use PFU muxes for LUTs larger than LUT4s:"
+  type: boolean
+  value: false
+
+ecp5_asyncprld:
+  description: "Use async PRLD mode (experimental):"
+  type: boolean
+  value: false
+
+ecp5_abc2:
+  description: "Run two passes of ABC:"
+  type: boolean
+  value: false
+
+ecp5_noabc9:
+  description: "Disable use of new ABC9 flow:"
+  type: boolean
+  value: false
+
+ecp5_vpr:
+  description: "Generate VPR-suitable output (experimental):"
+  type: boolean
+  value: false
+
+ecp5_iopad:
+  description: "Insert IO buffers:"
+  type: boolean
+  value: false
+
+ecp5_nodsp:
+  description: "Do not map multipliers to MULT18X18D:"
+  type: boolean
+  value: false
+
+ecp5_no_rw_check:
+  description: "Mark all read ports as return don't-care on collision:"
+  type: boolean
+  value: false
+
+# Debug and Logging
+section_debug:
+  description: "Debug and Logging"
+  type: divider
+
+verbose:
+  description: "Enable verbose output:"
+  type: boolean
+  value: false
+
+debug_level:
+  description: "Debug level:"
+  type: select
+  options:
+    none: "No debug"
+    basic: "Basic debug"
+    detailed: "Detailed debug"
+    verbose: "Verbose debug"
+  value: none
+
+log_file:
+  description: "Log file path (leave empty for stdout):"
+  type: string
+  value: ""
+
+# Legacy Configuration (for compatibility)
+section_legacy:
+  description: "Legacy Configuration"
+  type: divider
+
+# Custom Commands
+section_custom:
+  description: "Custom Commands"
+  type: divider
+
+custom_load_commands:
+  description: "Custom commands to run after loading files:"
+  type: array
+  value: []
+
+custom_analyze_commands:
+  description: "Custom commands to run during analysis:"
+  type: array
+  value: []
+
+custom_elaborate_commands:
+  description: "Custom commands to run during elaboration:"
+  type: array
+  value: []
+
+extra_flags:
+  description: "Additional custom flags for Yosys commands:"
+  type: array
+  value: []
+
+# Advanced Settings
+section_advanced:
+  description: "Advanced Settings"
+  type: divider
+
+check_enabled:
+  description: "Enable design rule checks:"
+  type: boolean
+  value: true
+
+check_options:
+  description: "Options for check command:"
+  type: array
+  value: []
+
+stat_enabled:
+  description: "Enable statistics reporting:"
+  type: boolean
+  value: true
+
+stat_options:
+  description: "Options for stat command:"
   type: array
   value: []

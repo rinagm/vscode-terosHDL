@@ -21,14 +21,14 @@ import * as vscode from "vscode";
 import {LoggerBase} from "colibri/logger/logger";
 
 export class Logger extends LoggerBase {
-    private output_channel: vscode.LogOutputChannel;
+    private output_channel: vscode.OutputChannel;
 
     constructor(name = "") {
         super();
         if (name === "") {
             name = 'TerosHDL: Tool manager';
         }
-        this.output_channel = vscode.window.createOutputChannel(name, { log: true });
+        this.output_channel = vscode.window.createOutputChannel(name, 'logTerosHDL');
     }
 
     clear() {
@@ -55,27 +55,27 @@ export class Logger extends LoggerBase {
 
     debug(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.debug(this.replaceFilePath(msg));
+        this.output_channel.append(this.replaceFilePath(msg));
     }
 
     warn(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.warn(this.replaceFilePath(msg));
+        this.output_channel.append(this.replaceFilePath(msg));
     }
 
     info(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.info(this.replaceFilePath(msg));
+        this.output_channel.append(this.replaceFilePath(msg));
     }
     
     trace(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.trace(this.replaceFilePath(msg));
+        this.output_channel.append(this.replaceFilePath(msg));
     }
 
     error(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.error(this.replaceFilePath(msg));
+        this.output_channel.append(this.replaceFilePath(msg));
     }
 
     replaceFilePath(input: string): string {

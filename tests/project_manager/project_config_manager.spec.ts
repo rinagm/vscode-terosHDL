@@ -29,7 +29,7 @@ describe('ProjectManager Configuration', () => {
 
     beforeEach(() => {
         GlobalConfigManager.getInstance().set_config(get_default_config()); // Restore default config before each test
-        projectManager = new Project_manager("Project1", "", new ProjectEmitter());
+        projectManager = new Project_manager("Project1", "", new ProjectEmitter(), undefined);
     });
 
     it('should initialize configuration with default config', () => {
