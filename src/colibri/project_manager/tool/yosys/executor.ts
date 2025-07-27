@@ -1,11 +1,11 @@
-import { p_result } from 'colibri/process/common';
+import { p_result } from '../../../process/common';
 import { ChildProcess } from 'child_process';
-import { e_tools_yosys } from 'colibri/config/config_declaration';
-import { Process } from 'colibri/process/process';
+import { e_tools_yosys } from '../../../config/config_declaration';
+import { Process } from '../../../process/process';
 import { buildYosysArgs } from './commandBuilder';
 import * as path from 'path';
-import * as file_utils from 'colibri/utils/file_utils';
-import { LoggerBase } from 'colibri/logger/logger';
+import * as file_utils from '../../../utils/file_utils';
+import { LoggerBase } from '../../../logger/logger';
 
 /**
  * Command execution utilities for Yosys

@@ -1,7 +1,7 @@
-import { p_result } from 'colibri/process/common';
+import { p_result } from '../../../process/common';
 import { e_taskType } from '../common';
 import { ChildProcess } from 'child_process';
-import { t_project_definition } from 'colibri/project_manager/project_definition';
+import { t_project_definition } from '../../project_definition';
 import {
     runYosysLoadFiles,
     runYosysAnalyze,
@@ -12,8 +12,8 @@ import {
     runYosysShow,
     runYosysResourceUtilization
 } from './tasks';
-import * as file_utils from 'colibri/utils/file_utils';
-import { LoggerBase } from 'colibri/logger/logger';
+import * as file_utils from '../../../utils/file_utils';
+import { LoggerBase } from '../../../logger/logger';
 
 /**
  * Main entry point for Yosys task execution

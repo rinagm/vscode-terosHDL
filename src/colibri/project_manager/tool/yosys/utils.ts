@@ -1,7 +1,7 @@
-import { t_project_definition } from 'colibri/project_manager/project_definition';
-import { LANGUAGE } from 'colibri/common/general';
-import { get_toplevel_from_path } from 'colibri/utils/hdl_utils';
-import { e_tools_yosys } from 'colibri/config/config_declaration';
+import { t_project_definition } from '../../project_definition';
+import { LANGUAGE } from '../../../common/general';
+import { get_toplevel_from_path } from '../../../utils/hdl_utils';
+import { e_tools_yosys } from '../../../config/config_declaration';
 import * as path from 'path';
 import * as fs from 'fs';
 
