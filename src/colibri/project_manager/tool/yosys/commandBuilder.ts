@@ -2,7 +2,7 @@ import {
     e_tools_yosys, 
     e_tools_yosys_debug_level, 
     e_tools_yosys_synthesis_target 
-} from 'colibri/config/config_declaration';
+} from '../../../config/config_declaration';
 
 /**
  * Command argument building utilities for Yosys

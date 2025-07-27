@@ -1,6 +1,6 @@
-import { p_result } from 'colibri/process/common';
+import { p_result } from '../../../process/common';
 import { ChildProcess } from 'child_process';
-import { t_project_definition } from 'colibri/project_manager/project_definition';
+import { t_project_definition } from '../../project_definition';
 import { 
     buildYosysArgs, 
     buildLoadCommands, 
@@ -19,7 +19,7 @@ import {
     getLatestStateFile,
     getShowSvgFileName
 } from './utils';
-import { LoggerBase } from 'colibri/logger/logger';
+import { LoggerBase } from '../../../logger/logger';
 
 /**
  * Individual Yosys task implementations
