@@ -1,14 +1,12 @@
-// packages/teroshdl/src/features/tree_views/tasks/sandpiper_utils.ts
-
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { sandpiperLogger } from './sandpiper_logger';
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import { ProjectEmitter } from 'colibri/project_manager/projectEmitter';
-import { e_config } from 'colibri/config/config_declaration';
 import { e_taskType } from 'colibri/project_manager/tool/common';
 import { generateNavTlv, generateSandpiperDiagram, runTLVerilogToVerilogConversion } from 'colibri/project_manager/tool/sandpiper/utils';
+import { toolLogger } from '../../../logger';
 
 export async function runSandpiperConversion(
     project: Multi_project_manager,
@@ -73,7 +71,8 @@ export async function runSandpiperDiagramGeneration(
         // First, run the task
         await new Promise<void>((resolve, reject) => {
             selectedProject.runTask(
-               e_taskType.SANDPIPER_DIAGRAM_TAB,
+                e_taskType.SANDPIPER_DIAGRAM_TAB,
+                toolLogger,
                 (result) => {
                     if (result.successful) {
                         resolve();
@@ -240,6 +239,7 @@ export async function runSandpiperNavTlvGeneration(
         await new Promise<void>((resolve, reject) => {
             selectedProject.runTask(
                 e_taskType.SANDPIPER_NAV_TLV_TAB,
+                toolLogger,
                 (result) => {
                     if (result.successful) {
                         resolve();

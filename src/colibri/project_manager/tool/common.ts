@@ -54,7 +54,8 @@ export enum e_taskType {
     YOSYS_ANALYZE = "Analyze",
     YOSYS_ELABORATE = "Elaborate",
     YOSYS_SYNTHESIS = "Yosys Synthesis",
-    YOSYS_SHOW = "Show",
+    YOSYS_SHOW = "Show Schematic",
+    YOSYS_RESOURCE_UTILIZATION = "Resource Utilization",
     // SandPiper tasks
     SANDPIPER_TLVERILOGTOVERILOG = "TL-Verilog to Verilog",
     SANDPIPER_DIAGRAM_TAB = "Open Diagram Tab",

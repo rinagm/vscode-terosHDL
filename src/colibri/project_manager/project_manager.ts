@@ -64,6 +64,7 @@ import { get } from "lodash";
 import { getTaskList } from "./tool/utils";
 import { runTaskGHDL } from "./tool/ghdl/taskRunners";
 import { runTaskYosys } from "./tool/yosys/taskRunners";
+import { LoggerBase } from "colibri/logger/logger";
 
 export const DEFAULT_LIBRARY = "teroshdlDefault";
 
@@ -674,11 +675,17 @@ export class Project_manager extends ConfigManager {
     }
 
     public clean(clean_mode: e_clean_step, callback_stream: (stream_c: any) => void): any {
-        this._taskStateManager.getTaskList().forEach((task) => {
+        const resetTaskStatus = (tasks: t_taskRep[]) => {
+            tasks.forEach((task) => {
             task.status = e_taskState.IDLE;
             task.elapsed_time = undefined;
             task.percent = undefined;
-        });
+            if (Array.isArray(task.children)) {
+                resetTaskStatus(task.children);
+            }
+            });
+        };
+        resetTaskStatus(this._taskStateManager.getTaskList());
         this.emitUpdateStatus();
         return this.tools_manager.clean(this.get_project_definition(), clean_mode, this.projectDiskPath, callback_stream);
     }
@@ -700,7 +707,7 @@ export class Project_manager extends ConfigManager {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-    public runTask(taskType: e_taskType, callback: (result: p_result) => void): ChildProcess {
+    public runTask(taskType: e_taskType, logger: LoggerBase, callback: (result: p_result) => void): ChildProcess {
         const toolName = this.get_config().tools.general.select_tool;
         if (toolName === e_tools_general_select_tool.ghdl) {
             const startTime = Date.now();
@@ -714,7 +721,7 @@ export class Project_manager extends ConfigManager {
             });
         } else if (toolName === e_tools_general_select_tool.yosys) {
             const startTime = Date.now();
-            return runTaskYosys(taskType, this.get_project_definition(), (result: p_result) => {
+            return runTaskYosys(taskType, this.get_project_definition(), logger, (result: p_result) => {
                 const taskStatus = result.successful ? e_taskState.FINISHED : e_taskState.FAILED;
                 const endTime = Date.now();
                 const elapsedTime = endTime - startTime; // ms

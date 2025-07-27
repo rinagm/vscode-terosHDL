@@ -134,7 +134,8 @@ const taskDependencies: Record<e_taskType, e_taskType[]> = {
     [e_taskType.YOSYS_ANALYZE]: [],
     [e_taskType.YOSYS_ELABORATE]: [],
     [e_taskType.YOSYS_SYNTHESIS]: [],
-    [e_taskType.YOSYS_SHOW]: []
+    [e_taskType.YOSYS_SHOW]: [],
+    [e_taskType.YOSYS_RESOURCE_UTILIZATION]: []
 };
 
 function executeCommandList(projectName: string, commands: string[], cwd: string, emitter: ProjectEmitter,
@@ -233,7 +234,8 @@ export function runTask(taskType: e_taskType, taskManager: TaskStateManager, qua
         [e_taskType.YOSYS_ANALYZE]: "",
         [e_taskType.YOSYS_ELABORATE]: "",
         [e_taskType.YOSYS_SYNTHESIS]: "",
-        [e_taskType.YOSYS_SHOW]: ""
+        [e_taskType.YOSYS_SHOW]: "",
+        [e_taskType.YOSYS_RESOURCE_UTILIZATION]: ""
     };
 
     const cmdList: string[] = [];

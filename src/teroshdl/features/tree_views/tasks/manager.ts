@@ -32,6 +32,7 @@ import { openRTLAnalyzer } from "./quartus_utils";
 import { TimingReportView } from "../../views/timing/timing_report";
 import { runSandpiperConversion, runSandpiperDiagramGeneration, runSandpiperNavTlvGeneration } from './sandpiper_utils';
 import { showSvgInWebview } from 'colibri/project_manager/tool/yosys/svgWebview';
+import { showResourceUtilizationWebview } from 'colibri/project_manager/tool/yosys/resourceUtilizationWebview';
 import { getShowSvgFilePath } from 'colibri/project_manager/tool/yosys/utils';
 import { ProjectEmitter } from "colibri/project_manager/projectEmitter";
 import { e_artifact_type, e_element_type, e_reportType, e_taskState, e_taskType, terminalTypeMap } from "colibri/project_manager/tool/common";
@@ -222,7 +223,7 @@ export class Tasks_manager extends BaseView {
                 this.setStatusBarText(undefined);
                 this.statusBar.show();
 
-                const exec_i = selectedProject.runTask(task, (result: p_result) => {
+                const exec_i = selectedProject.runTask(task, toolLogger, (result: p_result) => {
                     this.hideStatusBar();
                     this.state = e_VIEW_STATE.IDLE;
                     this.refresh_tree();
@@ -232,7 +233,7 @@ export class Tasks_manager extends BaseView {
                         const svgPath = getShowSvgFilePath(selectedProject.projectDiskPath);
                         try {
                             showSvgInWebview(svgPath, this.context);
-                            vscode.window.showInformationMessage('Circuit diagram generated and displayed.');
+                            // Note: Success message is now handled by the webview function
                         } catch (error) {
                             vscode.window.showErrorMessage(`Error displaying SVG: ${error}`);
                         }
@@ -259,6 +260,60 @@ export class Tasks_manager extends BaseView {
                 this.hideStatusBar();
                 this.state = e_VIEW_STATE.IDLE;
                 vscode.window.showErrorMessage(`Error running Yosys Show: ${error}`);
+            }
+            return;
+        }
+        if (taskItem.taskDefinition.name === e_taskType.YOSYS_RESOURCE_UTILIZATION) {
+            // Special handling for YOSYS_RESOURCE_UTILIZATION task to show statistics in webview
+            if (this.checkRunning()) {
+                return;
+            }
+            
+            this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+            try {
+                const selectedProject = this.project_manager.get_selected_project();
+                const task = taskItem.taskDefinition.name;
+
+                this.state = e_VIEW_STATE.RUNNING;
+                this.setStatusBarText(undefined);
+                this.statusBar.show();
+
+                const exec_i = selectedProject.runTask(task, toolLogger, (result: p_result) => {
+                    this.hideStatusBar();
+                    this.state = e_VIEW_STATE.IDLE;
+                    this.refresh_tree();
+                    
+                    // If successful, show resource utilization in webview
+                    if (result.successful) {
+                        try {
+                            showResourceUtilizationWebview(result.stdout, this.context);
+                            // Note: Success message is now handled by the webview function
+                        } catch (error) {
+                            vscode.window.showErrorMessage(`Error displaying resource utilization: ${error}`);
+                        }
+                    }
+                });
+                
+                this.latesRunTask = exec_i;
+                this.latestTask = taskItem.taskDefinition.name;
+                this.refresh_tree();
+
+                toolLogger.show(true);
+                if (exec_i.stdout) {
+                    exec_i.stdout.on('data', (data: string) => {
+                        const cleanOutput = data.replace(/File: /g, "file://");
+                        toolLogger.log(cleanOutput);
+                    });
+                }
+                if (exec_i.stderr) {
+                    exec_i.stderr.on('data', (data: string) => {
+                        toolLogger.log(data);
+                    });
+                }
+            } catch (error) {
+                this.hideStatusBar();
+                this.state = e_VIEW_STATE.IDLE;
+                vscode.window.showErrorMessage(`Error running Resource Utilization: ${error}`);
             }
             return;
         }
@@ -289,7 +344,7 @@ export class Tasks_manager extends BaseView {
             this.setStatusBarText(undefined);
             this.statusBar.show();
 
-            const exec_i = selectedProject.runTask(task, (result: p_result) => {
+            const exec_i = selectedProject.runTask(task, toolLogger, (result: p_result) => {
                 this.hideStatusBar();
                 this.state = e_VIEW_STATE.IDLE;
                 // Refresh view to set the finish decorators

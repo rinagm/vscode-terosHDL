@@ -13,6 +13,7 @@ import { TaskStateManager } from "../taskState";
 import { getDefaultTaskList } from "./common";
 import * as file_utils from "../../../utils/file_utils";
 import { get_config_from_json } from "../../../config/config_declaration";
+import { LoggerBase } from "colibri/logger/logger";
 
 export class SandpiperProjectManager extends Project_manager {
 
@@ -33,7 +34,7 @@ export class SandpiperProjectManager extends Project_manager {
         };
     }
 
-    public runTask(taskType: e_taskType, callback: (result: p_result) => void): ChildProcess {
+    public runTask(taskType: e_taskType, _loggerBase: LoggerBase, callback: (result: p_result) => void): ChildProcess {
         this.taskStateManager.setCurrentTask(undefined);
 
         return runTask(

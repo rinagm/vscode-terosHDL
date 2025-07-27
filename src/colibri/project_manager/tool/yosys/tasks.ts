@@ -19,7 +19,7 @@ import {
     getLatestStateFile,
     getShowSvgFileName
 } from './utils';
-import { toolLogger } from '../../../../teroshdl/logger';
+import { LoggerBase } from 'colibri/logger/logger';
 
 /**
  * Individual Yosys task implementations
@@ -49,7 +49,8 @@ function createErrorResult(command: string, errorMessage: string): p_result {
  * @returns ChildProcess instance
  */
 export function runYosysLoadFiles(
-    projectDefinition: t_project_definition, 
+    projectDefinition: t_project_definition,
+    toolLogger: LoggerBase,
     callback: (result: p_result) => void
 ): ChildProcess {
     toolLogger.appendLine(`[Yosys] Starting Load Files task`);
@@ -91,7 +92,7 @@ export function runYosysLoadFiles(
     const script = loadCommands.join('; ');
 
     toolLogger.appendLine(`[Yosys] Load Files task completed, executing Yosys script`);
-    return executeYosysScript(config, script, projectDefinition.project_disk_path, callback);
+    return executeYosysScript(config, script, projectDefinition.project_disk_path, toolLogger, callback);
 }
 
 /**
@@ -102,7 +103,8 @@ export function runYosysLoadFiles(
  * @returns ChildProcess instance
  */
 export function runYosysAnalyze(
-    projectDefinition: t_project_definition, 
+    projectDefinition: t_project_definition,
+    toolLogger: LoggerBase,
     callback: (result: p_result) => void
 ): ChildProcess {
     toolLogger.appendLine(`[Yosys] Starting Analyze task`);
@@ -147,7 +149,7 @@ export function runYosysAnalyze(
     // Join commands with semicolons
     const script = commands.join('; ');
 
-    return executeYosysScript(config, script, projectDefinition.project_disk_path, callback);
+    return executeYosysScript(config, script, projectDefinition.project_disk_path, toolLogger, callback);
 }
 
 /**
@@ -158,7 +160,8 @@ export function runYosysAnalyze(
  * @returns ChildProcess instance
  */
 export function runYosysElaborate(
-    projectDefinition: t_project_definition, 
+    projectDefinition: t_project_definition,
+    toolLogger: LoggerBase,
     callback: (result: p_result) => void
 ): ChildProcess {
     toolLogger.appendLine(`[Yosys] Starting Elaborate task`);
@@ -193,7 +196,7 @@ export function runYosysElaborate(
     // Join commands with semicolons
     const script = commands.join('; ');
 
-    return executeYosysScript(config, script, projectDefinition.project_disk_path, callback);
+    return executeYosysScript(config, script, projectDefinition.project_disk_path, toolLogger, callback);
 }
 
 /**
@@ -204,7 +207,8 @@ export function runYosysElaborate(
  * @returns ChildProcess instance
  */
 export function runYosysSynthesis(
-    projectDefinition: t_project_definition, 
+    projectDefinition: t_project_definition,
+    toolLogger: LoggerBase,
     callback: (result: p_result) => void
 ): ChildProcess {
     toolLogger.appendLine(`[Yosys] Starting Synthesis task`);
@@ -247,7 +251,7 @@ export function runYosysSynthesis(
     // Join commands with semicolons
     const script = commands.join('; ');
 
-    return executeYosysScript(config, script, projectDefinition.project_disk_path, callback);
+    return executeYosysScript(config, script, projectDefinition.project_disk_path, toolLogger, callback);
 }
 
 /**
@@ -257,7 +261,8 @@ export function runYosysSynthesis(
  * @returns ChildProcess instance
  */
 export function runYosysCompileAll(
-    projectDefinition: t_project_definition, 
+    projectDefinition: t_project_definition,
+    toolLogger: LoggerBase,
     callback: (result: p_result) => void
 ): ChildProcess {
     toolLogger.appendLine(`[Yosys] Starting Compile All task`);
@@ -310,7 +315,7 @@ export function runYosysCompileAll(
     // Join commands with semicolons
     const script = commands.join('; ');
 
-    return executeYosysScript(config, script, projectDefinition.project_disk_path, callback);
+    return executeYosysScript(config, script, projectDefinition.project_disk_path, toolLogger, callback);
 }
 
 /**
@@ -320,7 +325,8 @@ export function runYosysCompileAll(
  * @returns ChildProcess instance
  */
 export function runYosysOpenProjectFolder(
-    projectDefinition: t_project_definition, 
+    projectDefinition: t_project_definition,
+    toolLogger: LoggerBase,
     callback: (result: p_result) => void
 ): ChildProcess {
     toolLogger.appendLine(`[Yosys] Opening project folder: ${projectDefinition.project_disk_path}`);
@@ -341,7 +347,7 @@ export function runYosysOpenProjectFolder(
             break;
     }
 
-    return executeCommand(command, projectPath, callback);
+    return executeCommand(command, projectPath, toolLogger, callback);
 }
 
 /**
@@ -353,6 +359,7 @@ export function runYosysOpenProjectFolder(
  */
 export function runYosysShow(
     projectDefinition: t_project_definition, 
+    toolLogger: LoggerBase,
     callback: (result: p_result) => void
 ): ChildProcess {
     toolLogger.appendLine(`[Yosys] Starting Show task`);
@@ -382,5 +389,47 @@ export function runYosysShow(
     // Join commands with semicolons
     const script = commands.join('; ');
 
-    return executeYosysScript(config, script, projectDefinition.project_disk_path, callback);
+    return executeYosysScript(config, script, projectDefinition.project_disk_path, toolLogger, callback);
+}
+
+/**
+ * Executes Yosys resource utilization task to generate resource usage statistics
+ * Loads the latest state file and runs yosys stat to generate JSON statistics
+ * @param projectDefinition Project definition containing configuration
+ * @param callback Callback function to handle the result
+ * @returns ChildProcess instance
+ */
+export function runYosysResourceUtilization(
+    projectDefinition: t_project_definition,
+    toolLogger: LoggerBase,
+    callback: (result: p_result) => void
+): ChildProcess {
+    toolLogger.appendLine(`[Yosys] Starting Resource Utilization task`);
+    
+    const config = projectDefinition.config.tools.yosys;
+
+    // Find the latest available state file
+    const latestStateFile = getLatestStateFile(projectDefinition.project_disk_path);
+    if (!latestStateFile) {
+        toolLogger.appendLine(`[Yosys] No state files found. Please run compilation stages first.`);
+        const result = createErrorResult('yosys resource utilization', 
+            'No state files found. Please run compilation stages first.');
+        setTimeout(() => callback(result), 0);
+        return {} as ChildProcess;
+    }
+
+    toolLogger.appendLine(`[Yosys] Using state file: ${latestStateFile}`);
+
+    const commands: string[] = [];
+    
+    // Read the latest state RTLIL file
+    commands.push(`read_rtlil ${latestStateFile}`);
+    
+    // Generate resource utilization statistics in JSON format
+    commands.push(`stat -json`);
+
+    // Join commands with semicolons
+    const script = commands.join('; ');
+
+    return executeYosysScript(config, script, projectDefinition.project_disk_path, toolLogger, callback);
 }
