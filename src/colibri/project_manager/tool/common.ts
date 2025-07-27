@@ -48,6 +48,13 @@ export enum e_taskType {
     GHDL_SYNTHESIZE = "GHDL Synthesize",
     GHDL_CHECK_SYNTAX = "GHDL Check Syntax",
     GHDL_MAKEFILE = "GHDL Generate Makefile",
+    // Yosys tasks
+    YOSYS_COMPILE_ALL = "Compile All",
+    YOSYS_LOAD_FILES = "Load Files",
+    YOSYS_ANALYZE = "Analyze",
+    YOSYS_ELABORATE = "Elaborate",
+    YOSYS_SYNTHESIS = "Yosys Synthesis",
+    YOSYS_SHOW = "Show",
     // SandPiper tasks
     SANDPIPER_TLVERILOGTOVERILOG = "TL-Verilog to Verilog",
     SANDPIPER_DIAGRAM_TAB = "Open Diagram Tab",

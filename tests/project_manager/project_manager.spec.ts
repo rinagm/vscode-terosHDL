@@ -33,7 +33,7 @@ describe('project_manager', () => {
 
     beforeEach(() => {
         const emitter = new ProjectEmitter();
-        project_manager = new Project_manager(DEFAULT_NAME, "", emitter);
+        project_manager = new Project_manager(DEFAULT_NAME, "", emitter, undefined);
     });
 
     test('rename', () => {

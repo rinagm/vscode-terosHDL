@@ -103,5 +103,14 @@
             ".SV"
         ],
         "configuration": "./configs/systemverilog.configuration.json"
+    },
+    {
+        "id": "logTerosHDL",
+        "aliases": [
+            "logTerosHDL"
+        ],
+        "extensions": [
+            ".logTerosHDL"
+        ]
     }
 ]

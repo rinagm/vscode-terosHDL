@@ -31,6 +31,8 @@ import { toolLogger } from "../../../logger";
 import { openRTLAnalyzer } from "./quartus_utils";
 import { TimingReportView } from "../../views/timing/timing_report";
 import { runSandpiperConversion, runSandpiperDiagramGeneration, runSandpiperNavTlvGeneration } from './sandpiper_utils';
+import { showSvgInWebview } from 'colibri/project_manager/tool/yosys/svgWebview';
+import { getShowSvgFilePath } from 'colibri/project_manager/tool/yosys/utils';
 import { ProjectEmitter } from "colibri/project_manager/projectEmitter";
 import { e_artifact_type, e_element_type, e_reportType, e_taskState, e_taskType, terminalTypeMap } from "colibri/project_manager/tool/common";
 import { check_if_path_exist } from "colibri/utils/file_utils";
@@ -52,6 +54,7 @@ export class Tasks_manager extends BaseView {
     private logView: LogView;
     private statusBar: vscode.StatusBarItem | undefined = undefined;
     private emitterProject: ProjectEmitter;
+    private context: vscode.ExtensionContext;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Constructor
@@ -62,6 +65,7 @@ export class Tasks_manager extends BaseView {
         super(e_viewType.TASKS);
 
         this.set_commands();
+        this.context = context;
 
         this.project_manager = manager;
         this.tree = new element.ProjectProvider(manager);
@@ -201,6 +205,61 @@ export class Tasks_manager extends BaseView {
         }
         if (taskItem.taskDefinition.name === e_taskType.SANDPIPER_NAV_TLV_TAB) {
             await runSandpiperNavTlvGeneration(this.project_manager, this.emitterProject);
+            return;
+        }
+        if (taskItem.taskDefinition.name === e_taskType.YOSYS_SHOW) {
+            // Special handling for YOSYS_SHOW task to open SVG in webview after generation
+            if (this.checkRunning()) {
+                return;
+            }
+            
+            this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+            try {
+                const selectedProject = this.project_manager.get_selected_project();
+                const task = taskItem.taskDefinition.name;
+
+                this.state = e_VIEW_STATE.RUNNING;
+                this.setStatusBarText(undefined);
+                this.statusBar.show();
+
+                const exec_i = selectedProject.runTask(task, (result: p_result) => {
+                    this.hideStatusBar();
+                    this.state = e_VIEW_STATE.IDLE;
+                    this.refresh_tree();
+                    
+                    // If successful, open the SVG in a webview
+                    if (result.successful) {
+                        const svgPath = getShowSvgFilePath(selectedProject.projectDiskPath);
+                        try {
+                            showSvgInWebview(svgPath, this.context);
+                            vscode.window.showInformationMessage('Circuit diagram generated and displayed.');
+                        } catch (error) {
+                            vscode.window.showErrorMessage(`Error displaying SVG: ${error}`);
+                        }
+                    }
+                });
+                
+                this.latesRunTask = exec_i;
+                this.latestTask = taskItem.taskDefinition.name;
+                this.refresh_tree();
+
+                toolLogger.show(true);
+                if (exec_i.stdout) {
+                    exec_i.stdout.on('data', (data: string) => {
+                        const cleanOutput = data.replace(/File: /g, "file://");
+                        toolLogger.log(cleanOutput);
+                    });
+                }
+                if (exec_i.stderr) {
+                    exec_i.stderr.on('data', (data: string) => {
+                        toolLogger.log(data);
+                    });
+                }
+            } catch (error) {
+                this.hideStatusBar();
+                this.state = e_VIEW_STATE.IDLE;
+                vscode.window.showErrorMessage(`Error running Yosys Show: ${error}`);
+            }
             return;
         }
         if (this.checkRunning()) {

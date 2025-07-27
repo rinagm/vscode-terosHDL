@@ -1949,6 +1949,7 @@ body.vscode-high-contrast {
                                       <option value='raptor'>Raptor Design Suite</option>
                                       <option value='radiant'>Radiant</option>
                                       <option value='sandpiper'>SandPiper</option>
+                                      <option value='yosys'>Yosys</option>
                             </select>
                         </div>
                     </div>
@@ -4020,6 +4021,11 @@ body.vscode-high-contrast {
                 </div>
                 <div class="settings-group-description">Open source synthesis tool targeting many different FPGAs.</div>
                   
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Basic Yosys Configuration</div>
+                    <hr class="setting-divider">
+                  
+                  
                     <div class="setting-item">
                         <div class="setting-item-label">
                             Installation path:
@@ -4029,42 +4035,81 @@ body.vscode-high-contrast {
                     </div>
                   
                   
-                    <div class="setting-item">
-                        <div class="setting-item-label">
-                            Target architecture.
-                            <span class="markConfig" id="mark_tools-yosys-arch"></span>
-                        </div>
-                        <div class="select-container">
-                            <select class="setting-select-box" id="tools-yosys-arch">
-                                      <option value='xilinx'>Xilinx</option>
-                                      <option value='ice40'>ICE40</option>
-                                      <option value='ecp5'>ECP5</option>
-                            </select>
-                        </div>
-                    </div>
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">File Settings</div>
+                    <hr class="setting-divider">
                   
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            Output file format.
-                            <span class="markConfig" id="mark_tools-yosys-output_format"></span>
+                            Options for read_verilog command:
+                            <span class="markConfig" id="mark_tools-yosys-read_verilog_options"></span>
                         </div>
-                        <div class="select-container">
-                            <select class="setting-select-box" id="tools-yosys-output_format">
-                                      <option value='json'>JSON</option>
-                                      <option value='edif'>EDIF</option>
-                                      <option value='blif'>BLIF</option>
-                            </select>
-                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-read_verilog_options">
                     </div>
                   
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for read_verilog -sv command (SystemVerilog files):
+                            <span class="markConfig" id="mark_tools-yosys-read_systemverilog_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-read_systemverilog_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for read_liberty command (technology library files):
+                            <span class="markConfig" id="mark_tools-yosys-read_liberty_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-read_liberty_options">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Hierarchy Settings</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for hierarchy command:
+                            <span class="markConfig" id="mark_tools-yosys-hierarchy_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-hierarchy_options">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Elaborate: Optimizations</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for proc command (process conversion):
+                            <span class="markConfig" id="mark_tools-yosys-proc_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-proc_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for opt command (optimization):
+                            <span class="markConfig" id="mark_tools-yosys-opt_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-opt_options">
+                    </div>
                   
                     <div class="setting-item">
                         <div class="setting-checkbox">
-                            <input type="checkbox" id="tools-yosys-yosys_as_subtool">
-                            <label class="setting-checkbox-label" for="tools-yosys-yosys_as_subtool">
-                                Determines if Yosys is run as a part of bigger toolchain, or as a standalone tool.
-                                <span class="markConfig" id="mark_tools-yosys-yosys_as_subtool"></span>
+                            <input type="checkbox" id="tools-yosys-flatten_enabled">
+                            <label class="setting-checkbox-label" for="tools-yosys-flatten_enabled">
+                                Enable flatten command during elaboration:
+                                <span class="markConfig" id="mark_tools-yosys-flatten_enabled"></span>
                             </label>
                         </div>
                     </div>
@@ -4072,29 +4117,222 @@ body.vscode-high-contrast {
                   
                     <div class="setting-item">
                         <div class="setting-item-label">
-                            Generated makefile name, defaults to $name.mk
-                            <span class="markConfig" id="mark_tools-yosys-makefile_name"></span>
-                        </div>
-                            <input class="setting-input-box" id="tools-yosys-makefile_name" value="">
-                    </div>
-                  
-                  
-                    <div class="setting-item">
-                        <div class="setting-item-label">
-                            Generated tcl script filename, defaults to $name.mk
-                            <span class="markConfig" id="mark_tools-yosys-script_name"></span>
-                        </div>
-                            <input class="setting-input-box" id="tools-yosys-script_name" value="">
-                    </div>
-                  
-                  
-                    <div class="setting-item">
-                        <div class="setting-item-label">
-                            Additional options for the synth_ice40 command.
-                            <span class="markConfig" id="mark_tools-yosys-yosys_synth_options"></span>
+                            Options for flatten command:
+                            <span class="markConfig" id="mark_tools-yosys-flatten_options"></span>
                         </div>
                         <div class="setting-item-description">Comma separated values</div>
-                        <input class="setting-input-box" id="tools-yosys-yosys_synth_options">
+                        <input class="setting-input-box" id="tools-yosys-flatten_options">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Elaborate: Memory and FSM Settings</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for memory command:
+                            <span class="markConfig" id="mark_tools-yosys-memory_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-memory_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-fsm_enabled">
+                            <label class="setting-checkbox-label" for="tools-yosys-fsm_enabled">
+                                Enable FSM extraction and optimization:
+                                <span class="markConfig" id="mark_tools-yosys-fsm_enabled"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for fsm command:
+                            <span class="markConfig" id="mark_tools-yosys-fsm_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-fsm_options">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Elaborate: Technology Mapping</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-techmap_enabled">
+                            <label class="setting-checkbox-label" for="tools-yosys-techmap_enabled">
+                                Enable technology mapping:
+                                <span class="markConfig" id="mark_tools-yosys-techmap_enabled"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for techmap command:
+                            <span class="markConfig" id="mark_tools-yosys-techmap_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-techmap_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-abc_enabled">
+                            <label class="setting-checkbox-label" for="tools-yosys-abc_enabled">
+                                Enable ABC optimization:
+                                <span class="markConfig" id="mark_tools-yosys-abc_enabled"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for abc command:
+                            <span class="markConfig" id="mark_tools-yosys-abc_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-abc_options">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Debug and Logging</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-verbose">
+                            <label class="setting-checkbox-label" for="tools-yosys-verbose">
+                                Enable verbose output:
+                                <span class="markConfig" id="mark_tools-yosys-verbose"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Debug level:
+                            <span class="markConfig" id="mark_tools-yosys-debug_level"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-yosys-debug_level">
+                                      <option value='none'>No debug</option>
+                                      <option value='basic'>Basic debug</option>
+                                      <option value='detailed'>Detailed debug</option>
+                                      <option value='verbose'>Verbose debug</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Log file path (leave empty for stdout):
+                            <span class="markConfig" id="mark_tools-yosys-log_file"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-log_file" value="">
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Legacy Configuration</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Custom Commands</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Custom commands to run after loading files:
+                            <span class="markConfig" id="mark_tools-yosys-custom_load_commands"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-custom_load_commands">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Custom commands to run during analysis:
+                            <span class="markConfig" id="mark_tools-yosys-custom_analyze_commands"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-custom_analyze_commands">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Custom commands to run during elaboration:
+                            <span class="markConfig" id="mark_tools-yosys-custom_elaborate_commands"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-custom_elaborate_commands">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Additional custom flags for Yosys commands:
+                            <span class="markConfig" id="mark_tools-yosys-extra_flags"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-extra_flags">
+                    </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Advanced Settings</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-check_enabled">
+                            <label class="setting-checkbox-label" for="tools-yosys-check_enabled">
+                                Enable design rule checks:
+                                <span class="markConfig" id="mark_tools-yosys-check_enabled"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for check command:
+                            <span class="markConfig" id="mark_tools-yosys-check_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-check_options">
+                    </div>
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-stat_enabled">
+                            <label class="setting-checkbox-label" for="tools-yosys-stat_enabled">
+                                Enable statistics reporting:
+                                <span class="markConfig" id="mark_tools-yosys-stat_enabled"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Options for stat command:
+                            <span class="markConfig" id="mark_tools-yosys-stat_options"></span>
+                        </div>
+                        <div class="setting-item-description">Comma separated values</div>
+                        <input class="setting-input-box" id="tools-yosys-stat_options">
                     </div>
                   
                   
@@ -5798,23 +6036,121 @@ body.vscode-high-contrast {
     }
     config["tools"]["xsim"]["xsim_options"] = element_value
     config["tools"]["yosys"] = {}
+    config["tools"]["yosys"]["section_basic"] = element_value
     element_value = document.getElementById("tools-yosys-installation_path").value;
     config["tools"]["yosys"]["installation_path"] = element_value
-    element_value = document.getElementById("tools-yosys-arch").value;
-    config["tools"]["yosys"]["arch"] = element_value
-    element_value = document.getElementById("tools-yosys-output_format").value;
-    config["tools"]["yosys"]["output_format"] = element_value
-    element_value = document.getElementById("tools-yosys-yosys_as_subtool").checked;
-    config["tools"]["yosys"]["yosys_as_subtool"] = element_value
-    element_value = document.getElementById("tools-yosys-makefile_name").value;
-    config["tools"]["yosys"]["makefile_name"] = element_value
-    element_value = document.getElementById("tools-yosys-script_name").value;
-    config["tools"]["yosys"]["script_name"] = element_value
-    element_value = document.getElementById("tools-yosys-yosys_synth_options").value.split(',');
+    config["tools"]["yosys"]["section_files"] = element_value
+    element_value = document.getElementById("tools-yosys-read_verilog_options").value.split(',');
     if (element_value.length == 1 && element_value[0] == "") {
       element_value = [];
     }
-    config["tools"]["yosys"]["yosys_synth_options"] = element_value
+    config["tools"]["yosys"]["read_verilog_options"] = element_value
+    element_value = document.getElementById("tools-yosys-read_systemverilog_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["read_systemverilog_options"] = element_value
+    element_value = document.getElementById("tools-yosys-read_liberty_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["read_liberty_options"] = element_value
+    config["tools"]["yosys"]["section_hierarchy"] = element_value
+    element_value = document.getElementById("tools-yosys-hierarchy_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["hierarchy_options"] = element_value
+    config["tools"]["yosys"]["section_synthesis"] = element_value
+    element_value = document.getElementById("tools-yosys-proc_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["proc_options"] = element_value
+    element_value = document.getElementById("tools-yosys-opt_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["opt_options"] = element_value
+    element_value = document.getElementById("tools-yosys-flatten_enabled").checked;
+    config["tools"]["yosys"]["flatten_enabled"] = element_value
+    element_value = document.getElementById("tools-yosys-flatten_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["flatten_options"] = element_value
+    config["tools"]["yosys"]["section_memory_fsm"] = element_value
+    element_value = document.getElementById("tools-yosys-memory_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["memory_options"] = element_value
+    element_value = document.getElementById("tools-yosys-fsm_enabled").checked;
+    config["tools"]["yosys"]["fsm_enabled"] = element_value
+    element_value = document.getElementById("tools-yosys-fsm_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["fsm_options"] = element_value
+    config["tools"]["yosys"]["section_techmap"] = element_value
+    element_value = document.getElementById("tools-yosys-techmap_enabled").checked;
+    config["tools"]["yosys"]["techmap_enabled"] = element_value
+    element_value = document.getElementById("tools-yosys-techmap_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["techmap_options"] = element_value
+    element_value = document.getElementById("tools-yosys-abc_enabled").checked;
+    config["tools"]["yosys"]["abc_enabled"] = element_value
+    element_value = document.getElementById("tools-yosys-abc_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["abc_options"] = element_value
+    config["tools"]["yosys"]["section_debug"] = element_value
+    element_value = document.getElementById("tools-yosys-verbose").checked;
+    config["tools"]["yosys"]["verbose"] = element_value
+    element_value = document.getElementById("tools-yosys-debug_level").value;
+    config["tools"]["yosys"]["debug_level"] = element_value
+    element_value = document.getElementById("tools-yosys-log_file").value;
+    config["tools"]["yosys"]["log_file"] = element_value
+    config["tools"]["yosys"]["section_legacy"] = element_value
+    config["tools"]["yosys"]["section_custom"] = element_value
+    element_value = document.getElementById("tools-yosys-custom_load_commands").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["custom_load_commands"] = element_value
+    element_value = document.getElementById("tools-yosys-custom_analyze_commands").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["custom_analyze_commands"] = element_value
+    element_value = document.getElementById("tools-yosys-custom_elaborate_commands").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["custom_elaborate_commands"] = element_value
+    element_value = document.getElementById("tools-yosys-extra_flags").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["extra_flags"] = element_value
+    config["tools"]["yosys"]["section_advanced"] = element_value
+    element_value = document.getElementById("tools-yosys-check_enabled").checked;
+    config["tools"]["yosys"]["check_enabled"] = element_value
+    element_value = document.getElementById("tools-yosys-check_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["check_options"] = element_value
+    element_value = document.getElementById("tools-yosys-stat_enabled").checked;
+    config["tools"]["yosys"]["stat_enabled"] = element_value
+    element_value = document.getElementById("tools-yosys-stat_options").value.split(',');
+    if (element_value.length == 1 && element_value[0] == "") {
+      element_value = [];
+    }
+    config["tools"]["yosys"]["stat_options"] = element_value
     config["tools"]["openfpga"] = {}
     element_value = document.getElementById("tools-openfpga-installation_path").value;
     config["tools"]["openfpga"]["installation_path"] = element_value
@@ -6624,23 +6960,83 @@ body.vscode-high-contrast {
     if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["installation_path"] !== undefined) {
         document.getElementById("tools-yosys-installation_path").value = config["tools"]["yosys"]["installation_path"];
     }
-    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["arch"] !== undefined) {
-        document.getElementById("tools-yosys-arch").value = config["tools"]["yosys"]["arch"];
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["read_verilog_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-read_verilog_options").value = String(config["tools"]["yosys"]["read_verilog_options"]);
     }
-    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["output_format"] !== undefined) {
-        document.getElementById("tools-yosys-output_format").value = config["tools"]["yosys"]["output_format"];
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["read_systemverilog_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-read_systemverilog_options").value = String(config["tools"]["yosys"]["read_systemverilog_options"]);
     }
-    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["yosys_as_subtool"] !== undefined) {
-        document.getElementById("tools-yosys-yosys_as_subtool").checked = config["tools"]["yosys"]["yosys_as_subtool"];
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["read_liberty_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-read_liberty_options").value = String(config["tools"]["yosys"]["read_liberty_options"]);
     }
-    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["makefile_name"] !== undefined) {
-        document.getElementById("tools-yosys-makefile_name").value = config["tools"]["yosys"]["makefile_name"];
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["hierarchy_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-hierarchy_options").value = String(config["tools"]["yosys"]["hierarchy_options"]);
     }
-    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["script_name"] !== undefined) {
-        document.getElementById("tools-yosys-script_name").value = config["tools"]["yosys"]["script_name"];
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["proc_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-proc_options").value = String(config["tools"]["yosys"]["proc_options"]);
     }
-    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["yosys_synth_options"] !== undefined) {
-        element_value = document.getElementById("tools-yosys-yosys_synth_options").value = String(config["tools"]["yosys"]["yosys_synth_options"]);
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["opt_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-opt_options").value = String(config["tools"]["yosys"]["opt_options"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["flatten_enabled"] !== undefined) {
+        document.getElementById("tools-yosys-flatten_enabled").checked = config["tools"]["yosys"]["flatten_enabled"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["flatten_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-flatten_options").value = String(config["tools"]["yosys"]["flatten_options"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["memory_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-memory_options").value = String(config["tools"]["yosys"]["memory_options"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["fsm_enabled"] !== undefined) {
+        document.getElementById("tools-yosys-fsm_enabled").checked = config["tools"]["yosys"]["fsm_enabled"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["fsm_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-fsm_options").value = String(config["tools"]["yosys"]["fsm_options"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["techmap_enabled"] !== undefined) {
+        document.getElementById("tools-yosys-techmap_enabled").checked = config["tools"]["yosys"]["techmap_enabled"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["techmap_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-techmap_options").value = String(config["tools"]["yosys"]["techmap_options"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["abc_enabled"] !== undefined) {
+        document.getElementById("tools-yosys-abc_enabled").checked = config["tools"]["yosys"]["abc_enabled"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["abc_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-abc_options").value = String(config["tools"]["yosys"]["abc_options"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["verbose"] !== undefined) {
+        document.getElementById("tools-yosys-verbose").checked = config["tools"]["yosys"]["verbose"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["debug_level"] !== undefined) {
+        document.getElementById("tools-yosys-debug_level").value = config["tools"]["yosys"]["debug_level"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["log_file"] !== undefined) {
+        document.getElementById("tools-yosys-log_file").value = config["tools"]["yosys"]["log_file"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["custom_load_commands"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-custom_load_commands").value = String(config["tools"]["yosys"]["custom_load_commands"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["custom_analyze_commands"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-custom_analyze_commands").value = String(config["tools"]["yosys"]["custom_analyze_commands"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["custom_elaborate_commands"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-custom_elaborate_commands").value = String(config["tools"]["yosys"]["custom_elaborate_commands"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["extra_flags"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-extra_flags").value = String(config["tools"]["yosys"]["extra_flags"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["check_enabled"] !== undefined) {
+        document.getElementById("tools-yosys-check_enabled").checked = config["tools"]["yosys"]["check_enabled"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["check_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-check_options").value = String(config["tools"]["yosys"]["check_options"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["stat_enabled"] !== undefined) {
+        document.getElementById("tools-yosys-stat_enabled").checked = config["tools"]["yosys"]["stat_enabled"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["stat_options"] !== undefined) {
+        element_value = document.getElementById("tools-yosys-stat_options").value = String(config["tools"]["yosys"]["stat_options"]);
     }
     if (config["tools"] && config["tools"]["openfpga"] && config["tools"]["openfpga"]["installation_path"] !== undefined) {
         document.getElementById("tools-openfpga-installation_path").value = config["tools"]["openfpga"]["installation_path"];
@@ -7959,35 +8355,135 @@ body.vscode-high-contrast {
     }
     document.getElementById("mark_tools-yosys-installation_path").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["arch"] !== undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["read_verilog_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-yosys-arch").innerHTML = mark;
+    document.getElementById("mark_tools-yosys-read_verilog_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["output_format"] !== undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["read_systemverilog_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-yosys-output_format").innerHTML = mark;
+    document.getElementById("mark_tools-yosys-read_systemverilog_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["yosys_as_subtool"] !== undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["read_liberty_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-yosys-yosys_as_subtool").innerHTML = mark;
+    document.getElementById("mark_tools-yosys-read_liberty_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["makefile_name"] !== undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["hierarchy_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-yosys-makefile_name").innerHTML = mark;
+    document.getElementById("mark_tools-yosys-hierarchy_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["script_name"] !== undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["proc_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-yosys-script_name").innerHTML = mark;
+    document.getElementById("mark_tools-yosys-proc_options").innerHTML = mark;
     mark = "";
-    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["yosys_synth_options"] !== undefined) {
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["opt_options"] !== undefined) {
       mark = MODIFIEDMSG;
     }
-    document.getElementById("mark_tools-yosys-yosys_synth_options").innerHTML = mark;
+    document.getElementById("mark_tools-yosys-opt_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["flatten_enabled"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-flatten_enabled").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["flatten_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-flatten_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["memory_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-memory_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["fsm_enabled"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-fsm_enabled").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["fsm_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-fsm_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["techmap_enabled"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-techmap_enabled").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["techmap_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-techmap_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["abc_enabled"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-abc_enabled").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["abc_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-abc_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["verbose"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-verbose").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["debug_level"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-debug_level").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["log_file"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-log_file").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["custom_load_commands"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-custom_load_commands").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["custom_analyze_commands"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-custom_analyze_commands").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["custom_elaborate_commands"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-custom_elaborate_commands").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["extra_flags"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-extra_flags").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["check_enabled"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-check_enabled").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["check_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-check_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["stat_enabled"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-stat_enabled").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["stat_options"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-stat_options").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["openfpga"] && config["tools"]["openfpga"]["installation_path"] !== undefined) {
       mark = MODIFIEDMSG;

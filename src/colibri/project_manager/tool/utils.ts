@@ -47,6 +47,52 @@ export function getTaskList(toolName: e_tools_general_select_tool): t_taskRep[] 
                 ]
             }
         ];
-    };
+    } else if (toolName === e_tools_general_select_tool.yosys) {
+        return [
+            {
+                name: e_taskType.OPENFOLDER,
+                label: 'Open Project Folder',
+                executionType: e_taskExecutionType.OPENFOLDER
+            },
+            {
+                name: e_taskType.YOSYS_SHOW,
+                label: 'Show',
+                executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                status: e_taskState.IDLE
+            },
+            {
+                "name": e_taskType.YOSYS_COMPILE_ALL,
+                "label": "Compile All",
+                "executionType": e_taskExecutionType.COMPLEXCOMMAND,
+                "status": e_taskState.IDLE,
+                "children": [
+                    {
+                        "name": e_taskType.YOSYS_LOAD_FILES,
+                        "label": "Load Files",
+                        "executionType": e_taskExecutionType.COMPLEXCOMMAND,
+                        "status": e_taskState.IDLE
+                    },
+                    {
+                        "name": e_taskType.YOSYS_ANALYZE,
+                        "label": "Analyze",
+                        "executionType": e_taskExecutionType.COMPLEXCOMMAND,
+                        "status": e_taskState.IDLE
+                    },
+                    {
+                        "name": e_taskType.YOSYS_ELABORATE,
+                        "label": "Elaborate",
+                        "executionType": e_taskExecutionType.COMPLEXCOMMAND,
+                        "status": e_taskState.IDLE
+                    },
+                    {
+                        "name": e_taskType.YOSYS_SYNTHESIS,
+                        "label": "Synthesis",
+                        "executionType": e_taskExecutionType.COMPLEXCOMMAND,
+                        "status": e_taskState.IDLE
+                    }
+                ]
+            }
+        ];
+    }
     return [];
 }

@@ -17,7 +17,7 @@ import { get_config_from_json } from "../../../config/config_declaration";
 export class SandpiperProjectManager extends Project_manager {
 
     constructor(name: string, emitterProject: ProjectEmitter, projectDiskPath: string) {
-        super(name, projectDiskPath, emitterProject);
+        super(name, projectDiskPath, emitterProject, undefined);
         this._projectDiskPath = projectDiskPath;
         super.taskStateManager = new TaskStateManager(getDefaultTaskList());
     }

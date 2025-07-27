@@ -67,7 +67,7 @@ export class QuartusProjectManager extends Project_manager {
 
     constructor(name: string, projectPath: string, currentRevision: string,
         emitterProject: ProjectEmitter) {
-        super(name, projectPath, emitterProject);
+        super(name, projectPath, emitterProject, undefined);
         super.taskStateManager = new TaskStateManager(getDefaultTaskList());
         this.projectDiskPath = projectPath;
         this.currentRevision = currentRevision;
@@ -418,7 +418,12 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.GHDL_SYNTHESIZE]: "",
             [e_taskType.GHDL_CHECK_SYNTAX]: "",
             [e_taskType.GHDL_MAKEFILE]: "",
-
+            [e_taskType.YOSYS_COMPILE_ALL]: "",
+            [e_taskType.YOSYS_LOAD_FILES]: "",
+            [e_taskType.YOSYS_ANALYZE]: "",
+            [e_taskType.YOSYS_ELABORATE]: "",
+            [e_taskType.YOSYS_SYNTHESIS]: "",
+            [e_taskType.YOSYS_SHOW]: "",
         };
         let reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORT && reportKeys.includes(taskType)) {

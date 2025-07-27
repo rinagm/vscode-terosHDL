@@ -134,6 +134,11 @@
 
         "grammars": [
             {
+                "language": "logTerosHDL",
+                "scopeName": "logTerosHDL.log",
+                "path": "./syntaxes/log.tmLanguage.json"
+            },
+            {
                 "language": "vhdl",
                 "scopeName": "source.vhdl",
                 "path": "./syntaxes/vhdl/vhdl.tmLanguage.json"
@@ -792,6 +797,11 @@
         ,{
             "id": "vcd",
             "extensions": [".vcd"]
+        }
+
+        ,{
+            "id": "logTerosHDL",
+            "extensions": [".logTerosHDL"]
         }
 
         ,{

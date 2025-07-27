@@ -24,6 +24,7 @@ select_tool:
     raptor: "Raptor Design Suite"
     radiant: "Radiant"
     sandpiper: "SandPiper"
+    yosys: "Yosys"
 
   value: "ghdl"
 

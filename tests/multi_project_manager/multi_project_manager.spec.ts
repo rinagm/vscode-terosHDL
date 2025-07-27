@@ -69,7 +69,7 @@ describe('MultiProjectManager', () => {
     });
 
     function create_project_with_name_and_add(prj_name: string): Project_manager {
-        const prj = new Project_manager(prj_name, "", emitter);
+        const prj = new Project_manager(prj_name, "", emitter, undefined);
         multiProjectManager.add_project(prj);
         return prj;
     }
@@ -166,7 +166,7 @@ describe('MultiProjectManager', () => {
 
         test('should throw an error when adding a project multiple times', () => {
             const projectName = 'DuplicateProject';
-            const prj = new Project_manager(projectName, "", emitter);
+            const prj = new Project_manager(projectName, "", emitter, undefined);
             multiProjectManager.add_project(prj);
 
             for (let i = 0; i < 5; i++) {
@@ -207,7 +207,7 @@ describe('MultiProjectManager', () => {
 
         test('should throw an error when trying to rename a project object created outside the multi project manager', () => {
             expect(() => {
-                multiProjectManager.rename_project(new Project_manager("OldName",  "", emitter), 'NewName');
+                multiProjectManager.rename_project(new Project_manager("OldName",  "", emitter, undefined), 'NewName');
             }).toThrow();
         });
 
@@ -374,10 +374,10 @@ describe('MultiProjectManager', () => {
 
         test('should throw an error when trying to delete a project object created outside the multi project manager', () => {
             expect(() => {
-                multiProjectManager.delete_project(new Project_manager("OldName", "", emitter));
+                multiProjectManager.delete_project(new Project_manager("OldName", "", emitter, undefined));
             }).toThrow();
             expect(() => {
-                multiProjectManager.delete_project(new Project_manager("", "", emitter));
+                multiProjectManager.delete_project(new Project_manager("", "", emitter, undefined));
             }).toThrow();
         });
     });
@@ -400,10 +400,10 @@ describe('MultiProjectManager', () => {
 
         test('should throw an error when trying to select a project object created outside the multi project manager', () => {
             expect(() => {
-                multiProjectManager.set_selected_project(new Project_manager("OldName", "", emitter));
+                multiProjectManager.set_selected_project(new Project_manager("OldName", "", emitter, undefined));
             }).toThrow();
             expect(() => {
-                multiProjectManager.set_selected_project(new Project_manager("", "", emitter));
+                multiProjectManager.set_selected_project(new Project_manager("", "", emitter, undefined));
             }).toThrow();
         });
 
