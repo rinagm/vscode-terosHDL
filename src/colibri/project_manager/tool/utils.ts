@@ -56,7 +56,13 @@ export function getTaskList(toolName: e_tools_general_select_tool): t_taskRep[] 
             },
             {
                 name: e_taskType.YOSYS_SHOW,
-                label: 'Show',
+                label: 'Show Schematic',
+                executionType: e_taskExecutionType.COMPLEXCOMMAND,
+                status: e_taskState.IDLE
+            },
+            {
+                name: e_taskType.YOSYS_RESOURCE_UTILIZATION,
+                label: 'Resource Utilization',
                 executionType: e_taskExecutionType.COMPLEXCOMMAND,
                 status: e_taskState.IDLE
             },

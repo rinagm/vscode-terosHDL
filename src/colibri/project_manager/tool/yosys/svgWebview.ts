@@ -49,8 +49,25 @@ export function showSvgInWebview(svgPath: string, context: vscode.ExtensionConte
         // Read SVG content
         const svgContent = fs.readFileSync(svgPath, 'utf8');
         
+        // Check if SVG content is empty or invalid
+        if (!svgContent || svgContent.trim().length === 0) {
+            panel.dispose();
+            vscode.window.showInformationMessage('SVG file is empty. No diagram to display.');
+            return;
+        }
+        
+        // Check if content actually contains SVG
+        if (!svgContent.trim().toLowerCase().includes('<svg')) {
+            panel.dispose();
+            vscode.window.showInformationMessage('SVG file does not contain valid SVG content. No diagram to display.');
+            return;
+        }
+        
         // Set HTML content for the webview
         panel.webview.html = getSvgHtml(svgContent, path.basename(svgPath));
+        
+        // Show success message
+        vscode.window.showInformationMessage('Circuit diagram generated and displayed.');
         
     } catch (error) {
         panel.webview.html = getErrorHtml('Error reading SVG file: ' + error);

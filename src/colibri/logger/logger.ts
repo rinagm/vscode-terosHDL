@@ -36,6 +36,7 @@ export abstract class LoggerBase {
     abstract log(msg: string): void;
     abstract debug(msg: string): void;
     abstract trace(msg: string): void;
+    abstract appendLine(msg: string): void;
 }
 
 class LoggerConsole extends LoggerBase {
@@ -59,6 +60,10 @@ class LoggerConsole extends LoggerBase {
 
     trace(msg: string) {
         this._log(msg, T_SEVERITY.DEBUG);
+    }
+
+    appendLine(msg: string) {
+        this._log(msg, T_SEVERITY.INFO);
     }
 
     private is_print(severity: T_SEVERITY) {

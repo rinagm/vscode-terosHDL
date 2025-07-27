@@ -3,9 +3,9 @@ import { ChildProcess } from 'child_process';
 import { e_tools_yosys } from 'colibri/config/config_declaration';
 import { Process } from 'colibri/process/process';
 import { buildYosysArgs } from './commandBuilder';
-import { toolLogger } from '../../../../teroshdl/logger';
 import * as path from 'path';
 import * as file_utils from 'colibri/utils/file_utils';
+import { LoggerBase } from 'colibri/logger/logger';
 
 /**
  * Command execution utilities for Yosys
@@ -58,6 +58,7 @@ export function executeYosysCommand(
     config: e_tools_yosys, 
     args: string[], 
     cwd: string, 
+    toolLogger: LoggerBase,
     callback: (result: p_result) => void
 ): ChildProcess {
     // Properly quote arguments that contain spaces
@@ -84,7 +85,8 @@ export function executeYosysCommand(
  * @param callback Callback function to handle the result
  * @returns ChildProcess instance
  */
-export function executeCommand(command: string, cwd: string, callback: (result: p_result) => void): ChildProcess {
+export function executeCommand(command: string, cwd: string, toolLogger: LoggerBase,
+    callback: (result: p_result) => void): ChildProcess {
     // Log the command being executed
     toolLogger.appendLine(`[Yosys] Executing command: ${command}`);
     
@@ -108,6 +110,7 @@ export function executeYosysScript(
     config: e_tools_yosys,
     script: string,
     cwd: string,
+    toolLogger: LoggerBase,
     callback: (result: p_result) => void
 ): ChildProcess {
     const yosysExecutable = getBinary(config);
@@ -123,7 +126,7 @@ export function executeYosysScript(
     // Log the full command
     toolLogger.appendLine(`[Yosys] Full command: ${command}`);
     
-    return executeCommand(command, cwd, callback);
+    return executeCommand(command, cwd, toolLogger, callback);
 }
 
 /**
@@ -138,6 +141,7 @@ export function executeYosysScriptFile(
     config: e_tools_yosys,
     scriptPath: string,
     cwd: string,
+    toolLogger: LoggerBase,
     callback: (result: p_result) => void
 ): ChildProcess {
     const yosysExecutable = getBinary(config);
@@ -147,6 +151,6 @@ export function executeYosysScriptFile(
     toolLogger.appendLine(`[Yosys] Executing script file: ${scriptPath}`);
     
     const command = `${yosysExecutable} ${baseArgs.join(' ')} -s "${scriptPath}"`;
-    
-    return executeCommand(command, cwd, callback);
+
+    return executeCommand(command, cwd, toolLogger, callback);
 }

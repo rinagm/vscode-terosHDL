@@ -35,6 +35,7 @@ import { ProjectEmitter, e_event } from "../../projectEmitter";
 // import { get_toplevel_from_path } from "../../../utils/hdl_utils";
 import { Process } from "../../../process/process";
 import * as process_utils from "../../../process/utils";
+import { LoggerBase } from "colibri/logger/logger";
 
 function getVersionDirectory(basePath: string): string {
     const defaultVersionDirectory = "23.3.0";
@@ -353,7 +354,7 @@ export class QuartusProjectManager extends Project_manager {
         }
     }
 
-    public runTask(taskType: e_taskType, callback: (result: p_result) => void): ChildProcess {
+    public runTask(taskType: e_taskType, _loggerBase: LoggerBase, callback: (result: p_result) => void): ChildProcess {
         const config = super.get_config();
 
         this.taskStateManager.setCurrentTask(undefined);
@@ -424,6 +425,7 @@ export class QuartusProjectManager extends Project_manager {
             [e_taskType.YOSYS_ELABORATE]: "",
             [e_taskType.YOSYS_SYNTHESIS]: "",
             [e_taskType.YOSYS_SHOW]: "",
+            [e_taskType.YOSYS_RESOURCE_UTILIZATION]: "",
         };
         let reportKeys = Object.keys(reportSufix);
         if (reportType === e_reportType.REPORT && reportKeys.includes(taskType)) {
