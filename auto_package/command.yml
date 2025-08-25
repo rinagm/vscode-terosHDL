@@ -149,7 +149,7 @@
   when: "view == teroshdl-view-runs"
 
 - name: view.runs.run
-  title: "Run"
+  title: "TerosHDL: Run Tool"
   icon: run
   where: ["view/item/context"]
   when: "viewItem == run && view == teroshdl-view-runs"

@@ -3,7 +3,7 @@
     "displayName": "TerosHDL",
     "publisher": "teros-technology",
     "description": "Powerful toolbox for ASIC/FPGA: state machine viewer, linter, documentation, snippets... and more! ",
-    "version": "8.0.2",
+    "version": "8.0.3",
     "engines": {
         "vscode": "^1.74.0"
     },
@@ -592,7 +592,7 @@
                     "light": "resources/icon/light/run.svg",
                     "dark": "resources/icon/dark/run.svg"
                 },
-                "title": "Run"
+                "title": "TerosHDL: Run Tool"
             }, 
             {
                 "command": "teroshdl.view.tasks.stop",
