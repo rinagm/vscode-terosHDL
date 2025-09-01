@@ -96,11 +96,15 @@ export class Tasks_manager extends BaseView {
             await this.openReport(item, e_reportType.REPORTDB));
 
         vscode.commands.registerCommand("teroshdl.view.tasks.stop", () => this.stop());
-        vscode.commands.registerCommand("teroshdl.view.tasks.run", (item) => this.run(item));
+        vscode.commands.registerCommand("teroshdl.view.tasks.run", async (item) => {
+            const output = await this.run(item);
+            return output;
+        });
         vscode.commands.registerCommand("teroshdl.view.tasks.clean", () => this.clean());
         vscode.commands.registerCommand("teroshdl.view.tasks.device", () => this.device());
         vscode.commands.registerCommand("teroshdl.view.tasks.console", () => this.openConsole());
-
+        vscode.commands.registerCommand("teroshdl.view.tasks.listProjectFiles",
+            async () => await this.listProjectFiles());
 
         // Quartus Commands
         vscode.commands.registerCommand("teroshdl.project.quartus.rtlAnalyzer",
@@ -191,27 +195,27 @@ export class Tasks_manager extends BaseView {
         }
     }
 
-    async run(taskItem: element.Task) {
+    async run(taskItem: element.Task): Promise<string | undefined> {
         if (taskItem.taskDefinition.name === e_taskType.QUARTUS_RTL_ANALYZER) {
             openRTLAnalyzer(this.project_manager, this.emitterProject);
-            return;
+            return undefined;
         }
         if ( taskItem.taskDefinition.name === e_taskType.SANDPIPER_TLVERILOGTOVERILOG ) {
             await runSandpiperConversion(this.project_manager, this.emitterProject);
-            return;
+            return undefined;
         }
         if (taskItem.taskDefinition.name === e_taskType.SANDPIPER_DIAGRAM_TAB) {
             await runSandpiperDiagramGeneration(this.project_manager, this.emitterProject);
-            return;
+            return undefined;
         }
         if (taskItem.taskDefinition.name === e_taskType.SANDPIPER_NAV_TLV_TAB) {
             await runSandpiperNavTlvGeneration(this.project_manager, this.emitterProject);
-            return;
+            return undefined;
         }
         if (taskItem.taskDefinition.name === e_taskType.YOSYS_SHOW) {
             // Special handling for YOSYS_SHOW task to open SVG in webview after generation
             if (this.checkRunning()) {
-                return;
+                return undefined;
             }
             
             this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
@@ -266,7 +270,7 @@ export class Tasks_manager extends BaseView {
         if (taskItem.taskDefinition.name === e_taskType.YOSYS_RESOURCE_UTILIZATION) {
             // Special handling for YOSYS_RESOURCE_UTILIZATION task to show statistics in webview
             if (this.checkRunning()) {
-                return;
+                return undefined;
             }
             
             this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
@@ -318,7 +322,7 @@ export class Tasks_manager extends BaseView {
             return;
         }
         if (this.checkRunning()) {
-            return;
+            return undefined;
         }
         this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
         try {
@@ -335,7 +339,7 @@ export class Tasks_manager extends BaseView {
                     'No'
                 );
                 if (result === 'No') {
-                    return;
+                    return undefined;
                 }
             }
 
@@ -344,16 +348,20 @@ export class Tasks_manager extends BaseView {
             this.setStatusBarText(undefined);
             this.statusBar.show();
 
-            const exec_i = selectedProject.runTask(task, toolLogger, (result: p_result) => {
-                this.hideStatusBar();
-                this.state = e_VIEW_STATE.IDLE;
-                // Refresh view to set the finish decorators
+            return new Promise<string>((resolve) => {
+                const exec_i = selectedProject.runTask(task, toolLogger, (result: p_result) => {
+                    this.hideStatusBar();
+                    this.state = e_VIEW_STATE.IDLE;
+                    // Refresh view to set the finish decorators
+                    this.refresh_tree();
+                    
+                    resolve(result.stdout + result.stderr);
+                });
+                
+                this.latesRunTask = exec_i;
+                this.latestTask = taskItem.taskDefinition.name;
+                // Refresh view to set the running decorators
                 this.refresh_tree();
-            });
-            this.latesRunTask = exec_i;
-            this.latestTask = taskItem.taskDefinition.name;
-            // Refresh view to set the running decorators
-            this.refresh_tree();
 
                 toolLogger.show(true);
                 if (exec_i.stdout) {
@@ -369,13 +377,22 @@ export class Tasks_manager extends BaseView {
                         toolLogger.log(cleanOutput);
                     });
                 }
+            });
         }
         catch (error) {
             // Refresh view to set the finish decorators
             this.refresh_tree();
             this.hideStatusBar();
             this.state = e_VIEW_STATE.IDLE;
+            return `Error: ${error}`;
         }
+    }
+
+    async listProjectFiles() : Promise<string[]>{
+        const selectedProject = this.project_manager.get_selected_project();
+        const fileDefinitionList = selectedProject.get_project_definition().file_manager.get();
+        const files: string[] = fileDefinitionList.map(fileDef => fileDef.name);
+        return files;
     }
 
     async openConsole() {

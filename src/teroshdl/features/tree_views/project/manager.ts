@@ -29,7 +29,7 @@ import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
 import { createProjectSandpiper } from "./utils";
 import { e_event, ProjectEmitter } from "colibri/project_manager/projectEmitter";
-import { read_file_sync } from "colibri/utils/file_utils";
+import { copy_directory_recursive, read_file_sync } from "colibri/utils/file_utils";
 import { getFamilyAndParts } from "colibri/project_manager/tool/quartus/utils";
 import { GlobalConfigManager } from "colibri/config/config_manager";
 import { QuartusProjectManager } from "colibri/project_manager/tool/quartus/quartusProjectManager";
@@ -227,9 +227,48 @@ export class Project_manager extends BaseView {
                     picker_value = 'state_machine';
                 }
 
-                const project_path = path_lib.join(this.context.extensionUri.fsPath, "resources",
-                    "project_manager", "examples", picker_value.toLowerCase(), 'project.yml');
-                await this.create_project_from_yaml(project_path);
+                const exampleFolder = path_lib.join(this.context.extensionUri.fsPath, "resources",
+                    "project_manager", "examples", picker_value.toLowerCase());
+                
+                // Ask the user to select a destination folder
+                const destinationFolders = await utils.get_from_open_dialog(
+                    "Select destination folder for the example", 
+                    true, // can select folders
+                    false, // can't select files
+                    false, // can't select multiple
+                    "Select destination folder", 
+                    {}
+                );
+                
+                if (destinationFolders.length === 1) {
+                    const destinationFolder = destinationFolders[0];
+                    
+                    // Copy all files and folders from the example to the destination folder
+                    await vscode.window.withProgress({
+                        location: vscode.ProgressLocation.Notification,
+                        title: "Copying example files...",
+                        cancellable: false
+                    }, (_progress, _token) => {
+                        return new Promise<void>((resolve) => {
+                            try {
+                                copy_directory_recursive(exampleFolder, destinationFolder);
+                                resolve();
+                            } catch (error) {
+                                showMessage(`Error copying example files: ${error}`, t_message_level.ERROR);
+                                resolve();
+                            }
+                        });
+                    });
+
+                    // Load the project from the destination folder
+                    const project_path = path_lib.join(destinationFolder, 'project.yml');
+                    await this.create_project_from_yaml(project_path);
+                    
+                    showMessage(
+                        `Example project copied and loaded successfully.`, 
+                        t_message_level.INFO
+                    );
+                }
             }
         }
         // new sandpiper project
@@ -281,21 +320,24 @@ export class Project_manager extends BaseView {
 
     async create_project_from_yaml(prj_path: string) {
         try {
-            const fileContent = read_file_sync(prj_path)
+            const fileContent = read_file_sync(prj_path);
             const repJSON = yaml.load(fileContent, { json: true });
             const prj = await ProjectManager.Project_manager.fromJson(
                 repJSON, prj_path, this.emitterProject, getVSCodeWorkspaceStorage(this.context));
             this.project_manager.add_project(prj);
         } catch (error) {
-            console.log(error)
+            // Handle error silently
         }
     }
 
     select_project(item: element.Project) {
         try {
-            this.project_manager.set_selected_project(this.project_manager.get_project_by_name(item.get_project_name()));
+            const projectName = item.get_project_name();
+            const project = this.project_manager.get_project_by_name(projectName);
+            this.project_manager.set_selected_project(project);
             this.run_output_manager.clear();
         } catch (error) {
+            // Handle error silently
         }
     }
 
@@ -310,8 +352,11 @@ export class Project_manager extends BaseView {
         const new_project_name = await utils.get_from_input_box("New project name", "Project name");
         if (new_project_name !== undefined) {
             try {
-                this.project_manager.rename_project(this.project_manager.get_project_by_name(item.get_project_name()), new_project_name);
+                const projectName = item.get_project_name();
+                const project = this.project_manager.get_project_by_name(projectName);
+                this.project_manager.rename_project(project, new_project_name);
             } catch (error) {
+                // Handle error silently
             }
         }
     }
