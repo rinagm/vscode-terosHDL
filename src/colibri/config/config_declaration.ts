@@ -444,7 +444,7 @@ export type e_tools_verilator = {
 export type e_tools_vivado = {
     installation_path : string,
     part : string,
-    synth : string,
+    synth : e_tools_vivado_synth,
     pnr : e_tools_vivado_pnr,
     jtag_freq : number,
     hw_target : string,
@@ -887,6 +887,10 @@ export enum e_tools_verilator_mode {
     sc = "sc",
     lint_only = "lint-only",
 }
+export enum e_tools_vivado_synth {
+    vivado = "vivado",
+    yosys = "yosys",
+}
 export enum e_tools_vivado_pnr {
     vivado = "vivado",
     none = "none",
@@ -1302,7 +1306,7 @@ export function get_default_config(): e_config {
             vivado: {
                 installation_path : "",
                 part : "",
-                synth : "",
+                synth : e_tools_vivado_synth.vivado,
                 pnr : e_tools_vivado_pnr.vivado,
                 jtag_freq : 10000,
                 hw_target : "",
@@ -4092,8 +4096,11 @@ export function get_config_from_json(json_config: any): e_config {
         current_value_220 = json_config['tools']['vivado']['synth'];
     }
     catch(e){}
-    if (typeof current_value_220 === 'string'){
-        default_config['tools']['vivado']['synth'] = current_value_220;
+    if ( current_value_220 === "vivado"){
+        default_config['tools']['vivado']['synth'] = e_tools_vivado_synth.vivado;
+    }
+    if ( current_value_220 === "yosys"){
+        default_config['tools']['vivado']['synth'] = e_tools_vivado_synth.yosys;
     }
             
     // tools -> vivado -> pnr

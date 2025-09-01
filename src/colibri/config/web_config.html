@@ -3745,7 +3745,12 @@ body.vscode-high-contrast {
                             Synthesis tool. Allowed values are vivado (default) and yosys..
                             <span class="markConfig" id="mark_tools-vivado-synth"></span>
                         </div>
-                            <input class="setting-input-box" id="tools-vivado-synth" value="">
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-vivado-synth">
+                                      <option value='vivado'>Vivado</option>
+                                      <option value='yosys'>Yosys</option>
+                            </select>
+                        </div>
                     </div>
                   
                   
@@ -4181,6 +4186,450 @@ body.vscode-high-contrast {
                         <div class="setting-item-description">Comma separated values</div>
                         <input class="setting-input-box" id="tools-yosys-abc_options">
                     </div>
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Synthesis: General</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Synthesis target FPGA:
+                            <span class="markConfig" id="mark_tools-yosys-synthesis_target"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-yosys-synthesis_target">
+                                      <option value='ice40'>iCE40 (Lattice)</option>
+                                      <option value='ecp5'>ECP5 (Lattice)</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Synthesis: iCE40</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            iCE40 device type:
+                            <span class="markConfig" id="mark_tools-yosys-ice40_device"></span>
+                        </div>
+                        <div class="select-container">
+                            <select class="setting-select-box" id="tools-yosys-ice40_device">
+                                      <option value='hx'>HX series</option>
+                                      <option value='lp'>LP series</option>
+                                      <option value='u'>Ultra series</option>
+                            </select>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Top module (leave empty to auto-detect):
+                            <span class="markConfig" id="mark_tools-yosys-ice40_top_module"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-ice40_top_module" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Output BLIF file path (leave empty to skip):
+                            <span class="markConfig" id="mark_tools-yosys-ice40_output_blif"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-ice40_output_blif" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Output EDIF file path (leave empty to skip):
+                            <span class="markConfig" id="mark_tools-yosys-ice40_output_edif"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-ice40_output_edif" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Output JSON file path (leave empty to skip):
+                            <span class="markConfig" id="mark_tools-yosys-ice40_output_json"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-ice40_output_json" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_noflatten">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_noflatten">
+                                Do not flatten design before synthesis:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_noflatten"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_dff">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_dff">
+                                Run ABC with -dff option:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_dff"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_retime">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_retime">
+                                Run ABC with retiming (-dff -D 1):
+                                <span class="markConfig" id="mark_tools-yosys-ice40_retime"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_nocarry">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_nocarry">
+                                Do not use SB_CARRY cells:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_nocarry"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_nodffe">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_nodffe">
+                                Do not use SB_DFFE* cells:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_nodffe"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Min CE use for SB_DFFE* cells (0 = disabled):
+                            <span class="markConfig" id="mark_tools-yosys-ice40_dffe_min_ce_use"></span>
+                        </div>
+                        <input type="number" class="setting-number-input" id="tools-yosys-ice40_dffe_min_ce_use">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_nobram">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_nobram">
+                                Do not use SB_RAM40_4K* cells:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_nobram"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_spram">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_spram">
+                                Enable automatic inference of SB_SPRAM256KA:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_spram"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_dsp">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_dsp">
+                                Use iCE40 UltraPlus DSP cells:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_dsp"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_noabc">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_noabc">
+                                Use built-in Yosys LUT techmapping instead of ABC:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_noabc"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_abc2">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_abc2">
+                                Run two passes of ABC:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_abc2"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_vpr">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_vpr">
+                                Generate VPR-suitable output (experimental):
+                                <span class="markConfig" id="mark_tools-yosys-ice40_vpr"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_noabc9">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_noabc9">
+                                Disable use of new ABC9 flow:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_noabc9"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_flowmap">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_flowmap">
+                                Use FlowMap LUT techmapping (experimental):
+                                <span class="markConfig" id="mark_tools-yosys-ice40_flowmap"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ice40_no_rw_check">
+                            <label class="setting-checkbox-label" for="tools-yosys-ice40_no_rw_check">
+                                Mark all read ports as return don't-care on collision:
+                                <span class="markConfig" id="mark_tools-yosys-ice40_no_rw_check"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <hr class="setting-divider">
+                    <div class="setting-divider-title">Synthesis: ECP5</div>
+                    <hr class="setting-divider">
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Top module (leave empty to auto-detect):
+                            <span class="markConfig" id="mark_tools-yosys-ecp5_top_module"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-ecp5_top_module" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Output BLIF file path (leave empty to skip):
+                            <span class="markConfig" id="mark_tools-yosys-ecp5_output_blif"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-ecp5_output_blif" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Output EDIF file path (leave empty to skip):
+                            <span class="markConfig" id="mark_tools-yosys-ecp5_output_edif"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-ecp5_output_edif" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-item-label">
+                            Output JSON file path (leave empty to skip):
+                            <span class="markConfig" id="mark_tools-yosys-ecp5_output_json"></span>
+                        </div>
+                            <input class="setting-input-box" id="tools-yosys-ecp5_output_json" value="">
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_noflatten">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_noflatten">
+                                Do not flatten design before synthesis:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_noflatten"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_dff">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_dff">
+                                Run ABC with -dff option:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_dff"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_retime">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_retime">
+                                Run ABC with retiming (-dff -D 1):
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_retime"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_noccu2">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_noccu2">
+                                Do not use CCU2 cells:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_noccu2"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_nodffe">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_nodffe">
+                                Do not use flipflops with CE:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_nodffe"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_nobram">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_nobram">
+                                Do not use block RAM cells:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_nobram"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_nolutram">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_nolutram">
+                                Do not use LUT RAM cells:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_nolutram"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_nowidelut">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_nowidelut">
+                                Do not use PFU muxes for LUTs larger than LUT4s:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_nowidelut"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_asyncprld">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_asyncprld">
+                                Use async PRLD mode (experimental):
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_asyncprld"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_abc2">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_abc2">
+                                Run two passes of ABC:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_abc2"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_noabc9">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_noabc9">
+                                Disable use of new ABC9 flow:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_noabc9"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_vpr">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_vpr">
+                                Generate VPR-suitable output (experimental):
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_vpr"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_iopad">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_iopad">
+                                Insert IO buffers:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_iopad"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_nodsp">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_nodsp">
+                                Do not map multipliers to MULT18X18D:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_nodsp"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
+                  
+                    <div class="setting-item">
+                        <div class="setting-checkbox">
+                            <input type="checkbox" id="tools-yosys-ecp5_no_rw_check">
+                            <label class="setting-checkbox-label" for="tools-yosys-ecp5_no_rw_check">
+                                Mark all read ports as return don't-care on collision:
+                                <span class="markConfig" id="mark_tools-yosys-ecp5_no_rw_check"></span>
+                            </label>
+                        </div>
+                    </div>
+                  
                   
                     <hr class="setting-divider">
                     <div class="setting-divider-title">Debug and Logging</div>
@@ -6086,6 +6535,89 @@ body.vscode-high-contrast {
       element_value = [];
     }
     config["tools"]["yosys"]["abc_options"] = element_value
+    config["tools"]["yosys"]["section_synthesis_general"] = element_value
+    element_value = document.getElementById("tools-yosys-synthesis_target").value;
+    config["tools"]["yosys"]["synthesis_target"] = element_value
+    config["tools"]["yosys"]["section_synthesis_ice40"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_device").value;
+    config["tools"]["yosys"]["ice40_device"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_top_module").value;
+    config["tools"]["yosys"]["ice40_top_module"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_output_blif").value;
+    config["tools"]["yosys"]["ice40_output_blif"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_output_edif").value;
+    config["tools"]["yosys"]["ice40_output_edif"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_output_json").value;
+    config["tools"]["yosys"]["ice40_output_json"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_noflatten").checked;
+    config["tools"]["yosys"]["ice40_noflatten"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_dff").checked;
+    config["tools"]["yosys"]["ice40_dff"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_retime").checked;
+    config["tools"]["yosys"]["ice40_retime"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_nocarry").checked;
+    config["tools"]["yosys"]["ice40_nocarry"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_nodffe").checked;
+    config["tools"]["yosys"]["ice40_nodffe"] = element_value
+    element_value = parseInt(document.getElementById("tools-yosys-ice40_dffe_min_ce_use").value, 10);
+    config["tools"]["yosys"]["ice40_dffe_min_ce_use"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_nobram").checked;
+    config["tools"]["yosys"]["ice40_nobram"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_spram").checked;
+    config["tools"]["yosys"]["ice40_spram"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_dsp").checked;
+    config["tools"]["yosys"]["ice40_dsp"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_noabc").checked;
+    config["tools"]["yosys"]["ice40_noabc"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_abc2").checked;
+    config["tools"]["yosys"]["ice40_abc2"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_vpr").checked;
+    config["tools"]["yosys"]["ice40_vpr"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_noabc9").checked;
+    config["tools"]["yosys"]["ice40_noabc9"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_flowmap").checked;
+    config["tools"]["yosys"]["ice40_flowmap"] = element_value
+    element_value = document.getElementById("tools-yosys-ice40_no_rw_check").checked;
+    config["tools"]["yosys"]["ice40_no_rw_check"] = element_value
+    config["tools"]["yosys"]["section_synthesis_ecp5"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_top_module").value;
+    config["tools"]["yosys"]["ecp5_top_module"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_output_blif").value;
+    config["tools"]["yosys"]["ecp5_output_blif"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_output_edif").value;
+    config["tools"]["yosys"]["ecp5_output_edif"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_output_json").value;
+    config["tools"]["yosys"]["ecp5_output_json"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_noflatten").checked;
+    config["tools"]["yosys"]["ecp5_noflatten"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_dff").checked;
+    config["tools"]["yosys"]["ecp5_dff"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_retime").checked;
+    config["tools"]["yosys"]["ecp5_retime"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_noccu2").checked;
+    config["tools"]["yosys"]["ecp5_noccu2"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_nodffe").checked;
+    config["tools"]["yosys"]["ecp5_nodffe"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_nobram").checked;
+    config["tools"]["yosys"]["ecp5_nobram"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_nolutram").checked;
+    config["tools"]["yosys"]["ecp5_nolutram"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_nowidelut").checked;
+    config["tools"]["yosys"]["ecp5_nowidelut"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_asyncprld").checked;
+    config["tools"]["yosys"]["ecp5_asyncprld"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_abc2").checked;
+    config["tools"]["yosys"]["ecp5_abc2"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_noabc9").checked;
+    config["tools"]["yosys"]["ecp5_noabc9"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_vpr").checked;
+    config["tools"]["yosys"]["ecp5_vpr"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_iopad").checked;
+    config["tools"]["yosys"]["ecp5_iopad"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_nodsp").checked;
+    config["tools"]["yosys"]["ecp5_nodsp"] = element_value
+    element_value = document.getElementById("tools-yosys-ecp5_no_rw_check").checked;
+    config["tools"]["yosys"]["ecp5_no_rw_check"] = element_value
     config["tools"]["yosys"]["section_debug"] = element_value
     element_value = document.getElementById("tools-yosys-verbose").checked;
     config["tools"]["yosys"]["verbose"] = element_value
@@ -6983,6 +7515,126 @@ body.vscode-high-contrast {
     }
     if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["abc_options"] !== undefined) {
         element_value = document.getElementById("tools-yosys-abc_options").value = String(config["tools"]["yosys"]["abc_options"]);
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["synthesis_target"] !== undefined) {
+        document.getElementById("tools-yosys-synthesis_target").value = config["tools"]["yosys"]["synthesis_target"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_device"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_device").value = config["tools"]["yosys"]["ice40_device"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_top_module"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_top_module").value = config["tools"]["yosys"]["ice40_top_module"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_output_blif"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_output_blif").value = config["tools"]["yosys"]["ice40_output_blif"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_output_edif"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_output_edif").value = config["tools"]["yosys"]["ice40_output_edif"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_output_json"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_output_json").value = config["tools"]["yosys"]["ice40_output_json"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_noflatten"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_noflatten").checked = config["tools"]["yosys"]["ice40_noflatten"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_dff"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_dff").checked = config["tools"]["yosys"]["ice40_dff"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_retime"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_retime").checked = config["tools"]["yosys"]["ice40_retime"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_nocarry"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_nocarry").checked = config["tools"]["yosys"]["ice40_nocarry"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_nodffe"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_nodffe").checked = config["tools"]["yosys"]["ice40_nodffe"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_dffe_min_ce_use"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_dffe_min_ce_use").value = config["tools"]["yosys"]["ice40_dffe_min_ce_use"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_nobram"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_nobram").checked = config["tools"]["yosys"]["ice40_nobram"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_spram"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_spram").checked = config["tools"]["yosys"]["ice40_spram"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_dsp"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_dsp").checked = config["tools"]["yosys"]["ice40_dsp"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_noabc"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_noabc").checked = config["tools"]["yosys"]["ice40_noabc"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_abc2"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_abc2").checked = config["tools"]["yosys"]["ice40_abc2"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_vpr"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_vpr").checked = config["tools"]["yosys"]["ice40_vpr"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_noabc9"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_noabc9").checked = config["tools"]["yosys"]["ice40_noabc9"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_flowmap"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_flowmap").checked = config["tools"]["yosys"]["ice40_flowmap"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_no_rw_check"] !== undefined) {
+        document.getElementById("tools-yosys-ice40_no_rw_check").checked = config["tools"]["yosys"]["ice40_no_rw_check"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_top_module"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_top_module").value = config["tools"]["yosys"]["ecp5_top_module"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_output_blif"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_output_blif").value = config["tools"]["yosys"]["ecp5_output_blif"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_output_edif"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_output_edif").value = config["tools"]["yosys"]["ecp5_output_edif"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_output_json"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_output_json").value = config["tools"]["yosys"]["ecp5_output_json"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_noflatten"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_noflatten").checked = config["tools"]["yosys"]["ecp5_noflatten"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_dff"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_dff").checked = config["tools"]["yosys"]["ecp5_dff"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_retime"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_retime").checked = config["tools"]["yosys"]["ecp5_retime"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_noccu2"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_noccu2").checked = config["tools"]["yosys"]["ecp5_noccu2"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_nodffe"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_nodffe").checked = config["tools"]["yosys"]["ecp5_nodffe"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_nobram"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_nobram").checked = config["tools"]["yosys"]["ecp5_nobram"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_nolutram"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_nolutram").checked = config["tools"]["yosys"]["ecp5_nolutram"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_nowidelut"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_nowidelut").checked = config["tools"]["yosys"]["ecp5_nowidelut"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_asyncprld"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_asyncprld").checked = config["tools"]["yosys"]["ecp5_asyncprld"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_abc2"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_abc2").checked = config["tools"]["yosys"]["ecp5_abc2"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_noabc9"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_noabc9").checked = config["tools"]["yosys"]["ecp5_noabc9"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_vpr"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_vpr").checked = config["tools"]["yosys"]["ecp5_vpr"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_iopad"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_iopad").checked = config["tools"]["yosys"]["ecp5_iopad"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_nodsp"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_nodsp").checked = config["tools"]["yosys"]["ecp5_nodsp"];
+    }
+    if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_no_rw_check"] !== undefined) {
+        document.getElementById("tools-yosys-ecp5_no_rw_check").checked = config["tools"]["yosys"]["ecp5_no_rw_check"];
     }
     if (config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["verbose"] !== undefined) {
         document.getElementById("tools-yosys-verbose").checked = config["tools"]["yosys"]["verbose"];
@@ -8408,6 +9060,206 @@ body.vscode-high-contrast {
       mark = MODIFIEDMSG;
     }
     document.getElementById("mark_tools-yosys-abc_options").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["synthesis_target"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-synthesis_target").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_device"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_device").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_top_module"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_top_module").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_output_blif"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_output_blif").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_output_edif"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_output_edif").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_output_json"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_output_json").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_noflatten"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_noflatten").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_dff"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_dff").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_retime"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_retime").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_nocarry"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_nocarry").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_nodffe"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_nodffe").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_dffe_min_ce_use"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_dffe_min_ce_use").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_nobram"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_nobram").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_spram"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_spram").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_dsp"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_dsp").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_noabc"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_noabc").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_abc2"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_abc2").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_vpr"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_vpr").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_noabc9"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_noabc9").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_flowmap"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_flowmap").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ice40_no_rw_check"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ice40_no_rw_check").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_top_module"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_top_module").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_output_blif"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_output_blif").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_output_edif"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_output_edif").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_output_json"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_output_json").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_noflatten"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_noflatten").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_dff"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_dff").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_retime"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_retime").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_noccu2"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_noccu2").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_nodffe"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_nodffe").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_nobram"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_nobram").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_nolutram"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_nolutram").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_nowidelut"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_nowidelut").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_asyncprld"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_asyncprld").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_abc2"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_abc2").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_noabc9"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_noabc9").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_vpr"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_vpr").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_iopad"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_iopad").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_nodsp"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_nodsp").innerHTML = mark;
+    mark = "";
+    if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["ecp5_no_rw_check"] !== undefined) {
+      mark = MODIFIEDMSG;
+    }
+    document.getElementById("mark_tools-yosys-ecp5_no_rw_check").innerHTML = mark;
     mark = "";
     if (projectName !== undefined && config["tools"] && config["tools"]["yosys"] && config["tools"]["yosys"]["verbose"] !== undefined) {
       mark = MODIFIEDMSG;

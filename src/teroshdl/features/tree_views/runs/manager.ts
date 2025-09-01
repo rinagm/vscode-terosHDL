@@ -56,9 +56,16 @@ export class Runs_manager extends BaseView{
     }
 
     set_commands() {
-        vscode.commands.registerCommand("teroshdl.view.runs.run_all", () => this.run(undefined));
+        vscode.commands.registerCommand("teroshdl.view.runs.run_all", async () => {
+            const output = await this.run(undefined);
+            return output;
+        });
+
         vscode.commands.registerCommand("teroshdl.view.runs.stop", () => this.stop(undefined));
-        vscode.commands.registerCommand("teroshdl.view.runs.run", (item) => this.run(item));
+        vscode.commands.registerCommand("teroshdl.view.runs.run", async (item) => {
+            const output = await this.run(item);
+            return output;
+        });
         vscode.commands.registerCommand("teroshdl.view.runs.refresh", () => this.refresh([]));
     }
 
@@ -76,8 +83,8 @@ export class Runs_manager extends BaseView{
         }
     }
 
-    async run(item: element.Run | undefined) {
-        vscode.window.withProgress({
+    async run(item: element.Run | undefined): Promise<string> {
+        return vscode.window.withProgress({
             location: vscode.ProgressLocation.Window,
             cancellable: false,
             title: 'TerosHDL: Tool running'
@@ -108,20 +115,26 @@ export class Runs_manager extends BaseView{
                 }
                 toolLogger.show();
                 const selfm = this;
-                const p = new Promise<void>(resolve => {
+                let outputString = '';
+                
+                const p = new Promise<string>(resolve => {
                     prj.run(test_list,
                         (function (result: t_test_result[]) {
                             selfm.refresh(result);
                             // Status bar to 100
                             progress.report({ increment: 100 });
-                            resolve();
+                            resolve(outputString);
                         }),
                         (function (stream_c: any) {
                             selfm.last_run = stream_c;
                             stream_c.stdout.on('data', function (data: any) {
+                                const dataStr = data.toString();
+                                outputString += dataStr;
                                 toolLogger.log(data);
                             });
                             stream_c.stderr.on('data', function (data: any) {
+                                const dataStr = data.toString();
+                                outputString += dataStr;
                                 toolLogger.log(data);
                             });
                         }),
@@ -129,6 +142,7 @@ export class Runs_manager extends BaseView{
                 });
                 return p;
             } catch (error) {
+                return 'Error: ' + (error ? error.toString() : 'Unknown error');
             }
         });
     }

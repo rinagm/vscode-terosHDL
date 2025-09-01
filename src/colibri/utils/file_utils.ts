@@ -362,3 +362,44 @@ export function check_default_version_for_filepath(filepath: string, version: t_
         return get_default_version_for_language(language);
     }
 }
+
+/**
+ * Copy a file from source to destination
+ * @param sourcePath Source file path
+ * @param destPath Destination file path
+ */
+export function copy_file_sync(sourcePath: string, destPath: string) {
+    try {
+        fs.copyFileSync(sourcePath, destPath);
+    } catch (err) {
+        // Handle error silently
+    }
+}
+
+/**
+ * Copy a directory recursively from source to destination
+ * @param sourceDir Source directory path
+ * @param destDir Destination directory path
+ */
+export function copy_directory_recursive(sourceDir: string, destDir: string) {
+    // Create destination directory if it doesn't exist
+    if (!check_if_path_exist(destDir)) {
+        create_directory(destDir);
+    }
+
+    // Read all files/directories in the source directory
+    const files = fs.readdirSync(sourceDir);
+
+    for (const file of files) {
+        const sourcePath = path_lib.join(sourceDir, file);
+        const destPath = path_lib.join(destDir, file);
+
+        // If it's a directory, recursively copy it
+        if (check_if_directory(sourcePath)) {
+            copy_directory_recursive(sourcePath, destPath);
+        } else {
+            // It's a file, copy it directly
+            copy_file_sync(sourcePath, destPath);
+        }
+    }
+}

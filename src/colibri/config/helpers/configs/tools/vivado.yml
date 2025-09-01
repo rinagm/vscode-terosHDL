@@ -14,8 +14,11 @@ part:
 
 synth:
   description: "Synthesis tool. Allowed values are vivado (default) and yosys.."
-  type: string
-  value: ""
+  type: select
+  options:
+    vivado: "Vivado"
+    yosys: "Yosys"
+  value: "vivado"
 
 pnr:
   description: "Choose only synthesis or place and route and bitstream generation:"
