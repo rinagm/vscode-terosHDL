@@ -23,7 +23,7 @@ import { Multi_project_manager } from 'colibri/project_manager/multi_project_man
 import { Task, TaskDecorator } from "./element";
 import { ChildProcess, spawn } from "child_process";
 import { LogView } from "../../views/logs";
-import * as tree_kill from 'tree-kill';
+import tree_kill from 'tree-kill';
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
 import { getFamilyDeviceFromQuartusProject, get_icon } from "../utils";

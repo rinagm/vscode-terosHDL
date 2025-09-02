@@ -21,7 +21,7 @@ import * as vscode from "vscode";
 import * as element from "./element";
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import { Run_output_manager } from "../run_output";
-import * as tree_kill from 'tree-kill';
+import tree_kill from 'tree-kill';
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
 import { toolLogger } from "../../../logger";

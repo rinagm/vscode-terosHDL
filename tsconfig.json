@@ -15,7 +15,8 @@
         "rootDir": "./src",
         "strict": false,
         "allowJs": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "esModuleInterop": true
     },
     "include": [
         "src/**/*"

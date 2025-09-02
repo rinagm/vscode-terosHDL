@@ -24,11 +24,14 @@ import { ExtensionManager } from './features/utils/webview/utils';
 import { Teroshdl } from './teroshdl';
 import { globalLogger, toolLogger, debugLogger } from './logger';
 import { Logger } from 'colibri/logger/logger';
+import { activateMCPServer, deactivateMCPServer } from './mcp/runMCP';
 
 let teroshdl: Teroshdl | undefined = undefined;
 
 export async function activate(context: vscode.ExtensionContext) {
     debugLogger.info('Congratulations, your extension "TerosHDL" is now active!');
+
+    activateMCPServer(context);
 
     const extension_manager = new ExtensionManager();
 
@@ -54,7 +57,8 @@ export async function activate(context: vscode.ExtensionContext) {
     await teroshdl.init_teroshdl();
 }
 
-export async function deactivate() {
+export async function deactivate(context: vscode.ExtensionContext) {
+    deactivateMCPServer(context);
     if (teroshdl === undefined) {
         return;
     }

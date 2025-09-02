@@ -18,7 +18,7 @@
 // along with TerosHDL.  If not, see <https://www.gnu.org/licenses/>.
 
 import { Parser_fsm_base } from "../fsm_base_parser";
-import * as Parser from "web-tree-sitter";
+import Parser from "web-tree-sitter";
 import { getVhdlWasm } from "../utils";
 
 export class Paser_fsm_vhdl extends Parser_fsm_base {

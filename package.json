@@ -38,6 +38,61 @@
     },
 
     "contributes": {
+        "configuration": {
+        "title": "TerosHDL: MCP Server",
+        "properties": {
+            "teroshdl-mcp-server.port": {
+            "type": "number",
+            "default": 3000,
+            "minimum": 1024,
+            "maximum": 65535,
+            "description": "The port number for the MCP server"
+            },
+            "teroshdl-mcp-server.defaultEnabled": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether the MCP server should be enabled by default on VS Code startup"
+            },
+            "teroshdl-mcp-server.enabledTools": {
+            "type": "object",
+            "default": {
+                "file": false,
+                "edit": false,
+                "shell": false,
+                "diagnostics": false,
+                "symbol": false,
+                "teroshdl": true
+            },
+            "properties": {
+                "file": {
+                "type": "boolean",
+                "description": "Enable file operations tools (read, write, list files)"
+                },
+                "edit": {
+                "type": "boolean", 
+                "description": "Enable file editing tools (create, edit, delete files)"
+                },
+                "shell": {
+                "type": "boolean",
+                "description": "Enable shell command execution tools"
+                },
+                "diagnostics": {
+                "type": "boolean",
+                "description": "Enable VS Code diagnostics tools"
+                },
+                "symbol": {
+                "type": "boolean",
+                "description": "Enable code symbol and structure analysis tools"
+                },
+                "teroshdl": {
+                "type": "boolean",
+                "description": "Enable TerosHDL tools"
+                }
+            },
+            "description": "Configure which MCP tools are enabled"
+            }
+        }
+        },
         "viewsContainers": {
             "activitybar": [
                 {
@@ -769,6 +824,14 @@
                     "dark": "resources/icon/dark/book.svg"
                 },
                 "title": "Module documentation preview"
+            }, 
+            {
+                "command": "teroshdl.teroshdl-mcp-server.showServerInfo",
+                "title": "Show MCP Server Information"
+            }, 
+            {
+                "command": "teroshdl.teroshdl-mcp-server.toggleServer",
+                "title": "Toggle MCP Server"
             }
         ],
         "languages": [
@@ -959,7 +1022,12 @@
         "tiny-glob": "^0.2.9",
         "wavedrom": "3.3.0",
         "web-tree-sitter": "^0.20.7",
-        "module-alias": "^2.2.3"
+        "module-alias": "^2.2.3",
+        "@modelcontextprotocol/inspector": "github:modelcontextprotocol/inspector",
+        "@modelcontextprotocol/sdk": "^1.10.1",
+        "@types/express": "^4.17.21",
+        "express": "^4.18.3",
+        "zod": "^3.22.4"
     },
     "devDependencies": {
         "@types/node": "^17.0.31",

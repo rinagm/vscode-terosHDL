@@ -298,3 +298,12 @@
 #   title: Add Quartus IP core
 #   group: "TerosHDL"
 #   where: ["editor/context"]
+
+################################################################################
+# MCP Server
+################################################################################
+- name: teroshdl-mcp-server.showServerInfo
+  title: "Show MCP Server Information"
+
+- name: teroshdl-mcp-server.toggleServer
+  title: "Toggle MCP Server"

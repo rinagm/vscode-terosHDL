@@ -3,6 +3,61 @@
 {% include 'info.nj' %}
 {% endfilter %}
     "contributes": {
+        "configuration": {
+        "title": "TerosHDL: MCP Server",
+        "properties": {
+            "teroshdl-mcp-server.port": {
+            "type": "number",
+            "default": 3000,
+            "minimum": 1024,
+            "maximum": 65535,
+            "description": "The port number for the MCP server"
+            },
+            "teroshdl-mcp-server.defaultEnabled": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether the MCP server should be enabled by default on VS Code startup"
+            },
+            "teroshdl-mcp-server.enabledTools": {
+            "type": "object",
+            "default": {
+                "file": false,
+                "edit": false,
+                "shell": false,
+                "diagnostics": false,
+                "symbol": false,
+                "teroshdl": true
+            },
+            "properties": {
+                "file": {
+                "type": "boolean",
+                "description": "Enable file operations tools (read, write, list files)"
+                },
+                "edit": {
+                "type": "boolean", 
+                "description": "Enable file editing tools (create, edit, delete files)"
+                },
+                "shell": {
+                "type": "boolean",
+                "description": "Enable shell command execution tools"
+                },
+                "diagnostics": {
+                "type": "boolean",
+                "description": "Enable VS Code diagnostics tools"
+                },
+                "symbol": {
+                "type": "boolean",
+                "description": "Enable code symbol and structure analysis tools"
+                },
+                "teroshdl": {
+                "type": "boolean",
+                "description": "Enable TerosHDL tools"
+                }
+            },
+            "description": "Configure which MCP tools are enabled"
+            }
+        }
+        },
         "viewsContainers": {
             "activitybar": [
                 {
