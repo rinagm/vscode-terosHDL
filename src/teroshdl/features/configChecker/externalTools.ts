@@ -43,6 +43,7 @@ export async function checkExternalToolManager(currentConfig: e_config) {
         vivado: '-version',
         icarus: '-V',
         vcs: '-id',
+        xcelium: "-version"
         // Add more tools and their custom arguments here
         // "tool-name-example": "--example-arg"
     };
