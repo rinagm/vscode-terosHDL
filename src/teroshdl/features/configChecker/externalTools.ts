@@ -41,7 +41,8 @@ export async function checkExternalToolManager(currentConfig: e_config) {
     // Build a custom map for specified extern tools' version check argument
     const customVersionArgs: Record<string, string> = {
         vivado: '-version',
-        icarus: '-V'
+        icarus: '-V',
+        vcs: '-id',
         // Add more tools and their custom arguments here
         // "tool-name-example": "--example-arg"
     };
@@ -54,6 +55,7 @@ export async function checkExternalToolManager(currentConfig: e_config) {
     let binaryName : string | string[] =
         selectedTool === e_tools_general_select_tool.rivierapro ? ['rivierapro', 'riviera'] : selectedTool;
     binaryName = binaryName === e_tools_general_select_tool.icarus ? 'iverilog' : binaryName;
+    binaryName = binaryName === e_tools_general_select_tool.quartus ? 'quartus_sh' : binaryName;
 
     let result = await checkBinary(selectedTool, installationPath, binaryName, [versionArgument]);
     msg = appendMsg(result, msg, selectedTool.toLocaleUpperCase());

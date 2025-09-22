@@ -117,6 +117,8 @@ class Formatter {
         if (result.successful === false){
             globalLogger.info("Error format code.");
             globalLogger.debug(result.command);
+            globalLogger.debug(result.message);
+            globalLogger.show();
         }
         else{
             globalLogger.info("The code has been formatted successfully.");
@@ -152,6 +154,11 @@ export class Formatter_manager {
             vscode.commands.registerCommand(
                 'teroshdl.format',
                 async () => {
+                    const currentDocument = vscode.window.activeTextEditor?.document;
+                    if (currentDocument === undefined || (currentDocument.uri.scheme !== 'file')) {
+                        vscode.window.showInformationMessage("Please, set the cursor in the document to format.");
+                        return;
+                    }
                     vscode.commands.executeCommand("editor.action.format");
                 }
             )

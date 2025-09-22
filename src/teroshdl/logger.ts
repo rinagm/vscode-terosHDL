@@ -22,13 +22,22 @@ import {LoggerBase} from "colibri/logger/logger";
 
 export class Logger extends LoggerBase {
     private output_channel: vscode.OutputChannel;
+    private enableNewLine: boolean;
 
-    constructor(name = "") {
+    constructor(name = "", enableNewLine) {
         super();
         if (name === "") {
             name = 'TerosHDL: Tool manager';
         }
         this.output_channel = vscode.window.createOutputChannel(name, 'logTerosHDL');
+        this.enableNewLine = enableNewLine;
+    }
+
+    private getNewLineSymbol() {
+        if (this.enableNewLine) {
+            return '\n';
+        }
+        return '';
     }
 
     clear() {
@@ -36,7 +45,7 @@ export class Logger extends LoggerBase {
     }
 
     append(msg: string) {
-        this.output_channel.append(msg);
+        this.output_channel.append(msg + this.getNewLineSymbol());
     }
 
     appendLine(msg: string) {
@@ -55,27 +64,27 @@ export class Logger extends LoggerBase {
 
     debug(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.append(this.replaceFilePath(msg));
+        this.output_channel.append(this.replaceFilePath(msg + this.getNewLineSymbol()));
     }
 
     warn(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.append(this.replaceFilePath(msg));
+        this.output_channel.append(this.replaceFilePath(msg + this.getNewLineSymbol()));
     }
 
     info(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.append(this.replaceFilePath(msg));
+        this.output_channel.append(this.replaceFilePath(msg + this.getNewLineSymbol()));
     }
     
     trace(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.append(this.replaceFilePath(msg));
+        this.output_channel.append(this.replaceFilePath(msg + this.getNewLineSymbol()));
     }
 
     error(msg: string, enable_show = false) {
         this.show(enable_show);
-        this.output_channel.append(this.replaceFilePath(msg));
+        this.output_channel.append(this.replaceFilePath(msg + this.getNewLineSymbol()));
     }
 
     replaceFilePath(input: string): string {
@@ -85,6 +94,6 @@ export class Logger extends LoggerBase {
     }
 }
 
-export const globalLogger: Logger = new Logger("TerosHDL: Global");
-export const toolLogger: Logger = new Logger("TerosHDL: Tool Manager");
-export const debugLogger: Logger = new Logger("TerosHDL: Debug");
+export const globalLogger: Logger = new Logger("TerosHDL: Global", true);
+export const toolLogger: Logger = new Logger("TerosHDL: Tool Manager", false);
+export const debugLogger: Logger = new Logger("TerosHDL: Debug", true);

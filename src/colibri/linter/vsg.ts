@@ -23,6 +23,7 @@ import * as logger from "../logger/logger";
 import { create_temp_file } from "../process/utils";
 import { read_file_sync, remove_file } from "../utils/file_utils";
 import { Process } from "../process/process";
+import * as path_lib from "path";
 
 export class Vsg extends Base_linter {
     binary = "vsg";
@@ -82,10 +83,15 @@ export class Vsg extends Base_linter {
         const code_file_normalized = file_path.replace(' ', '\\ ');
         const json_file_file_normalized = junit_file.replace(' ', '\\ ');
 
-        let command = `vsg -f ${code_file_normalized} --all_phases --js ${json_file_file_normalized}`;
+        let binaryPath = 'vsg';
+        if (options.path !== '') {
+            binaryPath = path_lib.join(options.path, 'vsg');
+        }
+
+        let command = `${binaryPath} -f ${code_file_normalized} --all_phases --js ${json_file_file_normalized}`;
         if (options.argument !== ""){
             // eslint-disable-next-line max-len
-            command = `vsg -f ${code_file_normalized} --all_phases -c ${options.argument} --js ${json_file_file_normalized}`;
+            command = `${binaryPath} -f ${code_file_normalized} --all_phases ${options.argument} --js ${json_file_file_normalized}`;
         }
 
         const msg = `Linting with command: ${command} `;

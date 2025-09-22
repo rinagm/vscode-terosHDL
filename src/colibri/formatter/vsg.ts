@@ -26,6 +26,7 @@ import * as common from "./common";
 import * as logger from "../logger/logger";
 import * as cfg from "../config/config_declaration";
 import { BinaryCheck, checkBinary } from "../toolChecker/utils";
+import * as path_lib from "path";
 
 export class Vsg extends Base_formatter {
     private binary = 'vsg';
@@ -47,10 +48,15 @@ export class Vsg extends Base_formatter {
     }
 
     public async format(file: string, opt: cfg.e_tools_vsg, _python_path: string) {
-        let command = `${this.binary} ${opt.aditional_arguments} -p ${opt.core_number} --fix -f ${file}`;
+        let binaryPath = this.binary;
+        if (opt.installation_path !== '') {
+            binaryPath = path_lib.join(opt.installation_path, this.binary);
+        }
+
+        let command = `${binaryPath} ${opt.aditional_arguments} -p ${opt.core_number} --fix -f ${file}`;
         if (opt.style_config !== ""){
             // eslint-disable-next-line max-len
-            command = `${this.binary} ${opt.aditional_arguments} -p ${opt.core_number} --fix -c ${opt.style_config} -f ${file}`;
+            command = `${binaryPath} ${opt.aditional_arguments} -p ${opt.core_number} --fix -c ${opt.style_config} -f ${file}`;
         }
 
         const P = new Process();
@@ -63,7 +69,7 @@ export class Vsg extends Base_formatter {
         const result: common.f_result = {
             code_formatted: code_formatted,
             command: command,
-            successful: true,
+            successful: exec_result.successful,
             message: exec_result.stderr,
         };
         return result;
