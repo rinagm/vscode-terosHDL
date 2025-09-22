@@ -79,7 +79,22 @@ export class Rusthdl_lsp {
         // Options to control the language client
         let clientOptions: LanguageClientOptions = {
             documentSelector: [{ scheme: 'file', language: 'vhdl' }],
-            revealOutputChannelOn: RevealOutputChannelOn.Never
+            revealOutputChannelOn: RevealOutputChannelOn.Never,
+            middleware: {
+                provideCompletionItem: (document, position, context, token, next) => {
+                    if (!this.linterIsEnabled()) {
+                        return Promise.resolve([]);
+                    }
+                    return next(document, position, context, token);
+                },
+                handleDiagnostics: (uri, diagnostics, next) => {
+                    if (!this.linterIsEnabled()) {
+                        next(uri, []);
+                        return;
+                    }
+                    next(uri, diagnostics);
+                }
+            }
         };
 
         // Create the language client
@@ -136,6 +151,15 @@ export class Rusthdl_lsp {
         } catch {
             return '0.0.0';
         }
+    }
+
+    private linterIsEnabled(): boolean {
+        const config = utils.getConfig(this.manager);
+        const linter_name = config.linter.general.linter_vhdl;
+        if (linter_name === e_linter_general_linter_vhdl.disabled) {
+            return false;
+        }
+        return true;
     }
 
     getServerOptionsEmbedded(context: ExtensionContext) {
