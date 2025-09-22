@@ -343,7 +343,19 @@ export class Project_manager extends BaseView {
 
     delete_project(item: element.Project) {
         try {
-            this.project_manager.delete_project(this.project_manager.get_project_by_name(item.get_project_name()));
+            // confirmation dialog
+            const projectName = item.get_project_name();
+            const confirmation = `Are you sure you want to delete the project '${projectName}'?`;
+            vscode.window.showInformationMessage(confirmation, { modal: true }, "Yes").then((answer) => {
+                if (answer === "Yes") {
+                    try {
+                        this.project_manager.delete_project(
+                            this.project_manager.get_project_by_name(projectName));
+                    } catch (error) {
+                        // Handle error silently
+                    }
+                }
+            });
         } catch (error) {
         }
     }
