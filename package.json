@@ -442,7 +442,7 @@
                 "title": "TerosHDL: Open Global Settings Menu"
             }, 
             {
-                "command": "teroshdl.configuration.verifySetup",
+                "command": "teroshdl.verifySetup",
                 "title": "TerosHDL: Verify Setup"
             }, 
             {
