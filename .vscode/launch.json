@@ -52,9 +52,9 @@
     "program": "${workspaceFolder}/node_modules/.bin/extest",
     "args": [
         "setup-and-run",
-        "./tests/ui/test-activation.ts",
+        "./tests/ui/test-*.ts",
         "--code_version",
-        "1.74.0"
+        "max"
     ],
     "sourceMaps": true,
     "outFiles": ["${workspaceFolder}/out/**/*.js"],

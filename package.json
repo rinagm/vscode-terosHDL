@@ -944,7 +944,7 @@
         "compile-esbuild": "cross-env NODE_ENV=production node ./esbuild.js",
         "copy-files": "python3 copy_files.py ",
         "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand --config ./jest.config.json",
-        "test:ui": "extest setup-and-run './tests/ui/test-*.ts' --code_version 1.74.0 --extensions_dir .vscode-test/extensions"
+        "test:ui": "npm run compile && extest setup-and-run './tests/ui/test-*.ts' --code_version max --extensions_dir .vscode-test/extensions"
     },
     "dependencies": {
         "@octokit/rest": "16.36.0",
@@ -1014,7 +1014,6 @@
         "@types/jest": "^29.4.3",
         "@types/js-yaml": "^4.0.5",
         "@types/mocha": "^10.0.10",
-        "@types/node": "^17.0.31",
         "@types/temp": "^0.9.4",
         "typescript": "^4.8.2",
         "@typescript-eslint/eslint-plugin": "^8.7.0",
@@ -1022,17 +1021,8 @@
         "eslint": "^9.11.1",
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-prettier": "^4.0.0",
-        "jest": "^29.7.0",
-        "jest-html-reporters": "^3.1.4",
-        "js-yaml": "^3.13.1",
         "mocha": "^11.7.6",
-        "nodemon": "^3.0.2",
-        "shx": "^0.3.3",
-        "ts-jest": "^29.1.2",
         "ts-node": "^10.9.2",
-        "typedoc": "^0.23.9",
-        "typedoc-theme-hierarchy": "^3.0.0",
-        "typescript": "^4.8.2",
         "vscode-extension-tester": "^8.23.0"
     }
 

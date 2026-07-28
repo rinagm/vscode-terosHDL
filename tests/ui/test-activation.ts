@@ -1,33 +1,28 @@
+// This test suite checks the activation of the TerosHDL extension in Visual Studio Code
+
 import { expect } from "chai";
-import { VSBrowser, Workbench } from "vscode-extension-tester";
+import { ActivityBar } from "vscode-extension-tester";
+import { getReadyWorkbench, getTerosHdlControl, registerGlobalCleanup } from "./helpers";
 
 describe("TerosHDL Activation", () => {
-  let browser: VSBrowser;
-
   before(async () => {
-    browser = VSBrowser.instance;
+    await getReadyWorkbench();
   });
 
-  it("Extension activates without errors", async function () {
+  registerGlobalCleanup();
+
+  it("VS Code workbench loads", async function () {
     this.timeout(30000);
-    await browser.waitForWorkbench();
-    const workbench = new Workbench();
-    const title = await browser.driver.getTitle();
-    expect(title).to.include("Visual Studio Code");
+    const activityBar = new ActivityBar();
+    const controls = await activityBar.getViewControls();
+    expect(controls.length).to.be.greaterThan(0);
   });
 
   it("TerosHDL extension is installed and workbench loads", async function () {
     this.timeout(20000);
-    const workbench = new Workbench();
-    
-    // Verify the sidebar is accessible (extension is active)
-    const sidebar = await workbench.getSideBar();
-    expect(sidebar).to.not.be.undefined;
-    
-    // Verify the activity bar is accessible
-    const activityBar = await workbench.getActivityBar();
-    const controls = await activityBar.getViewControls();
-    expect(controls).to.not.be.undefined;
-    expect(controls.length).to.be.greaterThan(0);
+    const teroshdlControl = await getTerosHdlControl();
+    const title = await teroshdlControl.getTitle();
+    expect(title).to.include("TerosHDL");
   });
+
 });
