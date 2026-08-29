@@ -35,3 +35,8 @@ tests-resources/
 # Python cache artifacts
 __pycache__/
 *.py[cod]
+
+# ExTester / UI test artifacts
+extest.log  
+.extester/
+test-resources/
