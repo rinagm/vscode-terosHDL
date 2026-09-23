@@ -931,7 +931,7 @@
         "build-package": "cd auto_package && ./gen.sh",
         "clean": "shx rm -rf out",
         "vscode:prepublish": "npm run generate-examples & npm run compile",
-        "compile": "npm run-script copy-files && npm run-script build-webviews & npm run-script build-webviews-configuration & tsc -p ./",
+        "compile": "npm run-script copy-files && npm run-script build-webviews && npm run-script build-webviews-configuration && tsc -p ./",
         "lint": "eslint src",
         "watch": "npm run-script copy-files & tsc --watch --p ./tsconfig.json & nodemon --ignore 'resources/webviews/reporters/**/wb/' --watch resources/webviews/reporters -e js,ts,tsx,html --exec \"npm run-script build-webviews\"",
         "generate-examples": "cd ./resources/project_manager; ./copy_examples.sh",
@@ -944,7 +944,7 @@
         "compile-esbuild": "cross-env NODE_ENV=production node ./esbuild.js",
         "copy-files": "python3 copy_files.py ",
         "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest --forceExit --runInBand --config ./jest.config.json",
-        "test:ui": "npm run compile && cross-env TEROSHDL_UI_TEST_EXAMPLE_DESTINATION=1 extest setup-and-run './tests/ui/test-*.ts' --code_version max --extensions_dir .vscode-test/extensions"
+        "test:ui": "npm run compile && cross-env TEROSHDL_UI_TEST_EXAMPLE_DESTINATION=1 extest setup-and-run './tests/ui/test-*.ts' --code_version 1.74.0 --extensions_dir .vscode-test/extensions"
     },
     "dependencies": {
         "@octokit/rest": "16.36.0",
@@ -1023,7 +1023,8 @@
         "eslint-plugin-prettier": "^4.0.0",
         "mocha": "^11.7.6",
         "ts-node": "^10.9.2",
-        "vscode-extension-tester": "^8.23.0"
+        "vscode-extension-tester": "^8.23.0",
+        "cross-env": "^7.0.3"
     }
 
 }
