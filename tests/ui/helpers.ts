@@ -43,13 +43,10 @@ export async function getTerosHdlControl(): Promise<ViewControl> {
   return control;
 }
 
-// Execute a TerosHDL command by id through the Command Palette
+// Execute a TerosHDL command by id using the Workbench command API
 export async function runCommand(commandId: string): Promise<void> {
   const workbench = new Workbench();
-  await workbench.openCommandPrompt();
-  const input = await InputBox.create();
-  await input.setText(`>${commandId}`);
-  await input.confirm();
+  await workbench.executeCommand(commandId);
 }
 
 // Wait for at least one quick pick to appear in the InputBox

@@ -20,7 +20,6 @@
 import * as vscode from "vscode";
 import * as element from "./element";
 import * as path_lib from "path";
-import * as fs from "fs";
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import * as utils from "../utils";
 import { Run_output_manager } from "../run_output";
@@ -28,7 +27,7 @@ import { t_message_level, showMessage, getConfig, getVSCodeWorkspaceStorage } fr
 import * as yaml from "js-yaml";
 import { BaseView } from "../baseView";
 import { e_viewType } from "../common";
-import { createProjectSandpiper } from "./utils";
+import { createProjectSandpiper, getUiTestExampleDestinationFolder } from "./utils";
 import { e_event, ProjectEmitter } from "colibri/project_manager/projectEmitter";
 import { copy_directory_recursive, read_file_sync } from "colibri/utils/file_utils";
 import { getFamilyAndParts } from "colibri/project_manager/tool/quartus/utils";
@@ -70,14 +69,6 @@ export class Project_manager extends BaseView {
 
     public getRefreshEvent(): e_event[] {
         return [];
-    }
-
-    private getExampleDestinationFolder(exampleName: string): string {
-        const workspaceStorage = getVSCodeWorkspaceStorage(this.context);
-        const destinationFolder = path_lib.join(workspaceStorage, "ui-tests", exampleName.toLowerCase());
-        fs.rmSync(destinationFolder, { recursive: true, force: true });
-        fs.mkdirSync(destinationFolder, { recursive: true });
-        return destinationFolder;
     }
 
     open_doc() {
@@ -241,7 +232,7 @@ export class Project_manager extends BaseView {
                 
                 let destinationFolder: string | undefined;
                 if (process.env.TEROSHDL_UI_TEST_EXAMPLE_DESTINATION === "1") {
-                    destinationFolder = this.getExampleDestinationFolder(picker_value);
+                    destinationFolder = getUiTestExampleDestinationFolder(this.context, picker_value);
                 }
                 else {
                     const destinationFolders = await utils.get_from_open_dialog(

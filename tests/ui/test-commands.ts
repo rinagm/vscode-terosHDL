@@ -10,7 +10,7 @@ describe("TerosHDL Commands", () => {
     await getReadyWorkbench();
   });
 
-registerGlobalCleanup();
+  registerGlobalCleanup();
   
   it("TerosHDL commands appear in Command Palette", async function () {
     this.timeout(20000);
