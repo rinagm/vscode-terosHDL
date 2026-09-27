@@ -2,6 +2,8 @@
 
 import { ActivityBar, EditorView, InputBox, SideBarView, TreeItem, VSBrowser, ViewControl, ViewSection, Workbench } from "vscode-extension-tester";
 
+const TEST_PROJECT_NAMES = ["teroshdl-extester-test", "project_nvc", "project_ghdl"];
+
 // Wait for the workbench to be ready and return a Workbench object
 export async function getReadyWorkbench(): Promise<Workbench> {
   await VSBrowser.instance.waitForWorkbench();
@@ -119,6 +121,11 @@ export function registerGlobalCleanup(): void {
       await new EditorView().closeAllEditors();
     } catch {
       // No open editors
+    }
+    for (const projectName of TEST_PROJECT_NAMES) {
+      await deleteProjectFromTree(projectName).catch(() => {
+        // El proyecto puede no existir
+      });
     }
   });
 }

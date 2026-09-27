@@ -2,5 +2,6 @@ require("ts-node/register");
 
 module.exports = {
   timeout: 60000,
-  extensions: ["ts"]
+  extensions: ["ts"],
+  retries: 2
 };

@@ -55,6 +55,9 @@ export async function createProjectSandpiper(
 export function getUiTestExampleDestinationFolder(context: vscode.ExtensionContext, exampleName: string): string {
     const workspaceStorage = getVSCodeWorkspaceStorage(context);
     const destinationFolder = path_lib.join(workspaceStorage, "ui-tests", exampleName.toLowerCase());
+    if (!destinationFolder.includes("ui-tests")) {
+        throw new Error(`Refusing to delete unexpected path: ${destinationFolder}`);
+    }
     fs.rmSync(destinationFolder, { recursive: true, force: true });
     fs.mkdirSync(destinationFolder, { recursive: true });
     return destinationFolder;
