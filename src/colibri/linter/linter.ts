@@ -28,6 +28,7 @@ import * as common from "./common";
 import * as cfg from "../config/config_declaration";
 import { t_file } from "../project_manager/common";
 import { BinaryCheck } from "colibri/toolChecker/utils";
+import { Nvc } from "./nvc";
 
 /** Linter */
 export class Linter {
@@ -61,6 +62,9 @@ export class Linter {
         else if (linter_name === cfg.e_linter_general_lstyle_vhdl.vsg) {
             return new Vsg();
         }
+        else if (linter_name === cfg.e_linter_general_linter_vhdl.nvc) {
+            return new Nvc();
+        }
         else {
             return new Ghdl();
         }
@@ -93,9 +97,10 @@ export class Linter {
      * @param  {string} code Code to lint
      * @param  {common.l_options} options Linter options
      */
-    async lint_from_code(linter_name: common.t_linter_name, code: string, options: common.l_options) {
+    async lint_from_code(linter_name: common.t_linter_name, code: string, options: common.l_options,
+        source_file_path = "") {
         const linter = this.get_linter(linter_name);
-        const errors = await linter.lint_from_code(code, options);
+        const errors = await linter.lint_from_code(code, options, source_file_path);
         return errors;
     }
 

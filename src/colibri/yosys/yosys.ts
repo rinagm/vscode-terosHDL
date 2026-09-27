@@ -151,7 +151,7 @@ export async function runYosysGhdl(config: e_config, topTevel: string, sources: 
 
     let cmd =
         // eslint-disable-next-line max-len
-        `${preArguments} ${yosysPath} ${await getGHDLCommnand(preArguments, yosysPath)} -p "ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} --work=work -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat"`;
+        `${preArguments} ${yosysPath} ${await getGHDLCommnand(preArguments, yosysPath)} -p "ghdl --std=08 -fsynopsys ${ghdlArguments} ${cmdFiles} -e ${topTevel}; ${topLevelCmd}; proc; ${customArguments}; write_json ${outputPathFilename}; stat"`;
     cmd = removeEmptyCommands(cmd);
 
     const opt_exec = { cwd: process_utils.get_home_directory() };
@@ -186,8 +186,6 @@ async function getGHDLCommnand(preArgument: string, yosysPath: string) : Promise
         const result = await p.exec_wait(commnad, { cwd: process_utils.get_home_directory() });
         const endOfScriptStdout = result.stdout.toLowerCase().includes("end of script");
         const runningStdout = result.stdout.toLowerCase().includes("running command");
-
-        console.log(result.stdout);
 
         if (result.successful && (endOfScriptStdout || runningStdout)) {
             return "-m ghdl";
@@ -252,7 +250,6 @@ export async function runYosysStandalone(config: e_config, topTevel: string, sou
 
         callback(schematicResult);
     } catch (error) {
-        console.log(error);
         const schematicResult = {
             schematic: "",
             error_msg: "Error running Yosys",
