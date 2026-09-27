@@ -18,7 +18,6 @@ node_modules
 *.vsix
 user.teros-hdl.config.json
 prj_config.teros
-package-lock.json
 config.html
 resources/project_manager/examples
 resources/project_manager/help
