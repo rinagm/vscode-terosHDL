@@ -1,16 +1,39 @@
 import * as path from 'path';
 import * as file_utils from 'colibri/utils/file_utils';
 import { executeCommandWait } from 'colibri/project_manager/tool/openfpgaloader/executor';
-import { loadBitstream } from 'colibri/project_manager/tool/openfpgaloader/bitstreamLoader';
+import {
+	buildLoadArgs,
+	extractProgressPercent,
+	loadBitstream,
+	loadBitstreamStream
+} from 'colibri/project_manager/tool/openfpgaloader/bitstreamLoader';
 import { t_openfpgaloader_config } from 'colibri/project_manager/tool/openfpgaloader/utils';
+import * as executor from 'colibri/project_manager/tool/openfpgaloader/executor';
+import { EventEmitter } from 'events';
+
+jest.mock('child_process', () => ({
+	spawn: jest.fn()
+}));
 
 jest.mock('colibri/utils/file_utils', () => ({
 	check_if_path_exist: jest.fn()
 }));
 
 jest.mock('colibri/project_manager/tool/openfpgaloader/executor', () => ({
+	getBinary: jest.fn(() => 'openFPGALoader'),
 	executeCommandWait: jest.fn()
 }));
+
+const childProcess = require('child_process') as { spawn: jest.Mock };
+
+class MockStream extends EventEmitter {
+	setEncoding(): void {}
+}
+
+class MockChildProcess extends EventEmitter {
+	stdout = new MockStream();
+	stderr = new MockStream();
+}
 
 describe('bitstreamLoader', () => {
 	const config: t_openfpgaloader_config = {
@@ -163,7 +186,8 @@ describe('bitstreamLoader', () => {
 		expect(executeCommandWait).toHaveBeenCalledWith(
 			config,
 			['-b', boardId, absoluteBitstreamPath],
-			path.dirname(absoluteBitstreamPath)
+			path.dirname(absoluteBitstreamPath),
+			undefined
 		);
 	});
 
@@ -195,7 +219,24 @@ describe('bitstreamLoader', () => {
 				'--freq',
 				'6000000'
 			],
-			path.dirname(absoluteBitstreamPath)
+			path.dirname(absoluteBitstreamPath),
+			undefined
+		);
+	});
+
+	it('should pass timeout to command execution when provided', async () => {
+		await loadBitstream(
+			config,
+			boardId,
+			bitstreamPath,
+			{ timeoutSeconds: 25 }
+		);
+
+		expect(executeCommandWait).toHaveBeenCalledWith(
+			config,
+			['-b', boardId, absoluteBitstreamPath],
+			path.dirname(absoluteBitstreamPath),
+			25
 		);
 	});
 
@@ -217,6 +258,22 @@ describe('bitstreamLoader', () => {
 		expect(result).toEqual({
 			successful: false,
 			msg: 'Programming started.\nDevice not responding.'
+		});
+	});
+
+	it('should map busy-device errors to a user friendly message', async () => {
+		(executeCommandWait as jest.Mock).mockResolvedValue({
+			successful: false,
+			stdout: '',
+			stderr: 'resource busy',
+			return_value: 1
+		});
+
+		const result = await loadBitstream(config, boardId, bitstreamPath);
+
+		expect(result).toEqual({
+			successful: false,
+			msg: 'Device busy. Another process is using the JTAG cable/device.'
 		});
 	});
 
@@ -271,5 +328,90 @@ describe('bitstreamLoader', () => {
 			successful: false,
 			msg: 'Unknown error while executing OpenFPGALoader.'
 		});
+	});
+
+	it('should return an error when timeout is not a positive number', async () => {
+		const result = await loadBitstream(
+			config,
+			boardId,
+			bitstreamPath,
+			{ timeoutSeconds: 0 }
+		);
+
+		expect(result).toEqual({
+			successful: false,
+			msg: 'Timeout must be a positive number of seconds.'
+		});
+	});
+
+	it('buildLoadArgs should include all configured options', () => {
+		const args = buildLoadArgs(' board ', '/tmp/a.bit', {
+			cable: ' usbjtag ',
+			verify: true,
+			reset: true,
+			freq: 6000
+		});
+
+		expect(args).toEqual([
+			'-b',
+			'board',
+			'/tmp/a.bit',
+			'--cable',
+			'usbjtag',
+			'--verify',
+			'--reset',
+			'--freq',
+			'6000'
+		]);
+	});
+
+	it('extractProgressPercent should parse progress lines', () => {
+		expect(extractProgressPercent('[==========] 45%')).toBe(45);
+		expect(extractProgressPercent('random output')).toBeUndefined();
+	});
+
+	it('loadBitstreamStream should stream output and report progress', (done) => {
+		const proc = new MockChildProcess();
+		childProcess.spawn.mockReturnValue(proc);
+		jest.spyOn(executor, 'getBinary').mockReturnValue('openFPGALoader');
+
+		const outputChunks: string[] = [];
+		const progress: number[] = [];
+
+		loadBitstreamStream(
+			config,
+			boardId,
+			bitstreamPath,
+			{ verify: true },
+			(chunk) => outputChunks.push(chunk),
+			(result) => {
+				expect(result.successful).toBe(true);
+				expect(result.msg).toContain('100%');
+				expect(progress).toContain(100);
+				expect(outputChunks.join('')).toContain('100%');
+				done();
+			},
+			(percent) => progress.push(percent)
+		);
+
+		proc.stdout.emit('data', Buffer.from('[====================] 100%\n'));
+		proc.emit('close', 0);
+	});
+
+	it('loadBitstreamStream should fail fast on invalid inputs', (done) => {
+		const child = loadBitstreamStream(
+			config,
+			'',
+			bitstreamPath,
+			{},
+			() => undefined,
+			(result) => {
+				expect(result.successful).toBe(false);
+				expect(result.msg).toContain('No board or device has been specified');
+				done();
+			}
+		);
+
+		expect(child).toBeUndefined();
 	});
 });
