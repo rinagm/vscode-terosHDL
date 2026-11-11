@@ -40,13 +40,45 @@ describe('openfpgaloader utils', () => {
         expect(boards).toEqual([{ family: 'ice40', part_list: ['LP384-CM49'] }]);
     });
 
-    it('maps common permission errors to user friendly messages', () => {
+    it('maps permission errors to user friendly messages', () => {
         const message = parseDetectionError('usb_open() failed: Permission denied');
+
         expect(message).toContain('Permiso denegado');
     });
 
     it('maps binary-not-found errors to installation guidance', () => {
         const message = parseDetectionError('/bin/sh: 1: openFPGALoader: not found');
+
         expect(message).toContain('openFPGALoader no encontrado');
+    });
+
+    it('maps missing USB backend dependencies to installation guidance', () => {
+        const message = parseDetectionError(
+            'libusb-1.0.so: cannot open shared object file'
+        );
+
+        expect(message).toContain('backend o driver USB/JTAG');
+        expect(message).toContain('libusb/libftdi');
+    });
+
+    it('maps missing USB/JTAG backend errors', () => {
+        const message = parseDetectionError('libftdi: backend not found');
+
+        expect(message).toContain('backend o driver USB/JTAG');
+    });
+
+    it('does not confuse a missing FTDI device with a missing backend', () => {
+        const message = parseDetectionError(
+            'unable to open ftdi device: -3 (device not found)'
+        );
+
+        expect(message).toContain('No se encuentra el dispositivo o cable JTAG');
+        expect(message).not.toContain('backend o driver USB/JTAG');
+    });
+
+    it('maps timeout errors', () => {
+        const message = parseDetectionError('Timeout reached');
+
+        expect(message).toContain('Timeout en la detección');
     });
 });

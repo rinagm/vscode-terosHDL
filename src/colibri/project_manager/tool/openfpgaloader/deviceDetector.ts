@@ -1,71 +1,79 @@
-import { t_board_list, t_loader_boards_result } from '../common';
+import { t_loader_boards_result } from '../common';
 import { executeCommandWait } from './executor';
 import { parseDetectOutput, parseDetectionError, t_openfpgaloader_config } from './utils';
 
-function parseDetectJsonOutput(stdout: string): t_board_list[] {
-	const parsed = JSON.parse(stdout) as unknown;
-	const rawList = Array.isArray(parsed)
-		? parsed
-		: (parsed as { devices?: unknown[] })?.devices;
+const DETECTION_TIMEOUT_SECONDS = 15;
 
-	if (!Array.isArray(rawList)) {
-		return [];
-	}
+function parseDetectJsonOutput(stdout: string): ReturnType<typeof parseDetectOutput> {
+    const parsed = JSON.parse(stdout) as unknown;
+    const devices = Array.isArray(parsed)
+        ? parsed
+        : (parsed as { devices?: unknown[] })?.devices;
 
-	const grouped = new Map<string, Set<string>>();
-	for (const item of rawList) {
-		const device = item as Record<string, unknown>;
-		const family = String(device.family ?? '').trim();
-		const model = String(device.model ?? '').trim();
-		if (family === '' || model === '') {
-			continue;
-		}
-		if (!grouped.has(family)) {
-			grouped.set(family, new Set<string>());
-		}
-		grouped.get(family)?.add(model);
-	}
+    if (!Array.isArray(devices)) {
+        return [];
+    }
 
-	return Array.from(grouped.entries()).map(([family, models]) => ({
-		family,
-		part_list: Array.from(models)
-	}));
+    const lines: string[] = [];
+    for (const item of devices) {
+        const device = item as Record<string, unknown>;
+        const family = String(device.family ?? '').trim();
+        const model = String(device.model ?? '').trim();
+        if (family === '' || model === '') {
+            continue;
+        }
+        lines.push(`family ${family}`);
+        lines.push(`model ${model}`);
+        lines.push('');
+    }
+
+    return parseDetectOutput(lines.join('\n'));
 }
 
 export async function detectDevices(
-	config: t_openfpgaloader_config,
-	cwd: string
+    config: t_openfpgaloader_config,
+    cwd: string
 ): Promise<t_loader_boards_result> {
-	// Try JSON output first (available in some openFPGALoader versions).
-	const jsonResult = await executeCommandWait(config, ['--detect', '--json'], cwd);
-	if (jsonResult.successful) {
-		try {
-			const boards = parseDetectJsonOutput(jsonResult.stdout);
-			return {
-				board_list: boards,
-				successful: true,
-				msg: boards.length > 0 ? '' : 'No se encontraron dispositivos'
-			};
-		}
-		catch (_error) {
-			// Fall back to text parsing below.
-		}
-	}
+    const jsonResult = await executeCommandWait(
+        config,
+        ['--detect', '--json'],
+        cwd,
+        DETECTION_TIMEOUT_SECONDS
+    );
 
-	const result = await executeCommandWait(config, ['--detect'], cwd);
-	if (!result.successful) {
-		return {
-			board_list: [],
-			successful: false,
-			msg: parseDetectionError(result.stderr)
-		};
-	}
+    if (jsonResult.successful) {
+        try {
+            const boardList = parseDetectJsonOutput(jsonResult.stdout);
+            return {
+                board_list: boardList,
+                successful: true,
+                msg: boardList.length > 0 ? '' : 'No se encontraron dispositivos'
+            };
+        }
+        catch (_error) {
+            // Fallback to text parsing for versions with non-standard JSON output.
+        }
+    }
 
-	const boardList = parseDetectOutput(result.stdout);
-	return {
-		board_list: boardList,
-		successful: true,
-		msg: boardList.length > 0 ? '' : 'No se encontraron dispositivos'
-	};
+    const result = await executeCommandWait(
+        config,
+        ['--detect'],
+        cwd,
+        DETECTION_TIMEOUT_SECONDS
+    );
+
+    if (!result.successful) {
+        return {
+            board_list: [],
+            successful: false,
+            msg: parseDetectionError(result.stderr)
+        };
+    }
+
+    const boardList = parseDetectOutput(result.stdout);
+    return {
+        board_list: boardList,
+        successful: true,
+        msg: boardList.length > 0 ? '' : 'No se encontraron dispositivos'
+    };
 }
-

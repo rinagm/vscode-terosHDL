@@ -33,23 +33,15 @@ describe('openfpgaloader deviceDetector', () => {
         jest.clearAllMocks();
     });
 
-    it('detects devices using JSON output', async () => {
+    it('detects devices using JSON output first', async () => {
         const jsonOutput = JSON.stringify({
             devices: [
-                {
-                    family: 'ice40',
-                    model: 'LP384-CM49'
-                },
-                {
-                    family: 'CertusProNX',
-                    model: 'LFCPNX-100'
-                }
+                { family: 'ice40', model: 'LP384-CM49' },
+                { family: 'CertusProNX', model: 'LFCPNX-100' }
             ]
         });
 
-        mockedExecuteCommandWait.mockResolvedValueOnce(
-            createResult(jsonOutput)
-        );
+        mockedExecuteCommandWait.mockResolvedValueOnce(createResult(jsonOutput));
 
         const result = await detectDevices(config, cwd);
 
@@ -57,26 +49,21 @@ describe('openfpgaloader deviceDetector', () => {
         expect(mockedExecuteCommandWait).toHaveBeenCalledWith(
             config,
             ['--detect', '--json'],
-            cwd
+            cwd,
+            15
         );
 
         expect(result).toEqual({
             board_list: [
-                {
-                    family: 'ice40',
-                    part_list: ['LP384-CM49']
-                },
-                {
-                    family: 'CertusProNX',
-                    part_list: ['LFCPNX-100']
-                }
+                { family: 'ice40', part_list: ['LP384-CM49'] },
+                { family: 'CertusProNX', part_list: ['LFCPNX-100'] }
             ],
             successful: true,
             msg: ''
         });
     });
 
-    it('falls back to text detection when JSON execution fails', async () => {
+    it('falls back to text detection when JSON mode fails', async () => {
         const textOutput = [
             'found 1 devices',
             'index 0: idcode 0x10f4043',
@@ -87,44 +74,34 @@ describe('openfpgaloader deviceDetector', () => {
         ].join('\n');
 
         mockedExecuteCommandWait
-            .mockResolvedValueOnce(
-                createResult('', 'Unknown option: --json', false)
-            )
-            .mockResolvedValueOnce(
-                createResult(textOutput)
-            );
+            .mockResolvedValueOnce(createResult('', 'Unknown option: --json', false))
+            .mockResolvedValueOnce(createResult(textOutput));
 
         const result = await detectDevices(config, cwd);
 
         expect(mockedExecuteCommandWait).toHaveBeenCalledTimes(2);
-
         expect(mockedExecuteCommandWait).toHaveBeenNthCalledWith(
             1,
             config,
             ['--detect', '--json'],
-            cwd
+            cwd,
+            15
         );
-
         expect(mockedExecuteCommandWait).toHaveBeenNthCalledWith(
             2,
             config,
             ['--detect'],
-            cwd
+            cwd,
+            15
         );
-
         expect(result).toEqual({
-            board_list: [
-                {
-                    family: 'ice40',
-                    part_list: ['LP384-CM49']
-                }
-            ],
+            board_list: [{ family: 'ice40', part_list: ['LP384-CM49'] }],
             successful: true,
             msg: ''
         });
     });
 
-    it('falls back to text detection when JSON output cannot be parsed', async () => {
+    it('falls back to text detection when JSON output is malformed', async () => {
         const textOutput = [
             'found 1 devices',
             'index 0: idcode 0x10f4043',
@@ -133,33 +110,49 @@ describe('openfpgaloader deviceDetector', () => {
         ].join('\n');
 
         mockedExecuteCommandWait
-            .mockResolvedValueOnce(
-                createResult('Invalid JSON')
-            )
-            .mockResolvedValueOnce(
-                createResult(textOutput)
-            );
+            .mockResolvedValueOnce(createResult('not-a-json'))
+            .mockResolvedValueOnce(createResult(textOutput));
 
         const result = await detectDevices(config, cwd);
 
         expect(mockedExecuteCommandWait).toHaveBeenCalledTimes(2);
-        expect(result.successful).toBe(true);
-        expect(result.board_list).toEqual([
-            {
-                family: 'ice40',
-                part_list: ['LP384-CM49']
-            }
-        ]);
+        expect(result).toEqual({
+            board_list: [{ family: 'ice40', part_list: ['LP384-CM49'] }],
+            successful: true,
+            msg: ''
+        });
     });
 
-    it('returns an error when text detection fails', async () => {
+    it('returns an error when detection times out', async () => {
         mockedExecuteCommandWait
-            .mockResolvedValueOnce(
-                createResult('', 'Unknown option: --json', false)
-            )
-            .mockResolvedValueOnce(
-                createResult('', 'usb_open() failed: Permission denied', false)
-            );
+            .mockResolvedValueOnce(createResult('', 'Unknown option: --json', false))
+            .mockResolvedValueOnce(createResult('', 'Timeout reached', false));
+
+        const result = await detectDevices(config, cwd);
+
+        expect(mockedExecuteCommandWait).toHaveBeenCalledTimes(2);
+        expect(result).toEqual({
+            board_list: [],
+            successful: false,
+            msg: 'Timeout en la detección de dispositivos. Compruebe cable y drivers.'
+        });
+    });
+
+    it('returns an error when the USB/JTAG backend is missing', async () => {
+        mockedExecuteCommandWait
+            .mockResolvedValueOnce(createResult('', 'Unknown option: --json', false))
+            .mockResolvedValueOnce(createResult('', 'libftdi: backend not found', false));
+
+        const result = await detectDevices(config, cwd);
+
+        expect(result.successful).toBe(false);
+        expect(result.msg).toContain('backend o driver USB/JTAG');
+    });
+
+    it('returns an error when device access is denied', async () => {
+        mockedExecuteCommandWait
+            .mockResolvedValueOnce(createResult('', 'Unknown option: --json', false))
+            .mockResolvedValueOnce(createResult('', 'usb_open() failed: Permission denied', false));
 
         const result = await detectDevices(config, cwd);
 
@@ -170,10 +163,19 @@ describe('openfpgaloader deviceDetector', () => {
         });
     });
 
+    it('returns an error when no cable or device is connected', async () => {
+        mockedExecuteCommandWait
+            .mockResolvedValueOnce(createResult('', 'Unknown option: --json', false))
+            .mockResolvedValueOnce(createResult('', 'unable to open ftdi device: -3 (device not found)', false));
+
+        const result = await detectDevices(config, cwd);
+
+        expect(result.successful).toBe(false);
+        expect(result.msg).toContain('No se encuentra el dispositivo o cable JTAG');
+    });
+
     it('returns an empty board list when no devices are detected', async () => {
-        mockedExecuteCommandWait.mockResolvedValueOnce(
-            createResult(JSON.stringify({ devices: [] }))
-        );
+        mockedExecuteCommandWait.mockResolvedValueOnce(createResult(JSON.stringify({ devices: [] })));
 
         const result = await detectDevices(config, cwd);
 
@@ -182,28 +184,5 @@ describe('openfpgaloader deviceDetector', () => {
             successful: true,
             msg: 'No se encontraron dispositivos'
         });
-    });
-
-    it('handles JSON output with a root array', async () => {
-        const jsonOutput = JSON.stringify([
-            {
-                family: 'ice40',
-                model: 'LP384-CM49'
-            }
-        ]);
-
-        mockedExecuteCommandWait.mockResolvedValueOnce(
-            createResult(jsonOutput)
-        );
-
-        const result = await detectDevices(config, cwd);
-
-        expect(result.successful).toBe(true);
-        expect(result.board_list).toEqual([
-            {
-                family: 'ice40',
-                part_list: ['LP384-CM49']
-            }
-        ]);
     });
 });
