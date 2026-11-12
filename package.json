@@ -711,6 +711,14 @@
                     "dark": "resources/icon/dark/book.svg"
                 },
                 "title": "Module documentation preview"
+            },
+            {
+                "command": "teroshdl.devices.detect",
+                "title": "TerosHDL: Detect OpenFPGALoader Devices"
+            },
+            {
+                "command": "teroshdl.go_to_parent",
+                "title": "Go to parent file"
             }
         ],
         "languages": [
