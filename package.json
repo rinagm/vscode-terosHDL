@@ -717,6 +717,10 @@
                 "title": "TerosHDL: Detect OpenFPGALoader Devices"
             },
             {
+                "command": "teroshdl.devices.load_bitstream",
+                "title": "TerosHDL: Load OpenFPGALoader Bitstream"
+            },
+            {
                 "command": "teroshdl.go_to_parent",
                 "title": "Go to parent file"
             }

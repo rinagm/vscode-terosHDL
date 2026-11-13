@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 
 import { Multi_project_manager } from 'colibri/project_manager/multi_project_manager';
 import { detectDevices } from 'colibri/project_manager/tool/openfpgaloader/deviceDetector';
+import { listBoards, t_openfpgaloader_board } from 'colibri/project_manager/tool/openfpgaloader/boardDetector';
+import { loadBitstream } from 'colibri/project_manager/tool/openfpgaloader/bitstreamLoader';
+
 import { toolLogger } from '../../logger';
 
 const SELECTED_DEVICE_KEY = 'openfpgaloader.selectedDevice';
@@ -12,6 +15,10 @@ type SelectedDevice = {
 };
 
 type DeviceQuickPickItem = vscode.QuickPickItem & SelectedDevice;
+
+type BoardQuickPickItem = vscode.QuickPickItem & {
+    board: t_openfpgaloader_board;
+};
 
 export class OpenFPGALoaderManager {
     constructor(
@@ -27,23 +34,25 @@ export class OpenFPGALoaderManager {
             () => this.detect()
         );
 
-        this.context.subscriptions.push(detectCommand);
+        const loadBitstreamCommand = vscode.commands.registerCommand(
+            'teroshdl.devices.load_bitstream',
+            () => this.loadBitstream()
+        );
+
+        this.context.subscriptions.push(
+            detectCommand,
+            loadBitstreamCommand
+        );
     }
 
     private async detect(): Promise<void> {
         try {
             const project = this.manager.get_selected_project();
-            if (!project) {
-                vscode.window.showWarningMessage(
-                    'OpenFPGALoader: you must first select a project.'
-                );
-                return;
-            }
 
             const config = project.get_config().tools.openfpgaloader;
             const cwd = project.projectDiskPath;
 
-            toolLogger.appendLine('OpenFPGALoader: detectando dispositivos...');
+            toolLogger.appendLine('OpenFPGALoader: detecting devices...');
             toolLogger.show();
 
             const result = await detectDevices(config, cwd);
@@ -56,7 +65,7 @@ export class OpenFPGALoaderManager {
 
             if (result.board_list.length === 0) {
                 vscode.window.showInformationMessage(
-                    'OpenFPGALoader: no se encontraron dispositivos.'
+                    'OpenFPGALoader: no devices were found.'
                 );
                 return;
             }
@@ -67,7 +76,7 @@ export class OpenFPGALoaderManager {
                 for (const model of board.part_list) {
                     items.push({
                         label: `${board.family} — ${model}`,
-                        description: 'Dispositivo detectado',
+                        description: 'Detected device',
                         family: board.family,
                         model
                     });
@@ -75,7 +84,7 @@ export class OpenFPGALoaderManager {
             }
 
             const selected = await vscode.window.showQuickPick(items, {
-                placeHolder: 'Selecciona el dispositivo detectado'
+                placeHolder: 'Select the detected device'
             });
 
             if (!selected) {
@@ -93,11 +102,136 @@ export class OpenFPGALoaderManager {
             );
 
             vscode.window.showInformationMessage(
-                `Dispositivo seleccionado: ${selected.family} — ${selected.model}`
+                `Device selected: ${selected.family} — ${selected.model}`
             );
 
             toolLogger.appendLine(
-                `Dispositivo seleccionado: ${selected.family} — ${selected.model}`
+                `Device selected: ${selected.family} — ${selected.model}`
+            );
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+
+            if (error instanceof Error && error.name === 'ProjectOperationError') {
+                vscode.window.showWarningMessage(
+                    'OpenFPGALoader: you must first select a project.'
+                );
+                return;
+            }
+
+            toolLogger.appendLine(`Error: ${message}`);
+            vscode.window.showErrorMessage(`OpenFPGALoader: ${message}`);
+        }
+    }
+
+    private async loadBitstream(): Promise<void> {
+        try {
+            const project = this.manager.get_selected_project();
+            const config = project.get_config().tools.openfpgaloader;
+            const cwd = project.projectDiskPath;
+
+            const selectedDevice = this.context.globalState.get<SelectedDevice>(
+                SELECTED_DEVICE_KEY
+            );
+
+            if (!selectedDevice) {
+                vscode.window.showWarningMessage(
+                    'OpenFPGALoader: first detect a device before loading a bitstream.'
+                );
+                return;
+            }
+
+            toolLogger.appendLine('OpenFPGALoader: checking supported boards...');
+            toolLogger.show();
+
+            const boardsResult = await listBoards(config, cwd);
+
+            if (!boardsResult.successful) {
+                toolLogger.appendLine(`Error: ${boardsResult.msg}`);
+                vscode.window.showErrorMessage(
+                    `OpenFPGALoader: ${boardsResult.msg}`
+                );
+                return;
+            }
+
+            if (boardsResult.board_list.length === 0) {
+                vscode.window.showWarningMessage(
+                    'OpenFPGALoader: no supported boards were found.'
+                );
+                return;
+            }
+
+            const boardItems: BoardQuickPickItem[] = boardsResult.board_list.map(
+                board => ({
+                    label: board.name,
+                    description: board.cable
+                        ? `Cable: ${board.cable}`
+                        : 'Cable not specified',
+                    board
+                })
+            );
+
+            const selectedBoard = await vscode.window.showQuickPick(
+                boardItems,
+                {
+                    placeHolder: 'Select the board you want to program'
+                }
+            );
+
+            if (!selectedBoard) {
+                return;
+            }
+
+            const bitstream = await vscode.window.showOpenDialog({
+                canSelectFiles: true,
+                canSelectFolders: false,
+                openLabel: 'Select bitstream',
+                filters: {
+                    Bitstream: ['bit', 'bin', 'svf']
+                }
+            });
+
+            if (!bitstream || bitstream.length === 0) {
+                return;
+            }
+
+            const filePath = bitstream[0].fsPath;
+            const extension = filePath.split('.').pop()?.toLowerCase();
+
+            if (!extension || !['bit', 'bin', 'svf'].includes(extension)) {
+                vscode.window.showErrorMessage(
+                    'OpenFPGALoader: unsupported bitstream file extension.'
+                );
+                return;
+            }
+
+            toolLogger.appendLine(
+                `OpenFPGALoader: loading ${filePath} into ${selectedBoard.board.name}...`
+            );
+
+            const result = await loadBitstream(
+                config,
+                selectedBoard.board.name,
+                filePath,
+                {
+                    verify: true,
+                    reset: false
+                }
+            );
+
+            if (!result.successful) {
+                toolLogger.appendLine(`Error: ${result.msg}`);
+                vscode.window.showErrorMessage(
+                    `OpenFPGALoader: ${result.msg}`
+                );
+                return;
+            }
+
+            toolLogger.appendLine(
+                `Bitstream loaded successfully to ${selectedBoard.board.name}.`
+            );
+
+            vscode.window.showInformationMessage(
+                `OpenFPGALoader: bitstream loaded to ${selectedBoard.board.name}`
             );
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
